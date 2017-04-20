@@ -1,0 +1,179 @@
+package com.vadimfrolov.twobuttonremote.Network;
+
+import android.os.AsyncTask;
+import android.util.Log;
+
+import com.jcraft.jsch.*;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.Properties;
+
+/**
+ * Task to communicate with remote target.
+ * Created by vadimf on 3/4/2017.
+ */
+public class RemoteAsyncTask extends AsyncTask<RemoteCommand, Void, RemoteCommand> {
+
+    private final String TAG = "RemoteAsyncTask";
+    private RemoteCommandResult mDelegate = null;
+    private final int TIMEOUT = 500; // 0.5 sec
+
+    public RemoteAsyncTask(RemoteCommandResult handler) {
+        super();
+        mDelegate = handler;
+    }
+
+    @Override
+    protected RemoteCommand doInBackground(RemoteCommand... params) {
+        if (params.length == 0) {
+            Log.d(TAG, "No parameters were passed to the task. Has nothing to do.");
+            return null;
+        }
+        RemoteCommand cmd = params[0];
+        String result = "";
+        try {
+            switch (cmd.commandType) {
+                case RemoteCommand.WOL:
+                    result = sendWolPacket(cmd.target.hardwareAddress, cmd.target.broadcastIp, cmd.wolPort());
+                    break;
+
+                case RemoteCommand.SSH:
+                    result = executeRemoteCommand(cmd.target.ipAddress, cmd.sshPort(), cmd.target.sshUsername, cmd.target.sshPassword, cmd.command);
+                    break;
+
+                case RemoteCommand.PING:
+                    Socket socket = new Socket(cmd.target.ipAddress, cmd.sshPort());
+                    result = "success";
+                    break;
+
+                default:
+                    break;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+        cmd.result = result;
+        return cmd;
+    }
+
+    @Override
+    protected void onPostExecute(RemoteCommand result) {
+        if (mDelegate != null)
+            mDelegate.onRemoteCommandFinished(result);
+    }
+
+    private String sendWolPacket(String mac, String broadcastIp, int wolPort) throws UnknownHostException, SocketException, IOException, IllegalArgumentException {
+        if (broadcastIp == null || broadcastIp.equals(NetInfo.NOIP)) {
+            return "invalid gateway";
+        }
+
+        final String[] hex = mac.split(":");
+
+        final byte[] bytes = new byte[102];
+
+        // convert to base16 bytes
+        final byte[] macBytes = new byte[6];
+        for (int i = 0; i < 6; i++) {
+            macBytes[i] = (byte) Integer.parseInt(hex[i], 16);
+            // fill in the first 6 bytes
+            bytes[i] = (byte) 0xff;
+        }
+
+        // fill remaining bytes with target MAC
+        for (int i = 6; i < bytes.length; i += macBytes.length) {
+            System.arraycopy(macBytes, 0, bytes, i, macBytes.length);
+        }
+
+        // create socket to IP
+        final InetAddress address = InetAddress.getByName(broadcastIp);
+        final DatagramPacket packet = new DatagramPacket(bytes, bytes.length, address, wolPort);
+        final DatagramSocket socket = new DatagramSocket();
+        socket.send(packet);
+        socket.close();
+
+        return "success";
+    }
+
+    private String executeRemoteCommand(String hostname, int port, String username, String password, String command)
+            throws Exception {
+        if (isCancelled()) {
+            return "";
+        }
+        JSch jsch = new JSch();
+        Session session = jsch.getSession(username, hostname, port);
+        session.setPassword(password);
+        session.setTimeout(TIMEOUT);
+
+        // Avoid asking for key confirmation
+        Properties prop = new Properties();
+        prop.put("StrictHostKeyChecking", "no");
+        session.setConfig(prop);
+
+        if (isCancelled()) {
+            return "";
+        }
+        session.connect();
+
+        // SSH Channel
+        ChannelExec channel = (ChannelExec)session.openChannel("exec");
+
+        // Execute command
+        // man sudo
+        //   -S  The -S (stdin) option causes sudo to read the password from the
+        //       standard input instead of the terminal device.
+        //   -p  The -p (prompt) option allows you to override the default
+        //       password prompt and use a custom one.
+        //channel.setCommand("sudo -S -p '' " + command);
+        channel.setCommand(command);
+        InputStream in = channel.getInputStream();
+        OutputStream out = channel.getOutputStream();
+
+        if (isCancelled()) {
+            session.disconnect();
+            return "";
+        }
+
+        channel.setPty(true);
+        channel.connect();
+
+        if (command.contains("sudo")) {
+            out.write((password + "\n").getBytes());
+            out.flush();
+        }
+
+        String result = "";
+
+        byte[] tmp = new byte[1024];
+        while (true) {
+            while (in.available() > 0 && !isCancelled()) {
+                int i = in.read(tmp, 0, 1024);
+                if (i < 0) {
+                    break;
+                }
+                result = result + new String(tmp, 0, i);
+            }
+            if (channel.isClosed() || isCancelled()) {
+                break;
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (Exception ee) {
+                // not critical for us
+            }
+        }
+
+        channel.disconnect();
+        session.disconnect();
+
+        return result;
+    }
+}

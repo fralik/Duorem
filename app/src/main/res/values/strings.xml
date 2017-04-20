@@ -1,0 +1,121 @@
+<resources>
+    <string name="app_name">Two Button Remote</string>
+    <string name="add_host">Add device</string>
+    <string name="edit_host">Edit device</string>
+    <string name="replace_host">Replace device</string>
+    <string name="delete_host">Delete device</string>
+    <string name="settings">Settings</string>
+    <string name="add_manually">Enter manually</string>
+    <string name="restart">Restart</string>
+
+    <string name="reboot_sent">Sent reboot command.</string>
+    <string name="reboot_received">Reboot command has been successfully received.</string>
+    <string name="reboot_failed">Reboot failed, try again.</string>
+    <string name="shutdown_sent">Sent shutdown command.</string>
+    <string name="shutdown_received">Shutdown command has been successfully received.</string>
+    <string name="shutdown_failed">Shutdown failed, try again.</string>
+    <string name="no_gateway">Can not wake up target because broadcast address is not configured. If you added target manually, try to connect to the internet and reconfigure the target.</string>
+    <string name="wol_sent">Sent WAKE signal.</string>
+    <string name="wol_received">WAKE signal sending was successful.</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_target_settings">Add Device</string>
+    <string name="discovery_stopped">Discovery stopped</string>
+    <string name="no_network">Can\'t access network. Seems like you are disconnected.</string>
+    <string name="hosts_manual">Enter manually</string>
+    <string name="turn_on">Turn on</string>
+    <string name="shutdown">Shutdown</string>
+    <string name="alive_content_description">Host connection indicator</string>
+    <string name="no_device">No device is configured. Add one.</string>
+    <string name="alert_icon">Alert icon</string>
+
+    <!-- strings used on host configuration page -->
+    <string name="host_name">Name</string>
+    <string name="mac_address">MAC address</string>
+    <string name="ip_address">IP address</string>
+    <string name="broadcast_address">Broadcast IP address</string>
+    <string name="obtain_broadcast_address">Guess broadcast</string>
+    <string name="wol_port">WOL port</string>
+    <string name="ssh_username">SSH username</string>
+    <string name="ssh_password">SSH password</string>
+    <string name="ssh_port">SSH port</string>
+    <string name="sudo_password">SUDO password</string>
+    <string name="user_name">User name</string>
+    <string name="password">Password</string>
+    <string name="mac_separator">:</string>
+    <string name="save">Save</string>
+    <string name="show_advanced">Advanced details</string>
+
+    <!-- Strings related to Settings -->
+    <!-- my general settings -->
+    <string name="pref_header_general">General</string>
+    <string name="pref_default_wol_port">9</string>
+    <string name="pref_default_ssh_port">22</string>
+
+    <string name="pref_title_social_recommendations">Enable social recommendations</string>
+    <string name="pref_description_social_recommendations">Recommendations for people to contact
+        based on your message history
+    </string>
+
+    <string name="pref_title_display_name">Display name</string>
+    <string name="pref_default_display_name">John Smith</string>
+
+    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <string-array name="pref_example_list_titles">
+        <item>Always</item>
+        <item>When possible</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+
+    <!-- Example settings for Data & Sync -->
+    <string name="pref_header_data_sync">Data &amp; sync</string>
+
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string-array name="pref_sync_frequency_titles">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+
+    <string-array name="list_preference_entries">
+        <item>Entry 1</item>
+        <item>Entry 2</item>
+        <item>Entry 3</item>
+    </string-array>
+
+    <string-array name="list_preference_entry_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="multi_select_list_preference_default_value" />
+
+    <string name="pref_title_system_sync_settings">System sync settings</string>
+
+    <!-- Example settings for Notifications -->
+    <string name="pref_header_notifications">Notifications</string>
+
+    <string name="pref_title_new_message_notifications">New message notifications</string>
+
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="pref_ringtone_silent">Silent</string>
+
+    <string name="pref_title_vibrate">Vibrate</string>
+</resources>
