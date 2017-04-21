@@ -11,25 +11,25 @@
         android:orientation="vertical"
         tools:context="com.vadimfrolov.twobuttonremote.TargetConfigurationFragment">
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/app_bar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            >
+        <!--<android.support.design.widget.AppBarLayout-->
+            <!--android:id="@+id/app_bar"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--app:layout_constraintLeft_toLeftOf="parent"-->
+            <!--app:layout_constraintRight_toRightOf="parent"-->
+            <!--app:layout_constraintTop_toTopOf="parent"-->
+            <!--&gt;-->
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/main_toolbar"
-                android:title="@string/edit_host"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?attr/colorPrimary"
-                android:minHeight="?attr/actionBarSize"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-        </android.support.design.widget.AppBarLayout>
+            <!--<android.support.v7.widget.Toolbar-->
+                <!--android:id="@+id/main_toolbar"-->
+                <!--android:title="@string/edit_host"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="?attr/colorPrimary"-->
+                <!--android:minHeight="?attr/actionBarSize"-->
+                <!--android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
+                <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />-->
+        <!--</android.support.design.widget.AppBarLayout>-->
 
         <!-- Hostname AKA nickname -->
         <android.support.design.widget.TextInputLayout

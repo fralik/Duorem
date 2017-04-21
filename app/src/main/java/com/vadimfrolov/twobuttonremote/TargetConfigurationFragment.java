@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2017 Vadim Frolov
+ * Licensed under GNU's GPL 2, see README
+ */
+
 package com.vadimfrolov.twobuttonremote;
 
 
@@ -11,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,6 +58,7 @@ public class TargetConfigurationFragment extends Fragment {
     private TextInputEditText mEditSshPassword;
     private TextInputEditText mEditSshPort;
     private List<EditText> mEditMac;
+    private boolean mIsTablet = false;
     SharedPreferences mPrefs;
     Context mContext;
 
@@ -136,17 +143,6 @@ public class TargetConfigurationFragment extends Fragment {
 //        btnSave.setFocusable(true);
 //        btnSave.setFocusableInTouchMode(true);
 
-        // Create action bar as a toolbar
-        AppCompatActivity act = (AppCompatActivity)getActivity();
-        Toolbar toolbar = (Toolbar) v.findViewById(R.id.main_toolbar);
-        act.setSupportActionBar(toolbar);
-        if (toolbar != null) {
-            act.getSupportActionBar().setTitle(getResources().getString(R.string.edit_host));
-            // Add Up Navigation, part 1
-            act.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-
-
         EditText mac = (EditText)v.findViewById(R.id.mac_1);
         mEditMac.add(mac);
         mac = (EditText)v.findViewById(R.id.mac_2);
@@ -178,6 +174,18 @@ public class TargetConfigurationFragment extends Fragment {
         });
 
         return v;
+    }
+
+    public void resetAppBar() {
+        // Create action bar as a toolbar
+        AppCompatActivity act = (AppCompatActivity)getActivity();
+        Toolbar toolbar = (Toolbar) act.findViewById(R.id.main_toolbar);
+        act.setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            act.getSupportActionBar().setTitle(getResources().getString(R.string.edit_host));
+            // Add Up Navigation, part 1
+            act.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     private void setAdvancedVisibility(boolean visible) {
@@ -224,6 +232,11 @@ public class TargetConfigurationFragment extends Fragment {
         NetInfo ni = new NetInfo(mContext);
 
         refreshView();
+    }
+
+    // disable action bar
+    public void prepareForTablet() {
+        mIsTablet = true;
     }
 
     private void refreshView() {

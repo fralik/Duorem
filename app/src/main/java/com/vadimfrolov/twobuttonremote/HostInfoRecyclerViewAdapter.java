@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2017 Vadim Frolov
+ * Licensed under GNU's GPL 2, see README
+ */
+
 package com.vadimfrolov.twobuttonremote;
 
 import android.content.Context;
@@ -19,7 +24,6 @@ import java.util.List;
 /**
  * {@link RecyclerView.Adapter} that can display a {@link HostBean} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
  */
 public class HostInfoRecyclerViewAdapter extends RecyclerView.Adapter<HostInfoRecyclerViewAdapter.ViewHolder> {
 
@@ -36,10 +40,31 @@ public class HostInfoRecyclerViewAdapter extends RecyclerView.Adapter<HostInfoRe
         mListener = listener;
         mValues = new ArrayList<>();
         mContext = context;
+        addManual();
     }
 
     public void clear() {
         mValues.clear();
+        addManual();
+    }
+
+    private void addManual() {
+        if (mContext != null && mValues != null) {
+            HostBean manual = new HostBean();
+            manual.resetForView();
+            manual.hostname = mContext.getResources().getString(R.string.hosts_manual);
+            manual.hardwareAddress = NetInfo.NOMAC;
+            manual.ipAddress = NetInfo.NOIP;
+            manual.broadcastIp = NetInfo.NOIP;
+            mValues.add(manual);
+
+//            HostBean second = new HostBean();
+//            second.resetForView();
+//            second.hostname = "test";
+//            second.ipAddress = "192.168.1.5";
+//            second.hardwareAddress = "FF:FF:FF:EB:AB:40";
+//            mValues.add(second);
+        }
     }
 
     @Override
@@ -99,6 +124,7 @@ public class HostInfoRecyclerViewAdapter extends RecyclerView.Adapter<HostInfoRe
 
         public ViewHolder(View view) {
             super(view);
+
             mIdView = (TextView) view.findViewById(R.id.id);
             mContentView = (TextView) view.findViewById(R.id.content);
         }

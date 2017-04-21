@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2017 Vadim Frolov
+ * Licensed under GNU's GPL 2, see README
+ */
 package com.vadimfrolov.twobuttonremote.Network;
 
 /**

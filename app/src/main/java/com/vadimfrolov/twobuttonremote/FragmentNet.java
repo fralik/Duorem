@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2017 Vadim Frolov
+ * Licensed under GNU's GPL 2, see README
+ */
+
 package com.vadimfrolov.twobuttonremote;
 
 import android.content.BroadcastReceiver;
@@ -13,7 +18,7 @@ import android.support.v4.app.Fragment;
 import com.vadimfrolov.twobuttonremote.Network.NetInfo;
 
 /**
- * Similar to ActivityNet
+ * Similar to ActivityNet, but for a Fragment.
  * Created by vadimf on 4/4/2017.
  */
 

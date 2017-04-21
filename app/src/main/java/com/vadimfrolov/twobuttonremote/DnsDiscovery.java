@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2009-2010 Aubort Jean-Baptiste (Rorist)
+ * Copyright (C) 2017 Vadim Frolov
+ * Licensed under GNU's GPL 2, see README
+ */
+
 package com.vadimfrolov.twobuttonremote;
 
 import android.util.Log;
@@ -13,11 +19,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Based on DnsDiscovery from android-network-discovery
+ * Based on DnsDiscovery from {@link https://github.com/rorist/android-network-discovery|Android Network Discovery} app.
+ * Changes:
+ * 1. Perform search in batches instead of a single for loop.
+ * 2. Filter gateways out.
+ * 3. Do not check NIC vendor.
  */
 
 public class DnsDiscovery extends AbstractDiscovery {
 
+    private final String TAG = "DnsDiscovery";
     private final static long sChunkSize = 10;
     // number of threads for pool of async tasks.
     private final static int sThreads = 10;
@@ -54,7 +65,7 @@ public class DnsDiscovery extends AbstractDiscovery {
                     if (!mPool.awaitTermination(TIMEOUT_SCAN, TimeUnit.SECONDS)) {
                         mPool.shutdownNow();
                         if (!mPool.awaitTermination(TIMEOUT_SHUTDOWN, TimeUnit.SECONDS)) {
-                            Log.i("MyTag", "Pool did not shutdown");
+                            Log.w(TAG, "Pool did not shutdown");
                         }
                     }
                 } catch (InterruptedException e) {
@@ -68,7 +79,6 @@ public class DnsDiscovery extends AbstractDiscovery {
 
     @Override
     protected void onCancelled() {
-        Log.i("MyTag", "We were cancelled");
         if (mPool != null) {
             synchronized (mPool) {
                 mPool.shutdown();
@@ -79,7 +89,7 @@ public class DnsDiscovery extends AbstractDiscovery {
 
     private void launch(long start, long stop, int timeout, String gatewayIp) {
         if (!mPool.isShutdown()) {
-            Log.i("MyTag", "Making new pool " + start + "-" + stop + ", " + NetInfo.getIpFromLongUnsigned(start) + "-" + NetInfo.getIpFromLongUnsigned(stop));
+            Log.d(TAG, "Making new pool " + start + "-" + stop + ", " + NetInfo.getIpFromLongUnsigned(start) + "-" + NetInfo.getIpFromLongUnsigned(stop));
             mPool.execute(new CheckRunnable(start, stop, timeout, gatewayIp));
         }
     }
@@ -114,9 +124,9 @@ public class DnsDiscovery extends AbstractDiscovery {
                     host.hostname = ia.getCanonicalHostName();
                     host.isAlive = ia.isReachable(mTimeout);
                 } catch (java.net.UnknownHostException e) {
-
+                    // not critical for us
                 } catch (IOException e) {
-
+                    // not critical for us
                 }
                 if (host.hostname != null && !host.hostname.equals(host.ipAddress)) {
                     // Is gateway ?
@@ -128,10 +138,9 @@ public class DnsDiscovery extends AbstractDiscovery {
                     // Mac address
                     host.hardwareAddress = HardwareAddress.getHardwareAddress(host.ipAddress);
                     if (host.hardwareAddress.equals(NetInfo.NOMAC)) {
-//                        Log.i("MyTag", i + " (" + host.ipAddress + ") has invalid MAC. Publishing null");
                         publishProgress((HostBean) null);
                     } else {
-                        Log.i("MyTag", i + " (" + host.ipAddress + ") seems to be valid. Publishing it");
+                        Log.d(TAG, i + " (" + host.ipAddress + ") seems to be valid. Publishing it");
                         publishProgress(host);
                     }
                 } else {

@@ -1,9 +1,15 @@
+/*
+ * Copyright (C) 2017 Vadim Frolov
+ * Licensed under GNU's GPL 2, see README
+ */
+
 package com.vadimfrolov.twobuttonremote;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.vadimfrolov.twobuttonremote.Network.HostBean;
@@ -31,10 +38,13 @@ public class HostSearchFragment extends FragmentNet implements DiscoveryListener
     private OnListFragmentInteractionListener mListener;
     private AbstractDiscovery mDiscoveryTask = null;
     private HostInfoRecyclerViewAdapter mAdapter;
-    private View mProgressBar = null;
+    private ProgressBar mProgressBar = null;
     private ConstraintLayout mNotificationView;
     private View mListView;
-    private int mCurrentNetwork = 0; // Hash of a currently connected network
+    private int mCurrentNetwork = 0; // Hash (ID) of a currently connected network
+    // Reference to MenuItem that is used to add host manually. Used to control its visibility.
+    private MenuItem mAddHostMenuItem = null;
+    private boolean mIsTablet = false;
 
     //protected NetInfo mNetInfo = null;
     protected long mNetworkIp;
@@ -64,6 +74,11 @@ public class HostSearchFragment extends FragmentNet implements DiscoveryListener
 
     @Override
     public void onStartDiscovering() {
+        if (mProgressBar == null) {
+            AppCompatActivity act = (AppCompatActivity)getActivity();
+            mProgressBar = (ProgressBar) act.findViewById(R.id.pbHostsDiscovery);
+        }
+
         if (mProgressBar != null) {
             mProgressBar.setVisibility(View.VISIBLE);
             setDiscoverProgress(0);
@@ -84,7 +99,10 @@ public class HostSearchFragment extends FragmentNet implements DiscoveryListener
 
     @Override
     public void setDiscoverProgress(int progress) {
-        getActivity().setProgress(progress);
+        if (mProgressBar != null) {
+            mProgressBar.setProgress(progress);
+        }
+        //getActivity().setProgress(progress);
     }
 
     /**
@@ -159,7 +177,21 @@ public class HostSearchFragment extends FragmentNet implements DiscoveryListener
             mListView.setVisibility(View.GONE);
             mNotificationView.setVisibility(View.VISIBLE);
         }
+        // Only show it as a menu action when we are disconnected
+        // and we are on a phone layout. There will be an
+        // entry in RecyclerView otherwise.
+        if (mAddHostMenuItem != null) {
+            if (mIsTablet) {
+                mAddHostMenuItem.setVisible(false);
+            } else {
+                mAddHostMenuItem.setVisible(!mIsConnected);
+            }
+        }
+    }
 
+    public void setTablet(boolean isTablet) {
+        mIsTablet = isTablet;
+        updateNetworkStatus();
     }
 
     @Override
@@ -179,22 +211,23 @@ public class HostSearchFragment extends FragmentNet implements DiscoveryListener
             recyclerView.setAdapter(mAdapter);
         }
 
-        // Create action bar as a toolbar
-        AppCompatActivity act = (AppCompatActivity)getActivity();
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.main_toolbar);
-        act.setSupportActionBar(toolbar);
+        updateNetworkStatus();
 
+        return view;
+    }
+
+    public void resetAppBar() {
+        AppCompatActivity act = (AppCompatActivity)getActivity();
+        Toolbar toolbar = (Toolbar) act.findViewById(R.id.main_toolbar);
+        act.setSupportActionBar(toolbar);
         if (toolbar != null) {
             act.getSupportActionBar().setTitle(getResources().getString(R.string.add_host));
 
             // Add Up Navigation, part 1
             act.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            mProgressBar = toolbar.findViewById(R.id.pbHostsDiscovery);
+
+            updateNetworkStatus();
         }
-
-        updateNetworkStatus();
-
-        return view;
     }
 
     @Override
@@ -236,6 +269,15 @@ public class HostSearchFragment extends FragmentNet implements DiscoveryListener
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.discovery_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        mAddHostMenuItem = menu.findItem(R.id.action_add_manually);
+        if (mAddHostMenuItem != null && mIsTablet) {
+            mAddHostMenuItem.setVisible(false);
+        }
     }
 
     @Override

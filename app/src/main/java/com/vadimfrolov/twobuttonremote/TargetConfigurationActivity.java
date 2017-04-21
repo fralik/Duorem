@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2017 Vadim Frolov
+ * Licensed under GNU's GPL 2, see README
+ */
+
 package com.vadimfrolov.twobuttonremote;
 
 import android.content.Intent;
@@ -18,6 +23,7 @@ public class TargetConfigurationActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle args = intent.getExtras();
         if (args != null && configurationFragment != null) {
+            configurationFragment.resetAppBar();
             if (intent.hasExtra(HostBean.EXTRA)) {
                 HostBean host = intent.getParcelableExtra(HostBean.EXTRA);
                 configurationFragment.updateTarget(host);

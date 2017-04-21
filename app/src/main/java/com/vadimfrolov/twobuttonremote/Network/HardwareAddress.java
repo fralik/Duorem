@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2009-2010 Aubort Jean-Baptiste (Rorist)
+ * Licensed under GNU's GPL 2, see README
+ */
+
 package com.vadimfrolov.twobuttonremote.Network;
 
 import android.util.Log;
@@ -11,7 +16,9 @@ import java.util.regex.Pattern;
 /**
  * The class is from {@link https://github.com/rorist/android-network-discovery|Android Network Discovery} app.
  * Obtains MAC address from an IPv4 address.
- * Created by vadimf on 27/3/2017.
+ * Changes:
+ * 1. Made class final.
+ * 2. Left only one function getHardwareAddress.
  */
 
 public final class HardwareAddress {

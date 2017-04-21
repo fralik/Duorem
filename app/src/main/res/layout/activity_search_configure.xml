@@ -1,10 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <!-- Fragment with found_hosts_list of detected hosts -->
-    <fragment class="com.vadimfrolov.twobuttonremote.HostSearchFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/host_list_fragment"/>
-</FrameLayout>
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.vadimfrolov.twobuttonremote.SearchConfigureActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/main_toolbar"
+            android:title="@string/edit_host"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+            <ProgressBar
+                android:id="@+id/pbHostsDiscovery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?android:attr/progressBarStyle"
+                android:layout_gravity="right"
+                android:visibility="gone"
+                />
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+        <!-- Fragment with found_hosts_list of detected hosts -->
+        <fragment class="com.vadimfrolov.twobuttonremote.HostSearchFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/host_list_fragment"
+            tools:layout="@layout/fragment_hostinfo_list" />
+    </FrameLayout>
+</android.support.constraint.ConstraintLayout>

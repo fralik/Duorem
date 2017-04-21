@@ -1,20 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/host_selector_fragments">
-    <!-- Fragment with found_hosts_list of detected hosts -->
-    <fragment class="com.vadimfrolov.twobuttonremote.HostSearchFragment"
-        android:layout_width="@dimen/titles_size"
-        android:layout_height="match_parent"
-        android:id="@+id/host_list_fragment"/>
-    <!-- Fragment with host configuration details -->
+    android:orientation="vertical"
+    tools:context="com.vadimfrolov.twobuttonremote.SearchConfigureActivity">
 
-    <!--<fragment class="twobuttonremotete.HostDetailsFragment" -->
-    <fragment class="com.vadimfrolov.twobuttonremote.TargetConfigurationFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/host_details_fragement"/>
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
 
-</LinearLayout>
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/main_toolbar"
+            android:title="@string/edit_host"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+                <ProgressBar
+                android:id="@+id/pbHostsDiscovery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?android:attr/progressBarStyle"
+                android:layout_gravity="right"
+                android:visibility="gone"
+                />
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--xmlns:tools="http://schemas.android.com/tools"-->
+        <!--android:id="@+id/host_selector_fragments"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:orientation="horizontal"-->
+        <!--app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--app:layout_constraintRight_toRightOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/app_bar">-->
+
+        <!-- Fragment with found_hosts_list of detected hosts -->
+        <fragment
+            android:id="@+id/host_list_fragment"
+            class="com.vadimfrolov.twobuttonremote.HostSearchFragment"
+            android:layout_width="@dimen/titles_size"
+            android:layout_height="0dp"
+            tools:layout="@layout/fragment_hostinfo_list"
+            app:layout_constraintTop_toBottomOf="@+id/app_bar"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/host_details_fragement"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="10dp"
+            />
+        <!-- Fragment with host configuration details -->
+
+        <!--<fragment class="twobuttonremotete.HostDetailsFragment" -->
+        <!--<fragment class="com.vadimfrolov.twobuttonremote.TargetConfigurationFragment"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:id="@+id/host_details_fragement"-->
+        <!--tools:layout="@layout/fragment_target_configuration" />-->
+        <FrameLayout
+            android:id="@+id/host_details_fragement"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            tools:layout="@layout/fragment_target_configuration"
+            app:layout_constraintTop_toBottomOf="@+id/app_bar"
+            app:layout_constraintLeft_toRightOf="@+id/host_list_fragment"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="10dp"
+            />
+    <!--</LinearLayout>-->
+</android.support.constraint.ConstraintLayout>

@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2009-2010 Aubort Jean-Baptiste (Rorist)
+ * Copyright (C) 2017 Vadim Frolov
+ * Licensed under GNU's GPL 2, see README
+ */
+
 package com.vadimfrolov.twobuttonremote.Network;
 
 import android.content.Context;
@@ -22,7 +28,9 @@ import java.util.regex.Pattern;
 /**
  * Provides information about network connection.
  * The class is based on NetInfo class from {@link https://github.com/rorist/android-network-discovery|Android Network Discovery} app.
- * Created by vadimf on 27/3/2017.
+ * Changes:
+ * 1. Left only things that are relevant to TwoButtonRemote app.
+ * 2. Added more comments.
  */
 
 public class NetInfo {

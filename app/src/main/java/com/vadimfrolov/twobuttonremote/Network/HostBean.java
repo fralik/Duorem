@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2009-2010 Aubort Jean-Baptiste (Rorist)
+ * Copyright (C) 2017 Vadim Frolov
+ * Licensed under GNU's GPL 2, see README
+ */
 package com.vadimfrolov.twobuttonremote.Network;
 
 import android.os.Parcel;
@@ -6,6 +11,7 @@ import android.os.Parcelable;
 /**
  * Stores information about network hosts and additional information about SSH authentication.
  * Logically, SSH info should not be here, but it makes things a bit easier.
+ * This class is inspired by HostBean class from {@link https://github.com/rorist/android-network-discovery|Android Network Discovery} app.
  */
 
 public class HostBean implements Parcelable {
