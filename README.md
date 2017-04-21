@@ -1,7 +1,32 @@
+Two Button Remote
+=================
+
+This is an Android app that allows you to power off and on a remote computer. It appeared because my wife wanted an easy way to control media home computer at home, something not geeky. :)
+
+Wake On Lan (WOL) technology is used to wake up a remote computer. You might need to do additional configuration of your network and remote computer before you can use it. Note also that WOL works reliably if your remote computer is connected to router/Internet via cable, i.e. not WiFi.
+
+In order to power off and reboot a remote computer, a secure shell Linux command (SSH) is used. This means that your remote computer should run some variant of Linux and have SSH server installed. Normally, not a problem with an Ubuntu/Debian. Note that SSH credentials are save via app shared preferences unencrypted. It seems like if your device is rooted and someone wants your password, encryption won't stop them for long. If your device is not rooted, then shared preferences can be OK location for storing your password. Anyway, you have the choice if you afraid. You can stop using the app, or make a pull request.
+
+And finally you might use this app as a tutorial in Android app development. I encountered number of issues which were not covered by Android documentation during the development. For example, there are several tutorials about supporting both phone and tablet layouts via fragments. Yet they do not cover the topic of adding an application bar. By using a naive approach, you will end up with a double application bar on tablets. Here is a list of topics covered by the app:
+- App bar implemented via toolbar.
+- Fragments with support of different layouts on different devices and app bars.
+- RecyclerView and it's adapter.
+- Handling connection status; user notification.
+- Working with network; network scanning; host polling.
+- Async tasks.
+
+Acknowledgment
+--------------
+
+- Network discovery part of the app is based on [Network Discovery](https://github.com/rorist/android-network-discovery) app.
+- [JSch](http://www.jcraft.com/jsch/) is used as a library to work with SSH.
+
 Todo
 ----
 
-- Change the way manual host entry is presented. Manual shall be the very first item in the list. Otherwise, the interface if quite strange on tablets.
+- Add RecyclerView list item selection. This might be usefull on tablets, when user can see the list and configuration dialog at the same time.
+- Theme change via setting or day/night theme activation.
+- Widget support. Might be even easier to have two buttons as a widget. However, I constantly poll the target, so it is a potential battery drain.
 
 GPLv2 License
 -------
