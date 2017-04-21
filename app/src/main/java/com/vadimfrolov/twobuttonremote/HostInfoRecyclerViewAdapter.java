@@ -105,6 +105,12 @@ public class HostInfoRecyclerViewAdapter extends RecyclerView.Adapter<HostInfoRe
                 public int compare(HostBean lhs, HostBean rhs) {
                     long leftIp = NetInfo.getUnsignedLongFromIp(lhs.ipAddress);
                     long rightIp = NetInfo.getUnsignedLongFromIp(rhs.ipAddress);
+                    if (leftIp == 0) {
+                        return -1;
+                    }
+                    if (rightIp == 0) {
+                        return 1;
+                    }
                     if (leftIp > rightIp)
                         return 1;
                     if (leftIp == rightIp)
