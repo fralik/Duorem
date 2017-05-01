@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 Vadim Frolov
- * Licensed under GNU's GPL 2, see README
+ * Licensed under GNU's GPL 3 or any later version, see README
  */
 
 package com.vadimfrolov.twobuttonremote;
@@ -19,8 +19,6 @@ import com.vadimfrolov.twobuttonremote.Network.NetInfo;
 
 /**
  * Activity, which should be used instead of AppCompatActivity in order to get network status notifications.
- *
- * Created by vadimf on 4/4/2017.
  */
 
 public abstract class ActivityNet extends AppCompatActivity {

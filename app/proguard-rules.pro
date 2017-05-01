@@ -23,3 +23,14 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# JSch
+-keep class com.jcraft.jsch.jce.*
+-keep class * extends com.jcraft.jsch.KeyExchange
+-keep class com.jcraft.jsch.**
+-keep class com.jcraft.jzlib.ZStream
+-keep class com.jcraft.jsch.Compression
+-keep class org.ietf.jgss.*
+
+-libraryjars /libs/jsch-0.1.53.jar
+-dontwarn org.ietf.jgss.**

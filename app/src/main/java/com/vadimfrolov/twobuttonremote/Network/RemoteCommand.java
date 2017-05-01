@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2017 Vadim Frolov
- * Licensed under GNU's GPL 2, see README
+ * Licensed under GNU's GPL 3 or any later version, see README
  */
+
 package com.vadimfrolov.twobuttonremote.Network;
 
 /**
  * Remote command for target.
- * Created by vadimf on 3/4/2017.
  */
 
 public class RemoteCommand {

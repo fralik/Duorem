@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 Vadim Frolov
- * Licensed under GNU's GPL 2, see README
+ * Licensed under GNU's GPL 3, see README
  */
 package com.vadimfrolov.twobuttonremote.Network;
 
@@ -22,7 +22,6 @@ import java.util.Properties;
 
 /**
  * Task to communicate with remote target.
- * Created by vadimf on 3/4/2017.
  */
 public class RemoteAsyncTask extends AsyncTask<RemoteCommand, Void, RemoteCommand> {
 

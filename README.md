@@ -15,6 +15,12 @@ And finally you might use this app as a tutorial in Android app development. I e
 - Working with network; network scanning; host polling.
 - Async tasks.
 
+Build
+-----
+
+- Clone the code
+- Open in Android Studio and build. I've used Android Studio 2.3.1.
+
 Acknowledgment
 --------------
 
@@ -24,20 +30,20 @@ Acknowledgment
 Todo
 ----
 
-- Add RecyclerView list item selection. This might be usefull on tablets, when user can see the list and configuration dialog at the same time.
+- Add RecyclerView list item selection. This might be useful on tablets, when user can see the list and configuration dialog at the same time.
 - Theme change via setting or day/night theme activation.
 - Widget support. Might be even easier to have two buttons as a widget. However, I constantly poll the target, so it is a potential battery drain.
 
-GPLv2 License
+GPLv3 License
 -------
 
     Copyright (C) 2009-2011 Aubort Jean-Baptiste (Rorist)
     Copyright (C) 2017 Vadim Frolov
 
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License
-    as published by the Free Software Foundation; either version 2
-    of the License, or (at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -45,8 +51,7 @@ GPLv2 License
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-Copy of the license can be found in gpl-2.0.txt
+Copy of the license can be found in gpl-3.0.txt
 
