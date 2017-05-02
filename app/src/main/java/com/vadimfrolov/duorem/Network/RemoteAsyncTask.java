@@ -2,7 +2,7 @@
  * Copyright (C) 2017 Vadim Frolov
  * Licensed under GNU's GPL 3, see README
  */
-package com.vadimfrolov.twobuttonremote.Network;
+package com.vadimfrolov.duorem.Network;
 
 import android.os.AsyncTask;
 import android.util.Log;

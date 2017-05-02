@@ -4,12 +4,12 @@
  * Licensed under GNU's GPL 3 or any later version, see README
  */
 
-package com.vadimfrolov.twobuttonremote;
+package com.vadimfrolov.duorem;
 
 import android.os.AsyncTask;
 
-import com.vadimfrolov.twobuttonremote.Network.HostBean;
-import com.vadimfrolov.twobuttonremote.Network.NetInfo;
+import com.vadimfrolov.duorem.Network.HostBean;
+import com.vadimfrolov.duorem.Network.NetInfo;
 
 import java.lang.ref.WeakReference;
 

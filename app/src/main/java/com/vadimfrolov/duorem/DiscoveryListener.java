@@ -3,9 +3,9 @@
  * Licensed under GNU's GPL 3 or any later version, see README
  */
 
-package com.vadimfrolov.twobuttonremote;
+package com.vadimfrolov.duorem;
 
-import com.vadimfrolov.twobuttonremote.Network.HostBean;
+import com.vadimfrolov.duorem.Network.HostBean;
 
 /**
  * Interface that is used in communication between host search task and GUI.

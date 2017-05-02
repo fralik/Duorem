@@ -4,7 +4,7 @@
  * Licensed under GNU's GPL 3 or any later version, see README
  */
 
-package com.vadimfrolov.twobuttonremote.Network;
+package com.vadimfrolov.duorem.Network;
 
 import android.util.Log;
 

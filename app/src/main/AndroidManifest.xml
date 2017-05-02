@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.vadimfrolov.twobuttonremote" android:installLocation="auto">
+    package="com.vadimfrolov.duorem" android:installLocation="auto">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.vadimfrolov.twobuttonremote.MainActivity">
+        <activity android:name="com.vadimfrolov.duorem.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,11 +20,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.vadimfrolov.twobuttonremote.SearchConfigureActivity"
-            android:parentActivityName="com.vadimfrolov.twobuttonremote.MainActivity" />
+            android:name="com.vadimfrolov.duorem.SearchConfigureActivity"
+            android:parentActivityName="com.vadimfrolov.duorem.MainActivity" />
         <activity
-            android:name="com.vadimfrolov.twobuttonremote.TargetConfigurationActivity"
-            android:parentActivityName="com.vadimfrolov.twobuttonremote.SearchConfigureActivity" />
+            android:name="com.vadimfrolov.duorem.TargetConfigurationActivity"
+            android:parentActivityName="com.vadimfrolov.duorem.SearchConfigureActivity" />
     </application>
 
 </manifest>

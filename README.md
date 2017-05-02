@@ -1,5 +1,5 @@
-Two Button Remote
-=================
+Duorem
+======
 
 This is an Android app that allows you to power off and on a remote computer. It appeared because my wife wanted an easy way to control media home computer at home, something not geeky. :)
 

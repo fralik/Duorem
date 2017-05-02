@@ -3,7 +3,7 @@
  * Licensed under GNU's GPL 3 or any later version, see README
  */
 
-package com.vadimfrolov.twobuttonremote;
+package com.vadimfrolov.duorem;
 
 
 import android.content.Context;
@@ -16,7 +16,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,8 +26,8 @@ import android.widget.EditText;
 import android.widget.Switch;
 
 import com.google.gson.Gson;
-import com.vadimfrolov.twobuttonremote.Network.HostBean;
-import com.vadimfrolov.twobuttonremote.Network.NetInfo;
+import com.vadimfrolov.duorem.Network.HostBean;
+import com.vadimfrolov.duorem.Network.NetInfo;
 
 import java.util.ArrayList;
 import java.util.List;

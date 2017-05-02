@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.vadimfrolov.twobuttonremote.SearchConfigureActivity">
+    tools:context="com.vadimfrolov.duorem.SearchConfigureActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -38,7 +38,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="10dp"
         >
-        <fragment class="com.vadimfrolov.twobuttonremote.TargetConfigurationFragment"
+        <fragment class="com.vadimfrolov.duorem.TargetConfigurationFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/host_details_fragement"

@@ -3,9 +3,8 @@
  * Licensed under GNU's GPL 3 or any later version, see README
  */
 
-package com.vadimfrolov.twobuttonremote;
+package com.vadimfrolov.duorem;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -13,13 +12,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.text.util.LinkifyCompat;
-import android.support.v4.widget.TextViewCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.text.method.LinkMovementMethod;
 import android.text.method.ScrollingMovementMethod;
-import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,11 +24,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.vadimfrolov.twobuttonremote.Network.HostBean;
-import com.vadimfrolov.twobuttonremote.Network.NetInfo;
-import com.vadimfrolov.twobuttonremote.Network.RemoteAsyncTask;
-import com.vadimfrolov.twobuttonremote.Network.RemoteCommand;
-import com.vadimfrolov.twobuttonremote.Network.RemoteCommandResult;
+import com.vadimfrolov.duorem.Network.HostBean;
+import com.vadimfrolov.duorem.Network.NetInfo;
+import com.vadimfrolov.duorem.Network.RemoteAsyncTask;
+import com.vadimfrolov.duorem.Network.RemoteCommand;
+import com.vadimfrolov.duorem.Network.RemoteCommandResult;
 
 import java.util.Stack;
 import java.util.concurrent.Executors;

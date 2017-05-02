@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Two Button Remote</string>
+    <string name="app_name">Duorem</string>
     <string name="add_host">Add device</string>
     <string name="edit_host">Edit device</string>
     <string name="replace_host">Replace device</string>

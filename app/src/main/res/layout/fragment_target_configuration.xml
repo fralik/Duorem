@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:context="com.vadimfrolov.twobuttonremote.TargetConfigurationFragment">
+        tools:context="com.vadimfrolov.duorem.TargetConfigurationFragment">
 
         <!--<android.support.design.widget.AppBarLayout-->
             <!--android:id="@+id/app_bar"-->

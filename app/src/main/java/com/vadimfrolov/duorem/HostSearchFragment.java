@@ -3,15 +3,13 @@
  * Licensed under GNU's GPL 3 or any later version, see README
  */
 
-package com.vadimfrolov.twobuttonremote;
+package com.vadimfrolov.duorem;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -24,8 +22,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.vadimfrolov.twobuttonremote.Network.HostBean;
-import com.vadimfrolov.twobuttonremote.Network.NetInfo;
+import com.vadimfrolov.duorem.Network.HostBean;
+import com.vadimfrolov.duorem.Network.NetInfo;
 
 /**
  * A fragment representing a list of hosts.

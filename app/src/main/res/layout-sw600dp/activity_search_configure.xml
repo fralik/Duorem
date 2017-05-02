@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.vadimfrolov.twobuttonremote.SearchConfigureActivity">
+    tools:context="com.vadimfrolov.duorem.SearchConfigureActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -50,7 +50,7 @@
         <!-- Fragment with found_hosts_list of detected hosts -->
         <fragment
             android:id="@+id/host_list_fragment"
-            class="com.vadimfrolov.twobuttonremote.HostSearchFragment"
+            class="com.vadimfrolov.duorem.HostSearchFragment"
             android:layout_width="@dimen/titles_size"
             android:layout_height="0dp"
             tools:layout="@layout/fragment_hostinfo_list"
@@ -63,7 +63,7 @@
         <!-- Fragment with host configuration details -->
 
         <!--<fragment class="twobuttonremotete.HostDetailsFragment" -->
-        <!--<fragment class="com.vadimfrolov.twobuttonremote.TargetConfigurationFragment"-->
+        <!--<fragment class="duoremnfigurationFragment"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent"-->
         <!--android:id="@+id/host_details_fragement"-->

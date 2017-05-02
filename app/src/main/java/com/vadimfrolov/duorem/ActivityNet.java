@@ -3,7 +3,7 @@
  * Licensed under GNU's GPL 3 or any later version, see README
  */
 
-package com.vadimfrolov.twobuttonremote;
+package com.vadimfrolov.duorem;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -16,7 +16,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import com.vadimfrolov.twobuttonremote.Network.NetInfo;
+import com.vadimfrolov.duorem.Network.NetInfo;
 
 /**
  * Activity, which should be used instead of AppCompatActivity in order to get network status notifications.

@@ -1,4 +1,4 @@
-package com.vadimfrolov.twobuttonremote;
+package com.vadimfrolov.duorem;
 
 import org.junit.Test;
 

@@ -3,7 +3,7 @@
  * Licensed under GNU's GPL 3 or any later version, see README
  */
 
-package com.vadimfrolov.twobuttonremote;
+package com.vadimfrolov.duorem;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -12,9 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.vadimfrolov.twobuttonremote.HostSearchFragment.OnListFragmentInteractionListener;
-import com.vadimfrolov.twobuttonremote.Network.HostBean;
-import com.vadimfrolov.twobuttonremote.Network.NetInfo;
+import com.vadimfrolov.duorem.HostSearchFragment.OnListFragmentInteractionListener;
+import com.vadimfrolov.duorem.Network.HostBean;
+import com.vadimfrolov.duorem.Network.NetInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;

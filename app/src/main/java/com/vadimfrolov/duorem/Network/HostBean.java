@@ -3,7 +3,7 @@
  * Copyright (C) 2017 Vadim Frolov
  * Licensed under GNU's GPL 3 or any later version, see README
  */
-package com.vadimfrolov.twobuttonremote.Network;
+package com.vadimfrolov.duorem.Network;
 
 import android.os.Parcel;
 import android.os.Parcelable;

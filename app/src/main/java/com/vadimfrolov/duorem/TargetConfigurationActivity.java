@@ -3,13 +3,13 @@
  * Licensed under GNU's GPL 3 or any later version, see README
  */
 
-package com.vadimfrolov.twobuttonremote;
+package com.vadimfrolov.duorem;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.vadimfrolov.twobuttonremote.Network.HostBean;
+import com.vadimfrolov.duorem.Network.HostBean;
 
 public class TargetConfigurationActivity extends AppCompatActivity {
 

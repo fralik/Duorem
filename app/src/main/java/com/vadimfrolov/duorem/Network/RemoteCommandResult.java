@@ -3,7 +3,7 @@
  * Licensed under GNU's GPL 3 or any later version, see README
  */
 
-package com.vadimfrolov.twobuttonremote.Network;
+package com.vadimfrolov.duorem.Network;
 
 /**
  * Callback to notify UI thread of remote command results.

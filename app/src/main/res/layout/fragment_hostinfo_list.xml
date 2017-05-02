@@ -46,7 +46,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layoutManager="LinearLayoutManager"
-        tools:context="com.vadimfrolov.twobuttonremote.HostSearchFragment"
+        tools:context="com.vadimfrolov.duorem.HostSearchFragment"
         tools:listitem="@layout/fragment_hostinfo"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
