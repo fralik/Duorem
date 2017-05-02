@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -27,6 +28,18 @@ public abstract class ActivityNet extends AppCompatActivity {
     Context mContext;
     boolean mIsConnected;
 
+
+    // Try to get the version string of the app. Return null on failure.
+    public static String getVersionName(Context context) {
+        String versionName = null;
+        try {
+            versionName = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            // just return null
+        }
+        return versionName;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

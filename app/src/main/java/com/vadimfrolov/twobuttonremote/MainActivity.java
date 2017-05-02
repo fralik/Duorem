@@ -5,14 +5,21 @@
 
 package com.vadimfrolov.twobuttonremote;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.text.util.LinkifyCompat;
+import android.support.v4.widget.TextViewCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.method.LinkMovementMethod;
 import android.text.method.ScrollingMovementMethod;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,10 +42,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-//import com.google.android.gms.auth.api.Auth;
-//import com.google.android.gms.auth.api.credentials.Credential;
-//import com.google.android.gms.common.api.GoogleApiClient;
-
 public class MainActivity extends ActivityNet
         implements SharedPreferences.OnSharedPreferenceChangeListener,
         RemoteCommandResult {
@@ -46,7 +49,6 @@ public class MainActivity extends ActivityNet
     public static final String KEY_PREF_TARGET = "target";
     private final String TAG = "MainActivity";
 
-    //private GoogleApiClient mGoogleApiClient;
     private HostBean mTarget;
     private TextView mViewName;
     private TextView mViewAddress;
@@ -172,6 +174,13 @@ public class MainActivity extends ActivityNet
                 mPrefs.edit().remove(KEY_PREF_TARGET).apply();
                 mTarget = null;
                 updateView();
+                break;
+
+            case R.id.action_about:
+                String version = ActivityNet.getVersionName(mContext);
+                FragmentManager fm = getSupportFragmentManager();
+                AboutDialog dlg = AboutDialog.newInstance(getResources().getString(R.string.about_title), version);
+                dlg.show(fm, "about_dialog");
                 break;
 
             default:
@@ -359,5 +368,19 @@ public class MainActivity extends ActivityNet
             return;
 
         mViewStatus.setText(mViewStatus.getText().toString() + msg + "\n");
+        try {
+            // find the amount we need to scroll.  This works by
+            // asking the TextView's internal layout for the position
+            // of the final line and then subtracting the TextView's height
+            final int scrollAmount = mViewStatus.getLayout().getLineTop(mViewStatus.getLineCount()) - mViewStatus.getHeight();
+            // if there is no need to scroll, scrollAmount will be <=0
+            if (scrollAmount > 0) {
+                mViewStatus.scrollTo(0, scrollAmount);
+            } else {
+                mViewStatus.scrollTo(0, 0);
+            }
+        } catch (Exception e) {
+            // we do not bother if we can not scroll
+        }
     }
 }
