@@ -15,7 +15,7 @@ import android.os.Parcelable;
  */
 
 public class HostBean implements Parcelable {
-    public static final String EXTRA = "com.vadimfrolov.TwoButtonRemote.extra";
+    public static final String EXTRA = "com.vadimfrolov.Duorem.extra";
 
     /** Indicates if host is reachable AKA is alive */
     public boolean isAlive = false;

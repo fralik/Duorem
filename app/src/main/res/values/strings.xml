@@ -52,7 +52,7 @@
     <string name="about_version">Version</string>
     <string name="unknown">Unknown</string>
     <string name="about_source">Source code</string>
-    <string name="source_link">https://github.com/fralik/TwoButtonRemote</string>
+    <string name="source_link">https://github.com/fralik/Duorem</string>
     <string name="about_license">License</string>
     <string name="license_gplv3_later">GNU General Public License version 3 or later</string>
     <string name="close">Close</string>

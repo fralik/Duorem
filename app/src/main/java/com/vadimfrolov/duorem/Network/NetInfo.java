@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  * Provides information about network connection.
  * The class is based on NetInfo class from {@link https://github.com/rorist/android-network-discovery|Android Network Discovery} app.
  * Changes:
- * 1. Left only things that are relevant to TwoButtonRemote app.
+ * 1. Left only things that are relevant to Duorem app.
  * 2. Added more comments.
  */
 

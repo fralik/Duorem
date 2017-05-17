@@ -42,7 +42,7 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
-        android:name="com.vadimfrolov.twobuttonremote.HostSearchFragment"
+        android:name="com.vadimfrolov.duorem.HostSearchFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layoutManager="LinearLayoutManager"

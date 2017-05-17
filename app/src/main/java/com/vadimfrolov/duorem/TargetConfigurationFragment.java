@@ -41,7 +41,7 @@ import java.util.List;
  * This class should get host information, i.e. HostBean
  */
 public class TargetConfigurationFragment extends Fragment {
-    static final String ARG_BEAN = "com.vadimfrolov.TwoButtonRemote.TargetConfigurationFragment.bean";
+    static final String ARG_BEAN = "com.vadimfrolov.Duorem.TargetConfigurationFragment.bean";
 
     private HostBean mHostBean;
 
