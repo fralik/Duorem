@@ -15,6 +15,12 @@ And finally you might use this app as a tutorial in Android app development. I e
 - Working with network; network scanning; host polling.
 - Async tasks.
 
+Screenshots
+-----------
+
+You can find app screenshots in `screenshots` folder. Here is the main screen screen:
+![Main screen](screenshots/main_screen_web.png "Main screen")
+
 Build
 -----
 
