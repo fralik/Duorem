@@ -1,0 +1,59 @@
+<resources>
+    <string name="app_name">Duorem</string>
+    <string name="add_host">デバイスを追加</string>
+    <string name="edit_host">デバイスを編集</string>
+    <string name="replace_host">デバイスを置換</string>
+    <string name="delete_host">デバイスを削除</string>
+    <string name="settings">設定</string>
+    <string name="add_manually">手動で入力</string>
+    <string name="restart">再起動</string>
+    <string name="action_about">アプリについて</string>
+
+    <string name="reboot_sent">リブートコマンドを送信しました。</string>
+    <string name="reboot_received">リブートコマンドが正常に受信されました。</string>
+    <string name="reboot_failed">リブートに失敗しました。もう一度やり直してください。</string>
+    <string name="shutdown_sent">シャットダウンコマンドを送信しました。</string>
+    <string name="shutdown_received">シャットダウンコマンドが正常に受信されました。</string>
+    <string name="shutdown_failed">シャットダウンに失敗しました。もう一度やり直してください。</string>
+    <string name="no_gateway">ブロードキャストアドレスが設定されていないため対象をウェイクアップできません。 対象を手動で追加した場合は、インターネットに接続して対象を再設定してください。</string>
+    <string name="wol_sent">WAKE シグナルを送信しました。</string>
+    <string name="wol_received">WAKE シグナルを正常に送信しました。</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_target_settings">デバイスを追加</string>
+    <string name="discovery_stopped">探索を停止しました</string>
+    <string name="no_network">ネットワークにアクセスできません。切断されているようです。</string>
+    <string name="hosts_manual">手動で入力</string>
+    <string name="turn_on">オンにする</string>
+    <string name="shutdown">シャットダウン</string>
+    <string name="alive_content_description">ホスト接続インジケーター</string>
+    <string name="no_device">デバイスは設定されていません。追加してください。</string>
+    <string name="alert_icon">アラートアイコン</string>
+
+    <!-- strings used on host configuration page -->
+    <string name="host_name">名前</string>
+    <string name="mac_address">MAC アドレス</string>
+    <string name="ip_address">IP アドレス</string>
+    <string name="broadcast_address">ブロードキャスト IP アドレス</string>
+    <string name="obtain_broadcast_address">ブロードキャストを推測</string>
+    <string name="wol_port">WOL ポート</string>
+    <string name="ssh_username">SSH ユーザー名</string>
+    <string name="ssh_password">SSH パスワード</string>
+    <string name="ssh_port">SSH ポート</string>
+    <string name="sudo_password">SUDO パスワード</string>
+    <string name="user_name">ユーザー名</string>
+    <string name="password">パスワード</string>
+    <string name="mac_separator">:</string>
+    <string name="save">保存</string>
+    <string name="show_advanced">詳細</string>
+
+    <!-- used on About dialog -->
+    <string name="about_title">Duorem について</string>
+    <string name="about_version">バージョン</string>
+    <string name="unknown">不明</string>
+    <string name="about_source">ソースコード</string>
+    <string name="source_link">https://github.com/fralik/Duorem</string>
+    <string name="about_license">ライセンス</string>
+    <string name="license_gplv3_later">GNU General Public License version 3 or later</string>
+    <string name="close">閉じる</string>
+</resources>
