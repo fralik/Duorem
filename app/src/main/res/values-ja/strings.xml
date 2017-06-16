@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Duorem</string>
     <string name="add_host">デバイスを追加</string>
@@ -19,7 +20,6 @@
     <string name="wol_sent">WAKE シグナルを送信しました。</string>
     <string name="wol_received">WAKE シグナルを正常に送信しました。</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_target_settings">デバイスを追加</string>
     <string name="discovery_stopped">探索を停止しました</string>
     <string name="no_network">ネットワークにアクセスできません。切断されているようです。</string>

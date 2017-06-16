@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Дуорем</string>
+    <string name="add_host">Добавить</string>
+    <string name="edit_host">Редактировать</string>
+    <string name="replace_host">Заменить</string>
+    <string name="delete_host">Удалить</string>
+    <string name="settings">Настройки</string>
+    <string name="add_manually">Ввести вручную</string>
+    <string name="restart">Перезапустить</string>
+    <string name="action_about">О программе</string>
+
+    <string name="reboot_sent">Команда на перезагрузку отправлена.</string>
+    <string name="reboot_received">Команда на перезагрузку доставлена.</string>
+    <string name="reboot_failed">Что-то пошло не так, попробуйте еще раз.</string>
+    <string name="shutdown_sent">Команда на выключение отправлена.</string>
+    <string name="shutdown_received">Команда на выключение доставлена.</string>
+    <string name="shutdown_failed">Выключить не удалось, попробуйте еще раз.</string>
+    <string name="no_gateway">Невозможно включить устройство, т.к. не задан шороковещательный адрес. Если вы вводили этот адрес вручную, попробуйте подключиться к сети и изменить его.</string>
+    <string name="wol_sent">Комнадна на включение отправлена.</string>
+    <string name="wol_received">Команда на включение доставлена.</string>
+
+    <string name="title_activity_target_settings">Добавить устройство</string>
+    <string name="discovery_stopped">Поиск завершен</string>
+    <string name="no_network">Нет подключения к сети.</string>
+    <string name="hosts_manual">Ввести вручную</string>
+    <string name="turn_on">Включить</string>
+    <string name="shutdown">Выключить</string>
+    <string name="alive_content_description">Host connection indicator</string>
+    <string name="no_device">Отсутсвует информация об устройстве. Вы можете добавить новое устройство.</string>
+    <string name="alert_icon">Alert icon</string>
+
+    <!-- strings used on host configuration page -->
+    <!--<string name="host_name">Название устройства</string>-->
+    <string name="mac_address">MAC адрес</string>
+    <string name="ip_address">IP адрес</string>
+    <string name="broadcast_address">Широковещательный адрес</string>
+    <string name="obtain_broadcast_address">Угадать широковещательный адресс</string>
+    <string name="wol_port">WOL порт</string>
+    <string name="ssh_username">Имя пользователя SSH</string>
+    <string name="ssh_password">Пароль SSH</string>
+    <string name="ssh_port">Порт SSH</string>
+    <string name="sudo_password">Пароль SUDO</string>
+    <string name="user_name">Имя пользователя</string>
+    <string name="password">Пароль</string>
+    <string name="mac_separator">:</string>
+    <string name="save">Сохранить</string>
+    <string name="show_advanced">Расширенные настройки</string>
+    <string name="shutdown_cmd">Команда выключения</string>
+
+    <!-- used on About dialog -->
+    <string name="about_title">Дуорем</string>
+    <string name="about_version">Версия</string>
+    <string name="unknown">Неизвестно</string>
+    <string name="about_source">Исходный код</string>
+    <string name="source_link">https://github.com/fralik/Duorem</string>
+    <string name="about_license">Лицензия</string>
+    <string name="license_gplv3_later">GNU General Public License version 3 or later</string>
+    <string name="close">Закрыть</string>
+    <string name="host_name">Название устройства</string>
+</resources>
