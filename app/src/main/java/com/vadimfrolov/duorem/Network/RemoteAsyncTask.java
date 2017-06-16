@@ -27,7 +27,6 @@ public class RemoteAsyncTask extends AsyncTask<RemoteCommand, Void, RemoteComman
 
     private final String TAG = "RemoteAsyncTask";
     private RemoteCommandResult mDelegate = null;
-    private final int TIMEOUT = 500; // 0.5 sec
 
     public RemoteAsyncTask(RemoteCommandResult handler) {
         super();
@@ -114,7 +113,6 @@ public class RemoteAsyncTask extends AsyncTask<RemoteCommand, Void, RemoteComman
         JSch jsch = new JSch();
         Session session = jsch.getSession(username, hostname, port);
         session.setPassword(password);
-        session.setTimeout(TIMEOUT);
 
         // Avoid asking for key confirmation
         Properties prop = new Properties();

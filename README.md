@@ -25,13 +25,14 @@ Build
 -----
 
 - Clone the code
-- Open in Android Studio and build. I've used Android Studio 2.3.1.
+- Open in Android Studio and build. I've used Android Studio 2.3.x.
 
 Acknowledgment
 --------------
 
 - Network discovery part of the app is based on [Network Discovery](https://github.com/rorist/android-network-discovery) app.
 - [JSch](http://www.jcraft.com/jsch/) is used as a library to work with SSH.
+- Japanese translation provided by [naofum](https://github.com/naofum).
 
 Todo
 ----

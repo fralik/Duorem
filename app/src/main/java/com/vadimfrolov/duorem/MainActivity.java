@@ -277,7 +277,7 @@ public class MainActivity extends ActivityNet
             RemoteCommand cmd = new RemoteCommand(mTarget);
             if (mTarget.isAlive) {
                 cmd.commandType = RemoteCommand.SSH;
-                cmd.command = "sudo poweroff";
+                cmd.command = mTarget.sshShutdownCmd;
 
                 logForUser(getResources().getString(R.string.shutdown_sent));
             } else {
@@ -341,7 +341,7 @@ public class MainActivity extends ActivityNet
                         logForUser(getResources().getString(R.string.reboot_failed));
                     }
                     startTargetPolling();
-                } else if (output.command.contains("poweroff")) {
+                } else if (output.command.contains(mTarget.sshShutdownCmd)) {
                     if (output.result.length() > 0) {
                         logForUser(getResources().getString(R.string.shutdown_received));
                     } else {

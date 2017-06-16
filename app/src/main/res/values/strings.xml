@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Duorem</string>
     <string name="add_host">Add device</string>
@@ -19,7 +20,6 @@
     <string name="wol_sent">Sent WAKE signal.</string>
     <string name="wol_received">WAKE signal sending was successful.</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_target_settings">Add Device</string>
     <string name="discovery_stopped">Discovery stopped</string>
     <string name="no_network">Can\'t access network. Seems like you are disconnected.</string>
@@ -43,16 +43,17 @@
     <string name="sudo_password">SUDO password</string>
     <string name="user_name">User name</string>
     <string name="password">Password</string>
-    <string name="mac_separator">:</string>
+    <string name="mac_separator" translatable="false">:</string>
     <string name="save">Save</string>
     <string name="show_advanced">Advanced details</string>
+    <string name="shutdown_cmd">Shutdown command</string>
 
     <!-- used on About dialog -->
     <string name="about_title">About Duorem</string>
     <string name="about_version">Version</string>
     <string name="unknown">Unknown</string>
     <string name="about_source">Source code</string>
-    <string name="source_link">https://github.com/fralik/Duorem</string>
+    <string name="source_link" translatable="false">https://github.com/fralik/Duorem</string>
     <string name="about_license">License</string>
     <string name="license_gplv3_later">GNU General Public License version 3 or later</string>
     <string name="close">Close</string>

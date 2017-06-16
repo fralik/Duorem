@@ -17,6 +17,9 @@ import android.os.Parcelable;
 public class HostBean implements Parcelable {
     public static final String EXTRA = "com.vadimfrolov.Duorem.extra";
 
+    /** Default shutdown command */
+    public static final String SHUTDOWN_CMD = "sudo shutdown -h now";
+
     /** Indicates if host is reachable AKA is alive */
     public boolean isAlive = false;
     /** String representation of IPv4 address */
@@ -26,6 +29,8 @@ public class HostBean implements Parcelable {
     public String sshUsername = "";
     public String sshPassword = "";
     public String sshPort = "22";
+    /** User-defined command to shutdown remote host */
+    public String sshShutdownCmd = SHUTDOWN_CMD;
     /** Wake On Lan port */
     public String wolPort = "9";
     public String broadcastIp = null;
@@ -41,7 +46,7 @@ public class HostBean implements Parcelable {
 
     // full constructor
     public HostBean(String hostname, String ipAddress, String wolPort, String macAddress, String sshUsername,
-                    String sshPassword, String sshPort, String broadcastIp) {
+                    String sshPassword, String sshPort, String broadcastIp/*, String sshShutdownCmd*/) {
         this.hostname = hostname;
         this.ipAddress = ipAddress;
         this.wolPort = wolPort;
@@ -50,6 +55,7 @@ public class HostBean implements Parcelable {
         this.sshPassword = sshPassword;
         this.sshPort = sshPort;
         this.broadcastIp = broadcastIp;
+        this.sshShutdownCmd = sshShutdownCmd;
     }
 
     public int describeContents() {
@@ -66,6 +72,7 @@ public class HostBean implements Parcelable {
         dest.writeString(sshPort);
         dest.writeString(wolPort);
         dest.writeString(broadcastIp);
+        dest.writeString(sshShutdownCmd);
     }
 
     private void readFromParcel(Parcel in) {
@@ -78,6 +85,7 @@ public class HostBean implements Parcelable {
         sshPort = in.readString();
         wolPort = in.readString();
         broadcastIp = in.readString();
+        sshShutdownCmd = in.readString();
     }
 
     public String name() {
@@ -102,6 +110,7 @@ public class HostBean implements Parcelable {
         sshPassword = "";
         hostname = "";
         broadcastIp = NetInfo.NOIP;
+        sshShutdownCmd = SHUTDOWN_CMD;
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

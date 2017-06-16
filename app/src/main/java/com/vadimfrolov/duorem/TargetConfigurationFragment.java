@@ -57,6 +57,9 @@ public class TargetConfigurationFragment extends Fragment {
     private TextInputEditText mEditSshPassword;
     private TextInputEditText mEditSshPort;
     private List<EditText> mEditMac;
+    private View mViewShutdownCmd;
+    private TextInputEditText mEditShutdownCmd;
+
     private boolean mIsTablet = false;
     SharedPreferences mPrefs;
     Context mContext;
@@ -116,6 +119,9 @@ public class TargetConfigurationFragment extends Fragment {
         mEditSshPort = (TextInputEditText) v.findViewById(R.id.edit_ssh_port);
         mSwitchAdvanced = (Switch) v.findViewById(R.id.switch_advanced);
 
+        mEditShutdownCmd = (TextInputEditText) v.findViewById(R.id.edit_shutdown_cmd);
+        mViewShutdownCmd = v.findViewById(R.id.input_layout_shutdown_cmd);
+
         final Button btnSave = (Button)v.findViewById(R.id.btn_save);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,6 +137,7 @@ public class TargetConfigurationFragment extends Fragment {
                 mHostBean.sshUsername = mEditSshUsername.getText().toString();
                 mHostBean.sshPassword = mEditSshPassword.getText().toString();
                 mHostBean.sshPort = mEditSshPort.getText().toString();
+                mHostBean.sshShutdownCmd = mEditShutdownCmd.getText().toString();
 
                 saveTargetToSettings();
 
@@ -193,6 +200,7 @@ public class TargetConfigurationFragment extends Fragment {
         mViewBroadcastLayout.setVisibility(visibility);
         mBtnGuessBroadcast.setVisibility(visibility);
         mViewWolLayout.setVisibility(visibility);
+        mViewShutdownCmd.setVisibility(visibility);
     }
 
     private void saveTargetToSettings() {
@@ -252,6 +260,7 @@ public class TargetConfigurationFragment extends Fragment {
         mEditSshUsername.setText(mHostBean.sshUsername);
         mEditSshPassword.setText(mHostBean.sshPassword);
         mEditSshPort.setText(mHostBean.sshPort);
+        mEditShutdownCmd.setText(mHostBean.sshShutdownCmd);
     }
 
     private void mac2Fields(String macAddress) {
