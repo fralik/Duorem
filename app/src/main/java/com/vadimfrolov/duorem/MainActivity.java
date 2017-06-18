@@ -30,6 +30,7 @@ import com.vadimfrolov.duorem.Network.RemoteAsyncTask;
 import com.vadimfrolov.duorem.Network.RemoteCommand;
 import com.vadimfrolov.duorem.Network.RemoteCommandResult;
 
+import java.net.Socket;
 import java.util.Stack;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
@@ -304,6 +305,15 @@ public class MainActivity extends ActivityNet
             if (mPollFuture == null) {
                 mPollFuture = mSch.scheduleWithFixedDelay(pollTask, 0, 5, TimeUnit.SECONDS);
             }
+
+            // check if target is reachable right away. This is good for UI.
+            boolean isAlive = true;
+            try {
+                Socket socket = new Socket(mTarget.ipAddress, Integer.parseInt(mTarget.sshPort));
+            } catch (Exception e) {
+                isAlive = false;
+            }
+            mTarget.isAlive = isAlive;
         }
     }
 
