@@ -208,6 +208,11 @@ public class MainActivity extends ActivityNet
         miEdit.setEnabled(targetIsValid);
         miDelete.setEnabled(targetIsValid);
 
+        miEdit.setShowAsAction(targetIsValid ? MenuItem.SHOW_AS_ACTION_ALWAYS : MenuItem.SHOW_AS_ACTION_NEVER);
+        miDelete.setShowAsAction(targetIsValid ? MenuItem.SHOW_AS_ACTION_ALWAYS : MenuItem.SHOW_AS_ACTION_NEVER);
+        // hide replace menu item under the unfoldable menu
+        miAdd.setShowAsAction(targetIsValid ? MenuItem.SHOW_AS_ACTION_NEVER : MenuItem.SHOW_AS_ACTION_ALWAYS);
+
         return super.onPrepareOptionsMenu(menu);
     }
 

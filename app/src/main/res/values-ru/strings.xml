@@ -31,7 +31,7 @@
     <string name="alert_icon">Alert icon</string>
 
     <!-- strings used on host configuration page -->
-    <!--<string name="host_name">Название устройства</string>-->
+    <string name="host_name">Название устройства</string>
     <string name="mac_address">MAC адрес</string>
     <string name="ip_address">IP адрес</string>
     <string name="broadcast_address">Широковещательный адрес</string>
@@ -57,5 +57,4 @@
     <string name="about_license">Лицензия</string>
     <string name="license_gplv3_later">GNU General Public License version 3 or later</string>
     <string name="close">Закрыть</string>
-    <string name="host_name">Название устройства</string>
 </resources>
