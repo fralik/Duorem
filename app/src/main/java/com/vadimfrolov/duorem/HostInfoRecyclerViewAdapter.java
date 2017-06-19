@@ -78,7 +78,7 @@ public class HostInfoRecyclerViewAdapter extends RecyclerView.Adapter<HostInfoRe
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).name());
-        holder.mContentView.setText(mValues.get(position).hardwareAddress.toUpperCase());
+        //holder.mContentView.setText(mValues.get(position).hardwareAddress.toUpperCase());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,19 +125,17 @@ public class HostInfoRecyclerViewAdapter extends RecyclerView.Adapter<HostInfoRe
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final TextView mIdView;
-        public final TextView mContentView;
         public HostBean mItem;
 
         public ViewHolder(View view) {
             super(view);
 
             mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + mIdView.getText() + "'";
         }
     }
 }

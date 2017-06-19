@@ -21,7 +21,7 @@
         app:layout_constraintBottom_toTopOf="@+id/btn_toggle_power"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintVertical_weight="0.4"
+        app:layout_constraintVertical_weight="0.15"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
         android:layout_marginRight="10dp"

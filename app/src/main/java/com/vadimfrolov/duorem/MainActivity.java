@@ -46,7 +46,7 @@ public class MainActivity extends ActivityNet
 
     private HostBean mTarget;
     private TextView mViewName;
-    private TextView mViewAddress;
+    //private TextView mViewAddress;
     SharedPreferences mPrefs;
     ImageView mIconAlive;
 
@@ -71,7 +71,7 @@ public class MainActivity extends ActivityNet
         mPrefs.registerOnSharedPreferenceChangeListener(this);
 
         mViewName = (TextView) findViewById(R.id.id);
-        mViewAddress = (TextView) findViewById(R.id.content);
+        // mViewAddress = (TextView) findViewById(R.id.content);
         mIconAlive = (ImageView) findViewById(R.id.alive);
         mBtnTogglePower = (Button) findViewById(R.id.btn_toggle_power);
         mBtnRestart = (Button) findViewById(R.id.btn_restart);
@@ -237,12 +237,12 @@ public class MainActivity extends ActivityNet
         if (mTarget == null || mTarget.ipAddress.equals(NetInfo.NOIP)) {
             isTargetValid = false;
             mViewName.setText(getResources().getString(R.string.no_device));
-            mViewAddress.setText("");
+            //mViewAddress.setText("");
         }
 
         if (isTargetValid) {
             mViewName.setText(mTarget.name());
-            mViewAddress.setText(mTarget.hardwareAddress.toUpperCase());
+            //mViewAddress.setText(mTarget.hardwareAddress.toUpperCase());
         }
 
         mBtnRestart.setEnabled(mIsConnected && isTargetAlive);

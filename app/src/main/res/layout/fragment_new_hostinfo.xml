@@ -6,6 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/alive"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:src="@drawable/circle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/id"
+        app:layout_constraintTop_toTopOf="@+id/id"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:contentDescription="@string/alive_content_description"
+        android:visibility="visible"
+        />
     <TextView
         android:id="@+id/id"
         android:layout_width="0dp"
@@ -16,40 +29,10 @@
         android:layout_marginStart="5dp"
         android:gravity="center_vertical"
         android:textAppearance="?attr/textAppearanceListItem"
-        android:textStyle="bold"
+        android:textStyle="normal"
         android:text="HOSTNAME"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/alive"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_creator="1"
-        />
-
-    <TextView
-        android:id="@+id/content"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textAppearance="?attr/textAppearanceListItem"
-        app:layout_constraintTop_toBottomOf="@+id/id"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginBottom="2dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginLeft="22dp"
-        android:layout_marginStart="22dp"
-        android:gravity="center_vertical"
-        android:padding="2dp"
-        android:text="mac address"
-        />
-
-    <ImageView
-        android:id="@+id/alive"
-        android:layout_width="12dp"
-        android:layout_height="12dp"
-        android:src="@drawable/circle"
-        app:layout_constraintTop_toBottomOf="@+id/id"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginStart="5dp"
-        android:contentDescription="@string/alive_content_description"
-        android:visibility="gone"
         />
 </android.support.constraint.ConstraintLayout>
