@@ -3,7 +3,7 @@ All notable changes to BNT will be documented in this file.
 
 ## [Current version]
 
-## [1.1.0] - 2017-06-16
+## [1.1.0] - 2017-07-13
 
 ### Changed
  - Changed default shutdown command from `poweroff` to `shutdown -h now`.
