@@ -18,7 +18,7 @@ And finally you might use this app as a tutorial in Android app development. I e
 Screenshots
 -----------
 
-You can find app screenshots in `screenshots` folder. Here is the main screen screen:
+You can find app screenshots in `screenshots` folder. Here is the main screen:
 ![Main screen](screenshots/main_screen_web.png "Main screen")
 
 Build
