@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
@@ -182,6 +183,15 @@ public class TargetConfigurationFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            HostBean host = savedInstanceState.getParcelable(ARG_BEAN);
+            updateTarget(host);
+        }
+        super.onViewStateRestored(savedInstanceState);
+    }
+
     public void resetAppBar() {
         // Create action bar as a toolbar
         AppCompatActivity act = (AppCompatActivity)getActivity();
@@ -216,11 +226,16 @@ public class TargetConfigurationFragment extends Fragment {
         editor.putString(MainActivity.KEY_PREF_TARGET, targetJson);
         editor.commit();
     }
-
+    
+    // invoked when the activity may be temporarily destroyed, save the instance state here
     @Override
-    public void onStart() {
-        super.onStart();
-        refreshView();
+    public void onSaveInstanceState(Bundle outState) {
+        if (mHostBean == null) {
+            mHostBean = new HostBean();
+            mHostBean.resetForView();
+        }
+        outState.putParcelable(ARG_BEAN, mHostBean);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
