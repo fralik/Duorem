@@ -93,10 +93,22 @@ public class HostBean implements Parcelable {
             return "";
         }
 
-        if (hostname != null && hostname.length() > 0)
-            return hostname + " (" + ipAddress + ")";
-        else
-            return ipAddress;
+        boolean ipValid = ipAddress != null && !ipAddress.equals(NetInfo.NOIP);
+        boolean macValid = hardwareAddress != null && !hardwareAddress.equals(NetInfo.NOMAC);
+        if (hostname != null && hostname.length() > 0) {
+            if (ipValid)
+                return hostname + " (" + ipAddress + ")";
+            else if (macValid)
+                return hostname + " (" + hardwareAddress + ")";
+            else
+                return hostname;
+        }
+        else {
+            if (ipValid)
+                return ipAddress;
+            else
+                return hardwareAddress;
+        }
     }
 
     // Make sure that all fields are initialized and ready to be presented to user

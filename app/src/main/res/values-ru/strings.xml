@@ -30,6 +30,10 @@
     <string name="no_device">Отсутсвует информация об устройстве. Вы можете добавить новое устройство.</string>
     <string name="alert_icon">Alert icon</string>
 
+    <!-- strings used on host discovery page -->
+    <string name="offline">Отсутсвует подключение к интернету</string>
+    <string name="unknown_host">&lt;Название устройства&gt;</string>
+
     <!-- strings used on host configuration page -->
     <string name="host_name">Название устройства</string>
     <string name="mac_address">MAC адрес</string>

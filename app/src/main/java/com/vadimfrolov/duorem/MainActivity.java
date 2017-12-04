@@ -197,7 +197,9 @@ public class MainActivity extends ActivityNet
         MenuItem miAdd = (MenuItem) menu.findItem(R.id.action_add_host);
         MenuItem miEdit = (MenuItem) menu.findItem(R.id.action_edit_host);
         MenuItem miDelete = (MenuItem) menu.findItem(R.id.action_delete_host);
-        boolean targetIsValid = mTarget != null && mTarget.ipAddress != null && !mTarget.ipAddress.equals(NetInfo.NOIP);
+        boolean targetIsValid = mTarget != null &&
+                ((mTarget.ipAddress != null && !mTarget.ipAddress.equals(NetInfo.NOIP))
+                || (mTarget.hardwareAddress != null && !mTarget.hardwareAddress.equals(NetInfo.NOMAC)));
 
         if (targetIsValid) {
             miAdd.setTitle(getResources().getString(R.string.replace_host));
@@ -234,7 +236,7 @@ public class MainActivity extends ActivityNet
 
         boolean isTargetValid = true;
         boolean isTargetAlive = mTarget != null && mTarget.isAlive;
-        if (mTarget == null || mTarget.ipAddress.equals(NetInfo.NOIP)) {
+        if (mTarget == null || (mTarget.ipAddress.equals(NetInfo.NOIP) && mTarget.hardwareAddress.equals(NetInfo.NOMAC))) {
             isTargetValid = false;
             mViewName.setText(getResources().getString(R.string.no_device));
             //mViewAddress.setText("");
