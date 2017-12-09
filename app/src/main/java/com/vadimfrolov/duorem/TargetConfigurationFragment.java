@@ -18,6 +18,8 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,33 +125,6 @@ public class TargetConfigurationFragment extends Fragment {
         mEditShutdownCmd = (TextInputEditText) v.findViewById(R.id.edit_shutdown_cmd);
         mViewShutdownCmd = v.findViewById(R.id.input_layout_shutdown_cmd);
 
-        final Button btnSave = (Button)v.findViewById(R.id.btn_save);
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mHostBean.hostname = mEditHostname.getText().toString();
-                mHostBean.ipAddress = mEditIpAddress.getText().toString();
-                String broadcastIp = mEditBroadcastAddress.getText().toString();
-                if (!broadcastIp.equals(NetInfo.NOIP)) {
-                    mHostBean.broadcastIp = mEditBroadcastAddress.getText().toString();
-                }
-                mHostBean.wolPort = mEditWolPort.getText().toString();
-                mHostBean.hardwareAddress = fields2Mac();
-                mHostBean.sshUsername = mEditSshUsername.getText().toString();
-                mHostBean.sshPassword = mEditSshPassword.getText().toString();
-                mHostBean.sshPort = mEditSshPort.getText().toString();
-                mHostBean.sshShutdownCmd = mEditShutdownCmd.getText().toString();
-
-                saveTargetToSettings();
-
-                Intent startMain = new Intent(mContext, MainActivity.class);
-                startMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(startMain);
-            }
-        });
-//        btnSave.setFocusable(true);
-//        btnSave.setFocusableInTouchMode(true);
-
         EditText mac = (EditText)v.findViewById(R.id.mac_1);
         mEditMac.add(mac);
         mac = (EditText)v.findViewById(R.id.mac_2);
@@ -162,6 +137,12 @@ public class TargetConfigurationFragment extends Fragment {
         mEditMac.add(mac);
         mac = (EditText)v.findViewById(R.id.mac_6);
         mEditMac.add(mac);
+
+        // assign focus transfer
+        for (int i = 0; i < 5; i++) {
+            mEditMac.get(i).addTextChangedListener(new MacTextWatcher(mEditMac.get(i+1)));
+        }
+        mEditMac.get(5).addTextChangedListener(new MacTextWatcher(mEditBroadcastAddress));
 
         mBtnGuessBroadcast.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -207,9 +188,6 @@ public class TargetConfigurationFragment extends Fragment {
     private void setAdvancedVisibility(boolean visible) {
         int visibility = visible ? View.VISIBLE : View.GONE;
 
-        mViewBroadcastLayout.setVisibility(visibility);
-        mBtnGuessBroadcast.setVisibility(visibility);
-        mViewWolLayout.setVisibility(visibility);
         mViewShutdownCmd.setVisibility(visibility);
     }
 
@@ -226,7 +204,7 @@ public class TargetConfigurationFragment extends Fragment {
         editor.putString(MainActivity.KEY_PREF_TARGET, targetJson);
         editor.commit();
     }
-    
+
     // invoked when the activity may be temporarily destroyed, save the instance state here
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -239,11 +217,39 @@ public class TargetConfigurationFragment extends Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.save_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 // Add Up Navigation, part 2 (final)
                 NavUtils.navigateUpFromSameTask(getActivity());
+                return true;
+
+            case R.id.action_save:
+                mHostBean.hostname = mEditHostname.getText().toString();
+                mHostBean.ipAddress = mEditIpAddress.getText().toString();
+                String broadcastIp = mEditBroadcastAddress.getText().toString();
+                if (!broadcastIp.equals(NetInfo.NOIP)) {
+                    mHostBean.broadcastIp = mEditBroadcastAddress.getText().toString();
+                }
+                mHostBean.wolPort = mEditWolPort.getText().toString();
+                mHostBean.hardwareAddress = fields2Mac();
+                mHostBean.sshUsername = mEditSshUsername.getText().toString();
+                mHostBean.sshPassword = mEditSshPassword.getText().toString();
+                mHostBean.sshPort = mEditSshPort.getText().toString();
+                mHostBean.sshShutdownCmd = mEditShutdownCmd.getText().toString();
+
+                saveTargetToSettings();
+
+                Intent startMain = new Intent(mContext, MainActivity.class);
+                startMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(startMain);
                 return true;
         }
         return super.onOptionsItemSelected(item);

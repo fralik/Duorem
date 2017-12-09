@@ -39,8 +39,8 @@
     <string name="host_name">Name</string>
     <string name="mac_address">MAC address</string>
     <string name="ip_address">IP address</string>
-    <string name="broadcast_address">Broadcast IP address</string>
-    <string name="obtain_broadcast_address">Guess broadcast</string>
+    <string name="broadcast_address">WOL broadcast address</string>
+    <string name="obtain_broadcast_address">Guess broadcast from IP</string>
     <string name="wol_port">WOL port</string>
     <string name="ssh_username">SSH username</string>
     <string name="ssh_password">SSH password</string>

@@ -39,7 +39,7 @@
     <string name="mac_address">MAC адрес</string>
     <string name="ip_address">IP адрес</string>
     <string name="broadcast_address">Широковещательный адрес</string>
-    <string name="obtain_broadcast_address">Угадать широковещательный адресс</string>
+    <string name="obtain_broadcast_address">Угадать широковещательный адресс из IP</string>
     <string name="wol_port">WOL порт</string>
     <string name="ssh_username">Имя пользователя SSH</string>
     <string name="ssh_password">Пароль SSH</string>
