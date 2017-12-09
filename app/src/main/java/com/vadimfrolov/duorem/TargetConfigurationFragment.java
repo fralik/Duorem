@@ -17,6 +17,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -138,11 +140,69 @@ public class TargetConfigurationFragment extends Fragment {
         mac = (EditText)v.findViewById(R.id.mac_6);
         mEditMac.add(mac);
 
-        // assign focus transfer
-        for (int i = 0; i < 5; i++) {
-            mEditMac.get(i).addTextChangedListener(new MacTextWatcher(mEditMac.get(i+1)));
+        // This class does three things:
+        // 1. Accepts full MAC address when user pastes it from the clipboard.
+        // 2. Prevents entering of more than two characters in any of the MAC fields.
+        // 3. Moves focus when user enters two characters in any of the MAC fields.
+        TextWatcher macTextWatcher = new TextWatcher() {
+            private boolean mIsPasting = false;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (count == NetInfo.NOMAC.length() && s.toString().contains(":")) {
+                    String mac = s.toString();
+                    String[] parts = mac.split(":");
+                    if (parts.length != 6)
+                        return;
+
+                    mIsPasting = true;
+                    for (int i = 0; i < 6; i++) {
+                        mEditMac.get(i).setText(parts[i]);
+                    }
+                    mIsPasting = false;
+                    mEditBroadcastAddress.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (mIsPasting)
+                    return;
+
+                int len = s.toString().length();
+                if (len == 2) {
+                    int target = -1;
+                    for (int i = 0; i < mEditMac.size(); i++) {
+                        EditText candidate = mEditMac.get(i);
+                        if (candidate.getText().hashCode() == s.hashCode()) {
+                            target = i;
+                            break;
+                        }
+                    }
+                    if (target == -1)
+                        return;
+
+                    if (target == 5) {
+                        mEditBroadcastAddress.requestFocus();
+                    } else {
+                        mEditMac.get(target + 1).requestFocus();
+                    }
+                }
+
+                if (len > 2) {
+                    s.delete(2, len);
+                }
+            }
+        };
+
+        for (EditText macEditor : mEditMac) {
+            macEditor.addTextChangedListener(macTextWatcher);
         }
-        mEditMac.get(5).addTextChangedListener(new MacTextWatcher(mEditBroadcastAddress));
 
         mBtnGuessBroadcast.setOnClickListener(new View.OnClickListener() {
             @Override
