@@ -8,6 +8,7 @@ All notable changes to BNT will be documented in this file.
 ### Added
  - It is now possible to use  WOL part of the app independently from `shutdown`. This means that IP and SSH information is not necessary to wake up a remote host.
  - MAC address fields change focus automatically after user enters two characters. Manual entering of MAC address should be easier.
+ - Paste full MAC address in any MAC field.
 
 ### Changed
  - Changed device configuration page layout. Grouped fields that belong to WOL together and fields that belong to SSH/IP together.
