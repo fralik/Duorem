@@ -3,6 +3,9 @@ Duorem
 
 This is an Android app that allows you to power off and on a remote computer. It appeared because my wife wanted an easy way to control media home computer at home, something not geeky. :)
 
+<a href="https://f-droid.org/packages/com.vadimfrolov.duorem/" target="_blank">
+<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80"/></a>
+
 Wake On Lan (WOL) technology is used to wake up a remote computer. You might need to do additional configuration of your network and remote computer before you can use it. Note also that WOL works reliably if your remote computer is connected to router/Internet via cable, i.e. not WiFi.
 
 In order to power off and reboot a remote computer, a secure shell Linux command (SSH) is used. This means that your remote computer should run some variant of Linux and have SSH server installed. Normally, not a problem with an Ubuntu/Debian. Note that SSH credentials are save via app shared preferences unencrypted. It seems like if your device is rooted and someone wants your password, encryption won't stop them for long. If your device is not rooted, then shared preferences can be OK location for storing your password. Anyway, you have the choice if you afraid. You can stop using the app, or make a pull request.
