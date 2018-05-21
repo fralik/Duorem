@@ -1,0 +1,23 @@
+The idea behind this app is to provide people who are not very familiar with
+computer interfaces a simple and easy way to control a remote computer. Imagine
+your grand parent needs a way to power a media server. Quick and efficiently!
+
+The application uses Wake On LAN (WOL) technique to start a remote computer. You
+need to make sure that your computer and network is set up for and support WOL.
+The app can only power off or restart a Linux-based computer. It performs these
+actions using secure shell (SSH). Your remote computer must be configured to
+enable SSH connections. Username that is used for SSH must have sudo rights.
+
+Note that SSH credentials are stored in application preferences unencrypted!
+Anyone with root access can read it.
+
+Differences from similar apps
+
+* Supports power off and power on signals.
+* Controls only a single computer.
+* Big interface controls for people with thick fingers.
+* Remote computer status and commands feedback.
+* Host search for easy first-time setup.
+* Open source, no ads.
+
+Bug reports and comments are welcomed on app development page.
