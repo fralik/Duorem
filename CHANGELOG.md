@@ -3,6 +3,11 @@ All notable changes to BNT will be documented in this file.
 
 ## [Current version]
 
+## [1.1.2] - 2018-05-21
+
+### Added
+ - Added [fastlane](https://github.com/fastlane/fastlane/blob/2.28.7/supply/README.md#images-and-screenshots) images and description files.
+
 ## [1.1.1] - 2017-12-09
 
 ### Added
