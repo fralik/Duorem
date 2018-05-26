@@ -3,6 +3,12 @@ All notable changes to BNT will be documented in this file.
 
 ## [Current version]
 
+## [1.1.3] - 2018-05-26
+
+### Fixed
+ - Fixed buttons being not visible on the main screen (portrait orientation) after update of ConstraintLayout library.
+ - Show MAC address during network discovery.
+
 ## [1.1.2] - 2018-05-21
 
 ### Added
