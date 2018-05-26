@@ -32,5 +32,7 @@ public class PortraitModeVisibilityTest {
     @Test
     public void minHeight() {
         onView(withId(R.id.btn_toggle_power)).check(matches(withMinHeight(100)));
+        onView(withId(R.id.btn_restart)).check(matches(withMinHeight(100)));
+        onView(withId(R.id.layout_host_info)).check(matches(withMinHeight(8)));
     }
 }
