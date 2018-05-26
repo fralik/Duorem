@@ -33,7 +33,7 @@
     <!-- strings used on host discovery page -->
     <string name="offline">You are offline</string>
     <string name="unknown_host">&lt;Name&gt;</string>
-    <string name="unknown_ip">0.0.0.0</string>
+    <string name="unknown_mac">00:00:00:00:00:00</string>
 
     <!-- strings used on host configuration page -->
     <string name="host_name">Name</string>

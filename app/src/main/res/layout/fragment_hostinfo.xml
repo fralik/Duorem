@@ -33,6 +33,6 @@
         android:layout_marginTop="2dp"
         android:gravity="center_vertical"
         android:padding="2dp"
-        android:text="@string/unknown_ip"
+        android:text="@string/unknown_mac"
         />
 </RelativeLayout>

@@ -16,6 +16,8 @@ import com.vadimfrolov.duorem.HostSearchFragment.OnListFragmentInteractionListen
 import com.vadimfrolov.duorem.Network.HostBean;
 import com.vadimfrolov.duorem.Network.NetInfo;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -78,7 +80,7 @@ public class HostInfoRecyclerViewAdapter extends RecyclerView.Adapter<HostInfoRe
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).name());
-        //holder.mContentView.setText(mValues.get(position).hardwareAddress.toUpperCase());
+        holder.mMacView.setText(mValues.get(position).hardwareAddress.toUpperCase());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,12 +127,14 @@ public class HostInfoRecyclerViewAdapter extends RecyclerView.Adapter<HostInfoRe
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final TextView mIdView;
+        public final TextView mMacView;
         public HostBean mItem;
 
         public ViewHolder(View view) {
             super(view);
 
             mIdView = (TextView) view.findViewById(R.id.id);
+            mMacView = (TextView) view.findViewById(R.id.content);
         }
 
         @Override
