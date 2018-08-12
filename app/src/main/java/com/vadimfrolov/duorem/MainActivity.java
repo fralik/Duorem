@@ -118,7 +118,7 @@ public class MainActivity extends ActivityNet
 
             SharedPreferences.Editor editor = mPrefs.edit();
             editor.putString(MainActivity.KEY_PREF_TARGET, targetJson);
-            editor.commit();
+            editor.apply();
         } catch (Exception e) {
             Log.d(TAG, "Failed to save target as JSON: " + e.getMessage());
         }

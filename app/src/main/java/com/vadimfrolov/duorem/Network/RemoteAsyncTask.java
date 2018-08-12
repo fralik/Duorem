@@ -41,6 +41,7 @@ public class RemoteAsyncTask extends AsyncTask<RemoteCommand, Void, RemoteComman
         }
         RemoteCommand cmd = params[0];
         String result = "";
+        String address = decideIpOrHost(cmd);
         try {
             switch (cmd.commandType) {
                 case RemoteCommand.WOL:
@@ -48,11 +49,11 @@ public class RemoteAsyncTask extends AsyncTask<RemoteCommand, Void, RemoteComman
                     break;
 
                 case RemoteCommand.SSH:
-                    result = executeRemoteCommand(cmd.target.ipAddress, cmd.sshPort(), cmd.target.sshUsername, cmd.target.sshPassword, cmd.command);
+                    result = executeRemoteCommand(address, cmd.sshPort(), cmd.target.sshUsername, cmd.target.sshPassword, cmd.command);
                     break;
 
                 case RemoteCommand.PING:
-                    Socket socket = new Socket(cmd.target.ipAddress, cmd.sshPort());
+                    Socket socket = new Socket(address, cmd.sshPort());
                     result = "success";
                     break;
 
@@ -71,6 +72,41 @@ public class RemoteAsyncTask extends AsyncTask<RemoteCommand, Void, RemoteComman
     protected void onPostExecute(RemoteCommand result) {
         if (mDelegate != null)
             mDelegate.onRemoteCommandFinished(result);
+    }
+
+    /**
+     * Decide whether to use IP or hostname for connection.
+     * This function tries to connect to remote host via IP address. If this fails,
+     * it then tries the hostname. This is useful in case only one of either IP or hostname
+     * is valid.
+     *
+     * @param cmd A remote command instance
+     * @return Either IP address or hostname. If both fails, IP address is returned.
+     */
+    private String decideIpOrHost(RemoteCommand cmd) {
+        boolean ipIsValid = false;
+        boolean hostIsValid = false;
+        try {
+            Socket socket = new Socket(cmd.target.ipAddress, cmd.sshPort());
+            ipIsValid = true;
+            socket.close();
+        } catch (Exception e) {
+            ipIsValid = false;
+        }
+
+        try {
+            Socket socket = new Socket(cmd.target.hostname, cmd.sshPort());
+            hostIsValid = true;
+            socket.close();
+        } catch (Exception e) {
+            hostIsValid = false;
+        }
+
+        if (!ipIsValid && hostIsValid) {
+            return cmd.target.hostname;
+        }
+
+        return cmd.target.ipAddress;
     }
 
     private String sendWolPacket(String mac, String broadcastIp, int wolPort) throws UnknownHostException, SocketException, IOException, IllegalArgumentException {
