@@ -3,6 +3,8 @@ All notable changes to Duorem will be documented in this file.
 
 ## [Current version]
 
+## [1.1.4] - 2020-02-04
+
 ### Added
  - Duorem is now registered for usage on TV.
  - Added Chinese (@8qewt) and Italian (@Asbesbopispa) translations.
