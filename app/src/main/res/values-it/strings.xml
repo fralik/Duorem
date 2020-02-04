@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Duorem</string>
+    <string name="add_host">Aggiungi dispositivo</string>
+    <string name="edit_host">Modifica dispositivo</string>
+    <string name="replace_host">Sostituisci dispositivo</string>
+    <string name="delete_host">Elimina dispositivo</string>
+    <string name="settings">Impostazioni</string>
+    <string name="add_manually">Inserisci manualmente</string>
+    <string name="restart">Riavvia</string>
+    <string name="action_about">Informazioni</string>
+
+    <string name="reboot_sent">Inviato comando di riavvio</string>
+    <string name="reboot_received">Il comando di riavvio è stato ricevuto con successo.</string>
+    <string name="reboot_failed">Riavvio fallito, ritenta.</string>
+    <string name="shutdown_sent">Inviato comando di spegnimento.</string>
+    <string name="shutdown_received">Il comando di spegnimento è stato ricevuto con successo.</string>
+    <string name="shutdown_failed">Spegnimento fallito, ritenta.</string>
+    <string name="no_gateway">Impossibile svegliare il dispositivo perché l\'indirizzo di trasmissione non è configurato. Se hai aggiunto un dispositivo manualmente, prova a connetterti ad internet e riconfigura il dispositivo.</string>
+    <string name="wol_sent">Segnale WAKE inviato.</string>
+    <string name="wol_received">Il segnale WAKE è stato inviato con successo.</string>
+
+    <string name="title_activity_target_settings">Aggiungi Dispositivo</string>
+    <string name="discovery_stopped">Ricerca fermata</string>
+    <string name="no_network">Impossibile accedere alla rete. Sembra che tu sia disconnesso.</string>
+    <string name="hosts_manual">Inserisci manualmente</string>
+    <string name="turn_on">Accendi</string>
+    <string name="shutdown">Spegnimento</string>
+    <string name="alive_content_description">Indicatore della connessione host</string>
+    <string name="no_device">Nessun dispositivo è configurato. Aggiungerne uno.</string>
+    <string name="alert_icon">Icona di allerta</string>
+
+    <!-- strings used on host discovery page -->
+    <string name="offline">Sei non in linea</string>
+    <string name="unknown_host">&lt;Nome&gt;</string>
+    <string name="unknown_mac">00:00:00:00:00:00</string>
+
+    <!-- strings used on host configuration page -->
+    <string name="host_name">Nome</string>
+    <string name="mac_address">Indirizzo MAC</string>
+    <string name="ip_address">Indirizzo IP</string>
+    <string name="broadcast_address">Indirizzo di trasmissione WOL</string>
+    <string name="obtain_broadcast_address">Indovina trasmissione dall\'IP</string>
+    <string name="wol_port">Porta WOL</string>
+    <string name="ssh_username">Nome utente SSH</string>
+    <string name="ssh_password">Password SSH</string>
+    <string name="ssh_port">Porta SSH</string>
+    <string name="sudo_password">Password SUDO</string>
+    <string name="user_name">Nome utente</string>
+    <string name="password">Password</string>
+    <string name="save">Salva</string>
+    <string name="show_advanced">Dettagli avanzati</string>
+    <string name="shutdown_cmd">Comando di spegnimento</string>
+
+    <!-- used on About dialog -->
+    <string name="about_title">Su Duorem</string>
+    <string name="about_version">Versione</string>
+    <string name="unknown">Sconosciuto</string>
+    <string name="about_source">Codice Sorgente</string>
+    <string name="about_license">Licenza</string>
+    <string name="license_gplv3_later">GNU General Public License versione 3 o successiva</string>
+    <string name="close">Chiudi</string>
+</resources>
