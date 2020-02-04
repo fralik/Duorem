@@ -1,10 +1,11 @@
 # Change log
-All notable changes to BNT will be documented in this file.
+All notable changes to Duorem will be documented in this file.
 
 ## [Current version]
 
 ### Added
  - Duorem is now registered for usage on TV.
+ - Added Chinese (@8qewt) and Italian (@Asbesbopispa) translations.
 
 ## [1.1.3] - 2018-05-26
 
