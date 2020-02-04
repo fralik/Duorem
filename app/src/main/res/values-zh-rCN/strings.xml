@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Duorem</string>
+    <string name="add_host">添加设备</string>
+    <string name="edit_host">编辑设备</string>
+    <string name="replace_host">更换设备</string>
+    <string name="delete_host">删除设备</string>
+    <string name="settings">设置</string>
+    <string name="add_manually">手动输入</string>
+    <string name="restart">重启</string>
+    <string name="action_about">关于</string>
+
+    <string name="reboot_sent">已发送重启命令。</string>
+    <string name="reboot_received">重启命令已被成功接收。</string>
+    <string name="reboot_failed">重启失败，请重试。</string>
+    <string name="shutdown_sent">已发送关机命令。</string>
+    <string name="shutdown_received">关机命令已被成功接收。</string>
+    <string name="shutdown_failed">关机失败，请重试。</string>
+    <string name="no_gateway">因为没有设置广播地址，无法唤醒目标设备。 如果你的设备是手动设置的，请尝试连接到网络并且重新设置目标设备。</string>
+    <string name="wol_sent">已发送 WAKE 信号。</string>
+    <string name="wol_received">WAKE 信号发送已成功。</string>
+
+    <string name="title_activity_target_settings">添加设备</string>
+    <string name="discovery_stopped">已停止自动搜索。</string>
+    <string name="no_network">现在不能连接网络，你貌似已经断开连接了。</string>
+    <string name="hosts_manual">手动输入</string>
+    <string name="turn_on">开机</string>
+    <string name="shutdown">关机</string>
+    <string name="alive_content_description">设备连接状态指示器</string>
+    <string name="no_device">没有已配置的设备，请添加一个。</string>
+    <string name="alert_icon">警告图标</string>
+
+    <!-- 在设备发现界面被使用的文本 -->
+    <string name="offline">你现在处于离线状态</string>
+    <string name="unknown_host">&lt;名字&gt;</string>
+
+    <!-- 在设备添加界面被使用的文本 -->
+    <string name="host_name">名字</string>
+    <string name="mac_address">MAC 地址</string>
+    <string name="ip_address">IP 地址</string>
+    <string name="broadcast_address">WOL 广播地址</string>
+    <string name="obtain_broadcast_address">从 IP 猜测广播地址</string>
+    <string name="wol_port">WOL 端口</string>
+    <string name="ssh_username">SSH 用户名</string>
+    <string name="ssh_password">SSH 密码</string>
+    <string name="ssh_port">SSH 端口</string>
+    <string name="sudo_password">SUDO 密码</string>
+    <string name="user_name">用户名</string>
+    <string name="password">密码</string>
+    <string name="save">保存</string>
+    <string name="show_advanced">高级</string>
+    <string name="shutdown_cmd">关机命令</string>
+
+    <!-- 在关于菜单被使用的文本 -->
+    <string name="about_title">关于Duorem</string>
+    <string name="about_version">版本</string>
+    <string name="unknown">未知</string>
+    <string name="about_source">源代码</string>
+    <string name="source_link">https://github.com/fralik/Duorem</string>
+    <string name="about_license">许可证</string>
+    <string name="license_gplv3_later">GNU General Public License version 3 or later</string>
+    <string name="close">关闭</string>
+</resources>
+
