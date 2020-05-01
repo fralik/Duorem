@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,6 +34,7 @@ import com.vadimfrolov.duorem.Network.NetInfo;
  */
 public class HostSearchFragment extends FragmentNet implements DiscoveryListener {
 
+    private final String TAG = "HostSearchFragment";
     private OnListFragmentInteractionListener mListener;
     private AbstractDiscovery mDiscoveryTask = null;
     private HostInfoRecyclerViewAdapter mAdapter;
@@ -100,7 +102,6 @@ public class HostSearchFragment extends FragmentNet implements DiscoveryListener
         if (mProgressBar != null) {
             mProgressBar.setProgress(progress);
         }
-        //getActivity().setProgress(progress);
     }
 
     /**
@@ -146,6 +147,8 @@ public class HostSearchFragment extends FragmentNet implements DiscoveryListener
 
             // Get current network details
             mNetworkIp = NetInfo.getUnsignedLongFromIp(mNetInfo.ip);
+            Log.d(TAG, "Our IP address is " + mNetInfo.ip);
+
             // Detected IP
             int shift = (32 - mNetInfo.cidr);
             if (mNetInfo.cidr < 31) {

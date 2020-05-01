@@ -14,6 +14,8 @@ import com.vadimfrolov.duorem.Network.NetInfo;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -33,7 +35,7 @@ public class DnsDiscovery extends AbstractDiscovery {
     // number of threads for pool of async tasks.
     private final static int sThreads = 10;
     private ExecutorService mPool;
-    private final static int TIMEOUT_SCAN = 3600; // seconds
+    private final static int TIMEOUT_SCAN = 60; // seconds
     private final static int TIMEOUT_SHUTDOWN = 10; // seconds
 
     public DnsDiscovery(DiscoveryListener discover) {
@@ -107,6 +109,19 @@ public class DnsDiscovery extends AbstractDiscovery {
             mGatewayIp = gatewayIp;
         }
 
+        private boolean isReachable(String addr, int openPort, int timeOutMillis) {
+            // Any Open port on other machine
+            // openPort =  22 - ssh, 80 or 443 - webserver, 25 - mailserver etc.
+            try {
+                try (Socket soc = new Socket()) {
+                    soc.connect(new InetSocketAddress(addr, openPort), timeOutMillis);
+                }
+                return true;
+            } catch (IOException ex) {
+                return false;
+            }
+        }
+
         public void run() {
             if (isCancelled()) {
                 publishProgress((HostBean)null);
@@ -119,18 +134,37 @@ public class DnsDiscovery extends AbstractDiscovery {
                 host.hostname = null;
                 host.ipAddress = NetInfo.getIpFromLongUnsigned(i);
                 host.broadcastIp = null;
+                Log.v(TAG, i + " (" + host.ipAddress + ") reaching out");
                 try {
                     InetAddress ia = InetAddress.getByName(host.ipAddress);
                     host.hostname = ia.getCanonicalHostName();
                     host.isAlive = ia.isReachable(mTimeout);
-                } catch (java.net.UnknownHostException e) {
-                    // not critical for us
                 } catch (IOException e) {
                     // not critical for us
                 }
-                if (host.hostname != null && !host.hostname.equals(host.ipAddress)) {
+                boolean reachable = host.hostname != null && !host.hostname.equals(host.ipAddress);
+                if (!reachable) {
+                    Process proc = null;
+                    Log.d(TAG, "Pinging");
+                    try {
+                        proc = Runtime.getRuntime().exec("ping -c 1 " + host.ipAddress);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    int retValue = 0;
+                    try {
+                        retValue = proc.waitFor();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    reachable = retValue == 0;
+                }
+
+                if (reachable) {
+                    Log.v(TAG, "Reached successfully; " + host.ipAddress);
                     // Is gateway ?
                     if (mGatewayIp.equals(host.ipAddress)) {
+                        Log.v(TAG, host.ipAddress + " is a gateway. Skipping it.");
                         publishProgress((HostBean) null);
                         continue;
                     }
