@@ -5,21 +5,31 @@
 
 package com.vadimfrolov.duorem;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.StatFs;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,6 +40,9 @@ import com.vadimfrolov.duorem.Network.RemoteAsyncTask;
 import com.vadimfrolov.duorem.Network.RemoteCommand;
 import com.vadimfrolov.duorem.Network.RemoteCommandResult;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.Stack;
 import java.util.concurrent.Executors;
@@ -43,6 +56,8 @@ public class MainActivity extends ActivityNet
 
     public static final String KEY_PREF_TARGET = "target";
     private final String TAG = "MainActivity";
+    //private final Context mContext = this;
+    static final Integer READ_STORAGE_PERMISSION_REQUEST_CODE = 0x32;
 
     private HostBean mTarget;
     private TextView mViewName;
@@ -92,13 +107,41 @@ public class MainActivity extends ActivityNet
         mBtnRestart.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 stopTargetPolling();
+                RemoteCommand cmd = null;
+                if (mTarget.isSsh) {
+                    cmd = new RemoteCommand(mTarget, RemoteCommand.SSH);
+                    cmd.command = "sudo shutdown -r now";
 
-                RemoteCommand cmd = new RemoteCommand(mTarget, RemoteCommand.SSH);
-                cmd.command = "sudo shutdown -r now";
+                    String internalKey = mContext.getFilesDir() + File.separator + "file";
+                    cmd.sshKeyFile = internalKey;
+//                    FileWriter writer = null;
+//                    try {
+//                        writer = new FileWriter(internalKey);
+//                        int len = mTarget.sshPassword.length();
+//                        char cbuf[] = new char[len];
+//                        mTarget.sshPassword.getChars(0, len, cbuf, 0);
+//                        writer.write(cbuf, 0, len);
+//                        writer.close();
+//                        cmd.sshKeyFile = internalKey;
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                        StatFs appStats = new StatFs(mContext.getFilesDir().getAbsolutePath());
+//                        if (appStats.getAvailableBytes() < 10) {
+//                            // 10 is arbitrary
+//                            logForUser(getResources().getString(R.string.key_write_no_space));
+//                        } else {
+//                            logForUser(getResources().getString(R.string.key_write_error));
+//                        }
+//                        return;
+//                    }
+                } else {
+                    logForUser("Windows is not supported yet");
+                }
                 mSshTasks.push(new RemoteAsyncTask(mDelegate));
                 mSshTasks.peek().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, cmd);
 
                 logForUser(getResources().getString(R.string.reboot_sent));
+
             }
         });
         mBtnTogglePower.setOnClickListener(mPowerActor);
@@ -106,6 +149,31 @@ public class MainActivity extends ActivityNet
         // create a pool with only 3 threads
         mSch = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(3);
         mSch.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
+//        if (!checkPermissionForReadExtertalStorage()) {
+//            try {
+//                requestPermissionForReadExtertalStorage();
+//            } catch (Exception e) {
+//                //e.printStackTrace();
+//            }
+//        }
+    }
+
+    public boolean checkPermissionForReadExtertalStorage() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int result = this.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+            return result == PackageManager.PERMISSION_GRANTED;
+        }
+        return false;
+    }
+
+    public void requestPermissionForReadExtertalStorage() throws Exception {
+        try {
+            ActivityCompat.requestPermissions((Activity) this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    READ_STORAGE_PERMISSION_REQUEST_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @Override
@@ -304,7 +372,11 @@ public class MainActivity extends ActivityNet
             public void run() {
                 if (mIsConnected && mTarget != null) {
                     RemoteCommand cmd = new RemoteCommand(mTarget, RemoteCommand.PING);
-                    (new RemoteAsyncTask(mDelegate)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, cmd);
+
+                    // Prevent memory leak by adding to the queue
+                    RemoteAsyncTask task = new RemoteAsyncTask(mDelegate);
+                    mSshTasks.push(task);
+                    mSshTasks.peek().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, cmd);
                 }
             }
         };
@@ -374,7 +446,39 @@ public class MainActivity extends ActivityNet
         updateView();
     }
 
-    private void logForUser(String msg) {
+    @Override
+    public void getPassphrase(final RemoteCommand cmd, final String identityName) {
+        LayoutInflater li = LayoutInflater.from(this);
+        View propmtView = li.inflate(R.layout.passphrase_prompt, null);
+        AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(this);
+        dlgBuilder.setTitle(getResources().getString(R.string.dlg_passphrase_title));
+        dlgBuilder.setMessage(getResources().getString(R.string.dlg_passphrase_msg));
+        dlgBuilder.setView(propmtView);
+
+        TextView labelPassphrase = (TextView) propmtView.findViewById(R.id.passphrase_key_name);
+        final EditText editPassphrase = (EditText) propmtView.findViewById(R.id.edit_passphrase);
+        labelPassphrase.setText(identityName);
+
+        dlgBuilder.setCancelable(true).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //passPhrase = editPassphrase.getText().toString();
+//                task.latchPassphrase.countDown();
+                cmd.passPhrase = editPassphrase.getText().toString();
+            }
+        });
+        dlgBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                cmd.passPhrase = "";
+                dialog.cancel();
+            }
+        });
+        AlertDialog dlg = dlgBuilder.create();
+        dlg.show();
+    }
+
+    public void logForUser(String msg) {
         if (mViewStatus == null)
             return;
 

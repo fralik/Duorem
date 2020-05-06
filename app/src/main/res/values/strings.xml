@@ -19,6 +19,10 @@
     <string name="no_gateway">Can not wake up target because broadcast address is not configured. If you added target manually, try to connect to the internet and reconfigure the target.</string>
     <string name="wol_sent">Sent WAKE signal.</string>
     <string name="wol_received">WAKE signal sending was successful.</string>
+    <string name="dlg_passphrase_title">Enter Passphrase</string>
+    <string name="dlg_passphrase_msg">Enter passphrase for key</string>
+    <string name="key_write_no_space">Failed to handle SSH key, you do not have enough free space.</string>
+    <string name="key_write_error">Failed to handle SSH key. You may try to authenticate with password.</string>
 
     <string name="title_activity_target_settings">Add Device</string>
     <string name="discovery_stopped">Discovery stopped</string>
@@ -44,14 +48,20 @@
     <string name="wol_port">WOL port</string>
     <string name="ssh_username">SSH username</string>
     <string name="ssh_password">SSH password</string>
+    <string name="ssh_key">Auth key</string>
+    <string name="select_key">Load SSH key from file</string>
     <string name="ssh_port">SSH port</string>
     <string name="sudo_password">SUDO password</string>
-    <string name="user_name">User name</string>
+    <string name="user_name">Username</string>
     <string name="password">Password</string>
     <string name="mac_separator" translatable="false">:</string>
     <string name="save">Save</string>
     <string name="show_advanced">Advanced details</string>
     <string name="shutdown_cmd">Shutdown command</string>
+    <string name="ssh">SSH</string>
+    <string name="win">Windows</string>
+    <string name="win_username">Windows username</string>
+    <string name="unsupported_key">Unsupported key format</string>
 
     <!-- used on About dialog -->
     <string name="about_title">About Duorem</string>

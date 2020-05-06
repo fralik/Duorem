@@ -244,14 +244,11 @@
             android:id="@+id/btn_get_broadcast"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="8dp"
             android:text="@string/obtain_broadcast_address"
             android:visibility="visible"
-            app:layout_constraintLeft_toRightOf="parent"
+            android:textAllCaps="false"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/input_layout_broadcast_address" />
 
         <!-- WOL port -->
@@ -263,7 +260,6 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="10dp"
             android:hint="@string/wol_port"
             android:visibility="visible"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -290,7 +286,6 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="10dp"
             android:hint="@string/ip_address"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -304,124 +299,205 @@
                 android:ems="8"
                 android:imeOptions="actionNext"
                 android:inputType="number|numberDecimal"
-                android:nextFocusDown="@+id/edit_ssh_username"
-                android:nextFocusForward="@+id/edit_ssh_username" />
+                android:nextFocusDown="@+id/switch_platform"
+                android:nextFocusForward="@+id/switch_platform" />
         </android.support.design.widget.TextInputLayout>
 
-        <!-- SSH username -->
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_ssh_username"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:hint="@string/ssh_username"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/input_layout_ip_address">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/edit_ssh_username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="8"
-                android:inputType="textPersonName"
-                android:nextFocusForward="@+id/edit_ssh_password" />
-        </android.support.design.widget.TextInputLayout>
-
-        <!-- SSH password -->
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_ssh_password"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="10dp"
-            android:hint="@string/ssh_password"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/input_layout_ssh_username">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/edit_ssh_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="8"
-                android:imeOptions="actionNext"
-                android:inputType="textPassword"
-                android:nextFocusForward="@+id/edit_ssh_port" />
-        </android.support.design.widget.TextInputLayout>
-
-        <!-- SSH port -->
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_ssh_port"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="10dp"
-            android:hint="@string/ssh_port"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/input_layout_ssh_password">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/edit_ssh_port"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:digits="0123456789"
-                android:ems="3"
-                android:imeOptions="actionNext"
-                android:inputType="number|numberDecimal"
-                android:nextFocusForward="@+id/edit_hostname" />
-        </android.support.design.widget.TextInputLayout>
-
-        <!-- Advanced options -->
+        <!-- Platform switch -->
         <Switch
-            android:id="@+id/switch_advanced"
+            android:id="@+id/switch_platform"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
             android:nextFocusForward="@+id/edit_wol_port"
-            android:text="@string/show_advanced"
-            app:layout_constraintHorizontal_bias="0.0"
+            android:splitTrack="false"
+            android:text="@string/ssh"
+            app:layout_constraintHorizontal_bias="0.45"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/input_layout_ssh_port" />
+            app:layout_constraintTop_toBottomOf="@+id/input_layout_ip_address" />
 
-        <!-- Shutdown command -->
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_shutdown_cmd"
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/editText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ems="10"
+            android:text="@string/win"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            app:layout_constraintBaseline_toBaselineOf="@+id/switch_platform"
+            app:layout_constraintLeft_toRightOf="@+id/switch_platform"
+            app:layout_constraintTop_toTopOf="@+id/switch_platform" />
+
+        <LinearLayout
+            android:id="@+id/layout_ssh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/switch_platform"
             android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="10dp"
-            android:hint="@string/shutdown_cmd"
-            android:visibility="gone"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/switch_advanced">
+            android:visibility="visible"
+            >
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/edit_shutdown_cmd"
+            <!-- SSH username -->
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_ssh_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="8"
-                android:imeOptions="actionNext"
-                android:inputType="text"
-                android:nextFocusDown="@+id/btn_save"
-                android:nextFocusForward="@+id/btn_save" />
-        </android.support.design.widget.TextInputLayout>
+                android:hint="@string/ssh_username"
+                >
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edit_ssh_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="8"
+                    android:inputType="textPersonName"
+                    android:nextFocusForward="@+id/edit_ssh_password" />
+            </android.support.design.widget.TextInputLayout>
+
+            <!-- SSH password -->
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_ssh_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/ssh_password"
+                app:passwordToggleEnabled="true"
+                >
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edit_ssh_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="8"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPassword"
+                    android:nextFocusForward="@+id/edit_ssh_port" />
+            </android.support.design.widget.TextInputLayout>
+
+            <!-- SSH key name -->
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_ssh_key"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:hint="@string/ssh_key"
+                >
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edit_ssh_key"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="8"
+                    android:imeOptions="actionNext"
+                    android:inputType="textUri"
+                    android:nextFocusForward="@+id/edit_ssh_port"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+            <!-- SSH key selector -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                >
+                <Button
+                    android:id="@+id/btn_select_key"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/select_key"
+                    android:textAllCaps="false"
+                    />
+            </LinearLayout>
+
+            <!-- SSH port -->
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_ssh_port"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/ssh_port"
+                >
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edit_ssh_port"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:digits="0123456789"
+                    android:ems="3"
+                    android:imeOptions="actionNext"
+                    android:inputType="number|numberDecimal"
+                    android:nextFocusForward="@+id/edit_hostname" />
+            </android.support.design.widget.TextInputLayout>
+
+            <!-- Advanced options -->
+            <Switch
+                android:id="@+id/switch_advanced"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:nextFocusForward="@+id/edit_wol_port"
+                android:text="@string/show_advanced"
+                android:visibility="gone"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/input_layout_ssh_port" />
+
+            <!-- Shutdown command -->
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_shutdown_cmd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/shutdown_cmd"
+                android:visibility="visible"
+                >
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edit_shutdown_cmd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="8"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:nextFocusDown="@+id/btn_save"
+                    android:nextFocusForward="@+id/btn_save" />
+            </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
+
+        <!-- Windows platform controlls -->
+        <LinearLayout
+            android:id="@+id/layout_windows"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/switch_platform"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:visibility="gone"
+            >
+            <!-- Windows username -->
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_win_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/win_username"
+                >
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edit_win_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="8"
+                    android:inputType="textPersonName"
+                    android:nextFocusForward="@id/edit_ssh_password" />
+            </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
+
+
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

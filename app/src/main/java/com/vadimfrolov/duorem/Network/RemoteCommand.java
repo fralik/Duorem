@@ -26,6 +26,8 @@ public class RemoteCommand {
     /** Result of command execution */
     public String result = null;
     public int commandType = INVALID_CMD;
+    public String passPhrase = null;
+    public String sshKeyFile = null;
 
     public RemoteCommand(HostBean target) {
         this.target = target;

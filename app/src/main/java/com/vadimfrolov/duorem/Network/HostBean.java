@@ -11,7 +11,7 @@ import android.os.Parcelable;
 /**
  * Stores information about network hosts and additional information about SSH authentication.
  * Logically, SSH info should not be here, but it makes things a bit easier.
- * This class is inspired by HostBean class from {@link https://github.com/rorist/android-network-discovery|Android Network Discovery} app.
+ * This class is inspired by HostBean class from <a href="https://github.com/rorist/android-network-discovery">Android Network Discovery</a> app.
  */
 
 public class HostBean implements Parcelable {
@@ -27,6 +27,7 @@ public class HostBean implements Parcelable {
     public String hostname = null;
     public String hardwareAddress = NetInfo.NOMAC;
     public String sshUsername = "";
+    /** Either password or real path to SSH key */
     public String sshPassword = "";
     public String sshPort = "22";
     /** User-defined command to shutdown remote host */
@@ -34,6 +35,9 @@ public class HostBean implements Parcelable {
     /** Wake On Lan port */
     public String wolPort = "9";
     public String broadcastIp = null;
+    /** Indicates if host is reachable via SSH or is it a Windows machine */
+    public boolean isSsh = true;
+    public String sshKey = "";
 
     public HostBean() {
         // New object
@@ -45,18 +49,20 @@ public class HostBean implements Parcelable {
     }
 
     // full constructor
-    public HostBean(String hostname, String ipAddress, String wolPort, String macAddress, String sshUsername,
-                    String sshPassword, String sshPort, String broadcastIp/*, String sshShutdownCmd*/) {
-        this.hostname = hostname;
-        this.ipAddress = ipAddress;
-        this.wolPort = wolPort;
-        this.hardwareAddress = macAddress;
-        this.sshUsername = sshUsername;
-        this.sshPassword = sshPassword;
-        this.sshPort = sshPort;
-        this.broadcastIp = broadcastIp;
-        this.sshShutdownCmd = sshShutdownCmd;
-    }
+//    public HostBean(String hostname, String ipAddress, String wolPort, String macAddress, String sshUsername,
+//                    String sshPassword, String sshPort, String broadcastIp, String sshShutdownCmd,
+//                    boolean isSsh) {
+//        this.hostname = hostname;
+//        this.ipAddress = ipAddress;
+//        this.wolPort = wolPort;
+//        this.hardwareAddress = macAddress;
+//        this.sshUsername = sshUsername;
+//        this.sshPassword = sshPassword;
+//        this.sshPort = sshPort;
+//        this.broadcastIp = broadcastIp;
+//        this.sshShutdownCmd = sshShutdownCmd;
+//        this.isSsh = isSsh;
+//    }
 
     public int describeContents() {
         return 0;
@@ -73,6 +79,8 @@ public class HostBean implements Parcelable {
         dest.writeString(wolPort);
         dest.writeString(broadcastIp);
         dest.writeString(sshShutdownCmd);
+        dest.writeInt(isSsh ? 1 : 0);
+        dest.writeString(sshKey);
     }
 
     private void readFromParcel(Parcel in) {
@@ -86,6 +94,8 @@ public class HostBean implements Parcelable {
         wolPort = in.readString();
         broadcastIp = in.readString();
         sshShutdownCmd = in.readString();
+        isSsh = in.readInt() == 1;
+        sshKey = in.readString();
     }
 
     public String name() {
@@ -93,22 +103,32 @@ public class HostBean implements Parcelable {
             return "";
         }
 
+        String result = null;
+
         boolean ipValid = ipAddress != null && !ipAddress.equals(NetInfo.NOIP);
         boolean macValid = hardwareAddress != null && !hardwareAddress.equals(NetInfo.NOMAC);
         if (hostname != null && hostname.length() > 0) {
             if (ipValid)
-                return hostname + " (" + ipAddress + ")";
+                result = hostname + " (" + ipAddress + ")";
             else if (macValid)
-                return hostname + " (" + hardwareAddress + ")";
+                result = hostname + " (" + hardwareAddress + ")";
             else
-                return hostname;
+                result = hostname;
         }
         else {
             if (ipValid)
-                return ipAddress;
+                result = ipAddress;
             else
-                return hardwareAddress;
+                result = hardwareAddress;
         }
+
+        if (isSsh) {
+            result += ", SSH";
+        } else {
+            result += ", Windows";
+        }
+
+        return result;
     }
 
     // Make sure that all fields are initialized and ready to be presented to user
@@ -123,6 +143,17 @@ public class HostBean implements Parcelable {
         hostname = "";
         broadcastIp = NetInfo.NOIP;
         sshShutdownCmd = SHUTDOWN_CMD;
+        isSsh = true;
+        sshKey = "";
+    }
+
+    public String sshKeyName() {
+        if (sshKey.equals("")) {
+            return "";
+        }
+        final String[] split = sshKey.split(":"); //split the path.
+        final String[] nameSplit = split[1].split("/");
+        return nameSplit[nameSplit.length - 1];
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

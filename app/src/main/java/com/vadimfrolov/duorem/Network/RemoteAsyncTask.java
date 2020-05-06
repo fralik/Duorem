@@ -23,14 +23,20 @@ import java.util.Properties;
 /**
  * Task to communicate with remote target.
  */
-public class RemoteAsyncTask extends AsyncTask<RemoteCommand, Void, RemoteCommand> {
+public class RemoteAsyncTask extends AsyncTask<RemoteCommand, RemoteCommand, RemoteCommand> {
 
     private final String TAG = "RemoteAsyncTask";
     private RemoteCommandResult mDelegate = null;
+    public volatile RemoteCommand cmd = null;
 
     public RemoteAsyncTask(RemoteCommandResult handler) {
         super();
         mDelegate = handler;
+    }
+
+    @Override
+    protected void onProgressUpdate(RemoteCommand... items) {
+        mDelegate.getPassphrase(items[0], items[1].passPhrase);
     }
 
     @Override
@@ -39,7 +45,7 @@ public class RemoteAsyncTask extends AsyncTask<RemoteCommand, Void, RemoteComman
             Log.d(TAG, "No parameters were passed to the task. Has nothing to do.");
             return null;
         }
-        RemoteCommand cmd = params[0];
+        cmd = params[0];
         String result = "";
         String address = decideIpOrHost(cmd);
         try {
@@ -49,7 +55,7 @@ public class RemoteAsyncTask extends AsyncTask<RemoteCommand, Void, RemoteComman
                     break;
 
                 case RemoteCommand.SSH:
-                    result = executeRemoteCommand(address, cmd.sshPort(), cmd.target.sshUsername, cmd.target.sshPassword, cmd.command);
+                    result = executeRemoteCommand(cmd);
                     break;
 
                 case RemoteCommand.PING:
@@ -141,14 +147,52 @@ public class RemoteAsyncTask extends AsyncTask<RemoteCommand, Void, RemoteComman
         return "success";
     }
 
-    private String executeRemoteCommand(String hostname, int port, String username, String password, String command)
+    private String executeRemoteCommand(RemoteCommand cmd)
             throws Exception {
+        String hostname = decideIpOrHost(cmd);
+        int port = cmd.sshPort();
+        String username = cmd.target.sshUsername;
+        String password = cmd.target.sshPassword;
+        String command = cmd.command;
+        String keyFile = cmd.sshKeyFile;
+
         if (isCancelled()) {
             return "";
         }
+
         JSch jsch = new JSch();
+        boolean usePassword = false;
+        try {
+            jsch.addIdentity(keyFile);
+            IdentityRepository repo = jsch.getIdentityRepository();
+            Identity id = (Identity) repo.getIdentities().firstElement();
+            Log.d(TAG, "Identity " + id.getName() + " is encrypted: " + id.isEncrypted());
+            if (id.isEncrypted()) {
+                if (mDelegate != null) {
+                    RemoteCommand cmd1 = new RemoteCommand(new HostBean());
+
+//                    final String[] split = id.getName().split("/");//split the path.
+                    cmd1.passPhrase = cmd.target.sshKeyName();
+                    publishProgress(cmd, cmd1);
+                    while (cmd.passPhrase == null) {
+                        Thread.sleep(1000);
+                    }
+                    id.setPassphrase(cmd.passPhrase.getBytes());
+                    if (id.isEncrypted()) {
+                        // passphrase failed
+                        return "";
+                    }
+                }
+            }
+            Log.d(TAG, "Identity " + id.getName() + " is encrypted: " + id.isEncrypted());
+        } catch (JSchException e) {
+            usePassword = true;
+        }
         Session session = jsch.getSession(username, hostname, port);
-        session.setPassword(password);
+        if (usePassword) {
+            session.setPassword(password);
+        }
+        session.setConfig("PreferredAuthentications", "publickey,password");
 
         // Avoid asking for key confirmation
         Properties prop = new Properties();

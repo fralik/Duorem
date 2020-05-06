@@ -6,9 +6,11 @@
 package com.vadimfrolov.duorem;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -19,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,14 +31,27 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.vadimfrolov.duorem.Network.HostBean;
 import com.vadimfrolov.duorem.Network.NetInfo;
 
+import org.apache.commons.io.IOUtils;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -47,6 +63,7 @@ import java.util.List;
  */
 public class TargetConfigurationFragment extends Fragment {
     static final String ARG_BEAN = "com.vadimfrolov.Duorem.TargetConfigurationFragment.bean";
+    private final String TAG = "TargetConfigurationFrag";
 
     private HostBean mHostBean;
 
@@ -58,16 +75,25 @@ public class TargetConfigurationFragment extends Fragment {
     private Switch mSwitchAdvanced;
     private TextInputEditText mEditWolPort;
     private View mViewWolLayout;
+    private Switch mSwitchPlatform;
     private TextInputEditText mEditSshUsername;
     private TextInputEditText mEditSshPassword;
     private TextInputEditText mEditSshPort;
     private List<EditText> mEditMac;
     private View mViewShutdownCmd;
     private TextInputEditText mEditShutdownCmd;
+    private Button mBtnLoadKey;
+    private LinearLayout mLayoutWindows;
+    private LinearLayout mLayoutSsh;
+    private EditText mEditSshKey;
 
     private boolean mIsTablet = false;
     SharedPreferences mPrefs;
     Context mContext;
+
+    // A request code's purpose is to match the result of a "startActivityForResult" with
+    // the type of the original request.  Choose any value.
+    private static final int SELECT_KEY_REQUEST = 1337;
 
     public TargetConfigurationFragment() {
         // Required empty public constructor
@@ -123,9 +149,15 @@ public class TargetConfigurationFragment extends Fragment {
         mEditSshPassword = (TextInputEditText)v.findViewById(R.id.edit_ssh_password);
         mEditSshPort = (TextInputEditText) v.findViewById(R.id.edit_ssh_port);
         mSwitchAdvanced = (Switch) v.findViewById(R.id.switch_advanced);
+        mSwitchPlatform = (Switch) v.findViewById(R.id.switch_platform);
+        mBtnLoadKey = (Button) v.findViewById(R.id.btn_select_key);
+        mEditSshKey = (EditText) v.findViewById(R.id.edit_ssh_key);
 
         mEditShutdownCmd = (TextInputEditText) v.findViewById(R.id.edit_shutdown_cmd);
         mViewShutdownCmd = v.findViewById(R.id.input_layout_shutdown_cmd);
+
+        mLayoutSsh = (LinearLayout) v.findViewById(R.id.layout_ssh);
+        mLayoutWindows = (LinearLayout) v.findViewById(R.id.layout_windows);
 
         EditText mac = (EditText)v.findViewById(R.id.mac_1);
         mEditMac.add(mac);
@@ -217,11 +249,125 @@ public class TargetConfigurationFragment extends Fragment {
         mSwitchAdvanced.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                setAdvancedVisibility(isChecked);
+//                setAdvancedVisibility(isChecked);
             }
         });
 
+        mSwitchPlatform.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                setPlatformInputsVisibility(!isChecked);
+            }
+        });
+
+        mEditSshKey.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("*/*");
+                try {
+                    startActivityForResult(intent, SELECT_KEY_REQUEST);
+                } catch (Exception e) {
+                    Log.w(TAG, "No activity");
+                    Toast.makeText(getActivity(), "Can't open file on this platform. Paste the key in the password field.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        mBtnLoadKey.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("*/*");
+                try {
+                    startActivityForResult(intent, SELECT_KEY_REQUEST);
+                } catch (Exception e) {
+                    Log.w(TAG, "No activity");
+                    Toast.makeText(getActivity(), "Can't open file on this platform. Paste the key in the password field.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        // default visibility
+        mLayoutSsh.setVisibility(View.VISIBLE);
+        mLayoutWindows.setVisibility(View.GONE);
+
         return v;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        Log.i(TAG, "Received an \"Activity Result\"");
+        boolean success = requestCode == SELECT_KEY_REQUEST && resultCode == Activity.RESULT_OK;
+
+        if (!success)
+            return;
+
+        // The document selected by the user won't be returned in the intent.
+        // Instead, a URI to that document will be contained in the return intent
+        // provided to this method as a parameter.
+        Uri uri = null;
+        if (resultData != null) {
+            uri = resultData.getData();
+            if (uri == null) {
+                return;
+            }
+            String keyName = "";
+//                final String[] split = uri.getPath().split(":");//split the path.
+//                mEditSshPassword.setText(split[1]);
+//                final String[] nameSplit = split[1].split("/");
+//                mEditSshKey.setText(nameSplit[nameSplit.length - 1]);
+            try {
+                InputStream fileInputStream = Objects.requireNonNull(getActivity()).getContentResolver().openInputStream(uri);
+
+                assert fileInputStream != null;
+                byte[] bytes = IOUtils.toByteArray(fileInputStream);
+
+                // One way to read content
+//                FileOutputStream writer = new FileOutputStream(new File(internalKey));
+//                fileInputStream.mark(0);
+//                Reader reader = new InputStreamReader(fileInputStream);
+//                int length;
+//                byte[] bytes = new byte[1024];
+
+//                while ((length = fileInputStream.read(bytes)) != -1) {
+//                    writer.write(bytes, 0, length);
+//                }
+
+                // Get string representation of the key
+                Charset charset = Charset.forName("US-ASCII");
+                CharsetDecoder decoder = charset.newDecoder();
+                ByteBuffer srcBuffer = ByteBuffer.wrap(bytes);
+                CharBuffer cont = decoder.decode(srcBuffer);
+                String keyValue = String.valueOf(cont);
+                if (keyValue.contains("BEGIN OPENSSH PRIVATE KEY")
+                        || keyValue.contains("BEGIN SSH2 ENCRYPTED PRIVATE KEY")) {
+                    Toast.makeText((Context) getActivity(),
+                            R.string.unsupported_key, Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                // Write key inside the app
+                String internalKey = mContext.getFilesDir() + File.separator + "file";
+                FileOutputStream writer = new FileOutputStream(new File(internalKey));
+                writer.write(bytes);
+                writer.close();
+
+                mEditSshKey.setText(uri.getPath());
+
+//                Reader reader = new InputStreamReader(fileInputStream);
+//                BufferedReader r = new BufferedReader(reader);
+//                StringBuilder total = new StringBuilder();
+//                for (String line; (line = r.readLine()) != null; ) {
+//                    total.append(line);
+//                }
+//                String result = total.toString();
+//                mEditSshPassword.setText(result);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -249,6 +395,14 @@ public class TargetConfigurationFragment extends Fragment {
         int visibility = visible ? View.VISIBLE : View.GONE;
 
         mViewShutdownCmd.setVisibility(visibility);
+    }
+
+    private void setPlatformInputsVisibility(boolean isSsh) {
+        int sshVisibility = isSsh ? View.VISIBLE : View.GONE;
+        int winVisibility = isSsh ? View.GONE : View.VISIBLE;
+
+        mLayoutSsh.setVisibility(sshVisibility);
+        mLayoutWindows.setVisibility(winVisibility);
     }
 
     private void saveTargetToSettings() {
@@ -304,6 +458,8 @@ public class TargetConfigurationFragment extends Fragment {
                 mHostBean.sshPassword = mEditSshPassword.getText().toString();
                 mHostBean.sshPort = mEditSshPort.getText().toString();
                 mHostBean.sshShutdownCmd = mEditShutdownCmd.getText().toString();
+                mHostBean.isSsh = !mSwitchPlatform.isChecked();
+                mHostBean.sshKey = mEditSshKey.getText().toString();
 
                 saveTargetToSettings();
 
@@ -342,6 +498,8 @@ public class TargetConfigurationFragment extends Fragment {
         mEditSshPassword.setText(mHostBean.sshPassword);
         mEditSshPort.setText(mHostBean.sshPort);
         mEditShutdownCmd.setText(mHostBean.sshShutdownCmd);
+        mSwitchPlatform.setChecked(!mHostBean.isSsh);
+        mEditSshKey.setText(mHostBean.sshKey);
     }
 
     private void mac2Fields(String macAddress) {

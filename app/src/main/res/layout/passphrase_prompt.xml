@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/layout_passphrase_prompt"
+    android:paddingStart="25dp"
+    android:paddingEnd="10dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <TextView
+        android:id="@+id/passphrase_key_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="key"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:gravity="center"
+        />
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_passphrase"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint=""
+        app:passwordToggleEnabled="true"
+        >
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/edit_passphrase"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="8"
+            android:imeOptions="actionNext"
+            android:inputType="textPassword"
+             >
+            <requestFocus/>
+        </android.support.design.widget.TextInputEditText>
+    </android.support.design.widget.TextInputLayout>
+
+</LinearLayout>

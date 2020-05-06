@@ -11,4 +11,5 @@ package com.vadimfrolov.duorem.Network;
 
 public interface RemoteCommandResult {
     void onRemoteCommandFinished(RemoteCommand output);
+    void getPassphrase(final RemoteCommand cmd, final String identityName);
 }
