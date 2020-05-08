@@ -38,6 +38,8 @@ public class HostBean implements Parcelable {
     /** Indicates if host is reachable via SSH or is it a Windows machine */
     public boolean isSsh = true;
     public String sshKey = "";
+    public String winUser = "";
+    public String winPassword = "";
 
     public HostBean() {
         // New object
@@ -47,22 +49,6 @@ public class HostBean implements Parcelable {
         // Object from parcel
         readFromParcel(in);
     }
-
-    // full constructor
-//    public HostBean(String hostname, String ipAddress, String wolPort, String macAddress, String sshUsername,
-//                    String sshPassword, String sshPort, String broadcastIp, String sshShutdownCmd,
-//                    boolean isSsh) {
-//        this.hostname = hostname;
-//        this.ipAddress = ipAddress;
-//        this.wolPort = wolPort;
-//        this.hardwareAddress = macAddress;
-//        this.sshUsername = sshUsername;
-//        this.sshPassword = sshPassword;
-//        this.sshPort = sshPort;
-//        this.broadcastIp = broadcastIp;
-//        this.sshShutdownCmd = sshShutdownCmd;
-//        this.isSsh = isSsh;
-//    }
 
     public int describeContents() {
         return 0;
@@ -81,6 +67,8 @@ public class HostBean implements Parcelable {
         dest.writeString(sshShutdownCmd);
         dest.writeInt(isSsh ? 1 : 0);
         dest.writeString(sshKey);
+        dest.writeString(winUser);
+        dest.writeString(winPassword);
     }
 
     private void readFromParcel(Parcel in) {
@@ -96,6 +84,8 @@ public class HostBean implements Parcelable {
         sshShutdownCmd = in.readString();
         isSsh = in.readInt() == 1;
         sshKey = in.readString();
+        winUser = in.readString();
+        winPassword = in.readString();
     }
 
     public String name() {
@@ -122,12 +112,6 @@ public class HostBean implements Parcelable {
                 result = hardwareAddress;
         }
 
-        if (isSsh) {
-            result += ", SSH";
-        } else {
-            result += ", Windows";
-        }
-
         return result;
     }
 
@@ -145,6 +129,8 @@ public class HostBean implements Parcelable {
         sshShutdownCmd = SHUTDOWN_CMD;
         isSsh = true;
         sshKey = "";
+        winUser = "<domain/workgroup>\\<username>";
+        winPassword = "";
     }
 
     public String sshKeyName() {

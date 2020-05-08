@@ -71,11 +71,13 @@ public class NetInfo {
         mContext = context;
 
         ConnectivityManager cm = (ConnectivityManager)mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo ni = cm.getActiveNetworkInfo();
-        boolean isConnected = ni != null && ni.isConnectedOrConnecting();
-        if (isConnected) {
-            obtainIp();
-            getWifiInfo();
+        if (cm != null) {
+            NetworkInfo ni = cm.getActiveNetworkInfo();
+            boolean isConnected = ni != null && ni.isConnectedOrConnecting();
+            if (isConnected) {
+                obtainIp();
+                getWifiInfo();
+            }
         }
     }
 

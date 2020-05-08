@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="192"
+   height="192"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   sodipodi:docname="win-icon.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.875"
+     inkscape:cx="7.4010933"
+     inkscape:cy="96"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer5"
+     showgrid="true"
+     showguides="false"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:snap-global="false">
+    <inkscape:grid
+       type="xygrid"
+       id="grid2985"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="8,58.524064"
+       id="guide3002"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="20,69.304813"
+       id="guide3004"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="32,62.631016"
+       id="guide3006"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="68,53.390374"
+       id="guide3008"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="119.61497,8"
+       id="guide3010"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="155.5508,20"
+       id="guide3012"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="132.96257,32"
+       id="guide3014"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="130.90909,68"
+       id="guide3016"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="137.06952,184"
+       id="guide3018"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="184,145.79679"
+       id="guide3020"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="91.379679,172"
+       id="guide3022"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="172,101.64706"
+       id="guide3024"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="149.39037,160"
+       id="guide3026"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="160,88.299465"
+       id="guide3028"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="128.34225,124"
+       id="guide3030"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="124,92.919786"
+       id="guide3032"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Horizontal rectangle"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-860.3622)"
+     sodipodi:insensitive="true"
+     style="display:none">
+    <rect
+       style="fill:none;stroke:#455a64;stroke-width:0.99999595;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3034"
+       width="175"
+       height="127"
+       x="8.5"
+       y="892.86218"
+       ry="4.1776319" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Vertical rectangle"
+     sodipodi:insensitive="true"
+     style="display:none">
+    <rect
+       style="fill:none;stroke:#455a64;stroke-width:1.0004611;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3037"
+       width="126.99954"
+       height="174.99954"
+       x="32.500229"
+       y="8.5002289"
+       ry="4.8130932" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="circle"
+     style="display:none"
+     sodipodi:insensitive="true">
+    <circle
+       style="fill:none;stroke:#455a64;stroke-width:0.27840909;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path3040"
+       transform="matrix(3.6455219,0,0,3.6455219,-443.53724,-160.86308)"
+       cx="148"
+       cy="70.459892"
+       r="24" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="Square"
+     style="display:none"
+     sodipodi:insensitive="true">
+    <rect
+       style="fill:none;stroke:#455a64;stroke-width:1.00005436;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3811"
+       width="150.99994"
+       height="150.99994"
+       x="20.500031"
+       y="20.500031"
+       ry="10.897427" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer5"
+     inkscape:label="logo">
+    <g
+       transform="matrix(1.3777555,0,0,1.3777555,15.194268,17.638756)"
+       id="g843">
+      <polygon
+         id="svg_23"
+         transform="matrix(2.535275,0,0,2.535275,4,4)"
+         points="41.727,20.219 41.727,0 18.502,3.389 18.502,20.219 "
+         style="fill:#0078d6" />
+      <polygon
+         id="svg_24"
+         transform="matrix(2.535275,0,0,2.535275,4,4)"
+         points="16.865,3.627 0,6.087 0,20.219 16.865,20.219 "
+         style="fill:#0078d6" />
+      <polygon
+         id="svg_25"
+         transform="matrix(2.535275,0,0,2.535275,4,4)"
+         points="0,21.855 0,36.167 16.865,38.655 16.865,21.855 "
+         style="fill:#0078d6" />
+      <polygon
+         id="svg_26"
+         transform="matrix(2.535275,0,0,2.535275,4,4)"
+         points="18.502,38.897 41.727,42.323 41.727,21.855 18.502,21.855 "
+         style="fill:#0078d6" />
+    </g>
+  </g>
+</svg>

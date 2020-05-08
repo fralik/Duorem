@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/alive"
@@ -35,4 +35,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_creator="1"
         />
+
+    <ImageView
+        android:id="@+id/main_host_type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_ssh"
+        app:layout_constraintTop_toTopOf="@+id/id"
+        app:layout_constraintBottom_toBottomOf="@+id/id"
+        app:layout_constraintLeft_toRightOf="@+id/id"
+        app:layout_constraintBaseline_toBaselineOf="@+id/id"
+        app:layout_constrainedWidth="true"
+        app:layout_constrainedHeight="true"
+        />
+
 </android.support.constraint.ConstraintLayout>

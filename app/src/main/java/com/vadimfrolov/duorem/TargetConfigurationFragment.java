@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -70,22 +71,21 @@ public class TargetConfigurationFragment extends Fragment {
     private TextInputEditText mEditHostname;
     private TextInputEditText mEditIpAddress;
     private TextInputEditText mEditBroadcastAddress;
-    private View mViewBroadcastLayout;
     private Button mBtnGuessBroadcast;
-    private Switch mSwitchAdvanced;
     private TextInputEditText mEditWolPort;
-    private View mViewWolLayout;
     private Switch mSwitchPlatform;
     private TextInputEditText mEditSshUsername;
     private TextInputEditText mEditSshPassword;
     private TextInputEditText mEditSshPort;
     private List<EditText> mEditMac;
-    private View mViewShutdownCmd;
     private TextInputEditText mEditShutdownCmd;
     private Button mBtnLoadKey;
     private LinearLayout mLayoutWindows;
     private LinearLayout mLayoutSsh;
     private EditText mEditSshKey;
+    private ImageView mHostType;
+    private EditText mEditWinUsername;
+    private EditText mEditWinPassword;
 
     private boolean mIsTablet = false;
     SharedPreferences mPrefs;
@@ -141,23 +141,23 @@ public class TargetConfigurationFragment extends Fragment {
         mEditHostname = (TextInputEditText) v.findViewById(R.id.edit_hostname);
         mEditIpAddress = (TextInputEditText) v.findViewById(R.id.edit_ip_address);
         mEditBroadcastAddress = (TextInputEditText) v.findViewById(R.id.edit_broadcast_address);
-        mViewBroadcastLayout = v.findViewById(R.id.input_layout_broadcast_address);
         mBtnGuessBroadcast = (Button) v.findViewById(R.id.btn_get_broadcast);
         mEditWolPort = (TextInputEditText)v.findViewById(R.id.edit_wol_port);
-        mViewWolLayout = v.findViewById(R.id.input_layout_wol_port);
         mEditSshUsername = (TextInputEditText) v.findViewById(R.id.edit_ssh_username);
         mEditSshPassword = (TextInputEditText)v.findViewById(R.id.edit_ssh_password);
         mEditSshPort = (TextInputEditText) v.findViewById(R.id.edit_ssh_port);
-        mSwitchAdvanced = (Switch) v.findViewById(R.id.switch_advanced);
         mSwitchPlatform = (Switch) v.findViewById(R.id.switch_platform);
         mBtnLoadKey = (Button) v.findViewById(R.id.btn_select_key);
         mEditSshKey = (EditText) v.findViewById(R.id.edit_ssh_key);
 
         mEditShutdownCmd = (TextInputEditText) v.findViewById(R.id.edit_shutdown_cmd);
-        mViewShutdownCmd = v.findViewById(R.id.input_layout_shutdown_cmd);
 
         mLayoutSsh = (LinearLayout) v.findViewById(R.id.layout_ssh);
         mLayoutWindows = (LinearLayout) v.findViewById(R.id.layout_windows);
+        mHostType = (ImageView) v.findViewById(R.id.img_host_type);
+
+        mEditWinUsername = (EditText) v.findViewById(R.id.edit_win_username);
+        mEditWinPassword = (EditText) v.findViewById(R.id.edit_win_password);
 
         EditText mac = (EditText)v.findViewById(R.id.mac_1);
         mEditMac.add(mac);
@@ -246,17 +246,16 @@ public class TargetConfigurationFragment extends Fragment {
             }
         });
 
-        mSwitchAdvanced.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                setAdvancedVisibility(isChecked);
-            }
-        });
-
         mSwitchPlatform.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                setPlatformInputsVisibility(!isChecked);
+                boolean isSsh = !isChecked;
+                setPlatformInputsVisibility(isSsh);
+                if (isSsh) {
+                    mHostType.setImageDrawable(getActivity().getDrawable(R.drawable.ic_ssh));
+                } else {
+                    mHostType.setImageDrawable(getActivity().getDrawable(R.drawable.ic_win));
+                }
             }
         });
 
@@ -391,12 +390,6 @@ public class TargetConfigurationFragment extends Fragment {
         }
     }
 
-    private void setAdvancedVisibility(boolean visible) {
-        int visibility = visible ? View.VISIBLE : View.GONE;
-
-        mViewShutdownCmd.setVisibility(visibility);
-    }
-
     private void setPlatformInputsVisibility(boolean isSsh) {
         int sshVisibility = isSsh ? View.VISIBLE : View.GONE;
         int winVisibility = isSsh ? View.GONE : View.VISIBLE;
@@ -460,6 +453,8 @@ public class TargetConfigurationFragment extends Fragment {
                 mHostBean.sshShutdownCmd = mEditShutdownCmd.getText().toString();
                 mHostBean.isSsh = !mSwitchPlatform.isChecked();
                 mHostBean.sshKey = mEditSshKey.getText().toString();
+                mHostBean.winUser = mEditWinUsername.getText().toString();
+                mHostBean.winPassword = mEditSshPassword.getText().toString();
 
                 saveTargetToSettings();
 
@@ -500,6 +495,8 @@ public class TargetConfigurationFragment extends Fragment {
         mEditShutdownCmd.setText(mHostBean.sshShutdownCmd);
         mSwitchPlatform.setChecked(!mHostBean.isSsh);
         mEditSshKey.setText(mHostBean.sshKey);
+        mEditWinUsername.setText(mHostBean.winUser);
+        mEditWinPassword.setText(mHostBean.winPassword);
     }
 
     private void mac2Fields(String macAddress) {

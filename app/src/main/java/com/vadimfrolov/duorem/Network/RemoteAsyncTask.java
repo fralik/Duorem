@@ -7,7 +7,18 @@ package com.vadimfrolov.duorem.Network;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.jcraft.jsch.*;
+import com.hierynomus.smbj.SMBClient;
+import com.hierynomus.smbj.auth.AuthenticationContext;
+import com.hierynomus.smbj.connection.Connection;
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.Identity;
+import com.jcraft.jsch.IdentityRepository;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.rapid7.client.dcerpc.initshutdown.ShutdownService;
+import com.rapid7.client.dcerpc.transport.RPCTransport;
+import com.rapid7.client.dcerpc.transport.SMBTransportFactories;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,9 +27,9 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.util.Objects;
 import java.util.Properties;
+
 
 /**
  * Task to communicate with remote target.
@@ -26,7 +37,7 @@ import java.util.Properties;
 public class RemoteAsyncTask extends AsyncTask<RemoteCommand, RemoteCommand, RemoteCommand> {
 
     private final String TAG = "RemoteAsyncTask";
-    private RemoteCommandResult mDelegate = null;
+    private RemoteCommandResult mDelegate;
     public volatile RemoteCommand cmd = null;
 
     public RemoteAsyncTask(RemoteCommandResult handler) {
@@ -61,13 +72,19 @@ public class RemoteAsyncTask extends AsyncTask<RemoteCommand, RemoteCommand, Rem
                 case RemoteCommand.PING:
                     Socket socket = new Socket(address, cmd.sshPort());
                     result = "success";
+                    socket.close();
+                    break;
+
+                case RemoteCommand.RPC:
+                    sendRPC(cmd);
+                    result = "success";
                     break;
 
                 default:
                     break;
             }
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
+            Log.e(TAG, Objects.requireNonNull(e.getMessage()));
         }
 
         cmd.result = result;
@@ -90,8 +107,7 @@ public class RemoteAsyncTask extends AsyncTask<RemoteCommand, RemoteCommand, Rem
      * @return Either IP address or hostname. If both fails, IP address is returned.
      */
     private String decideIpOrHost(RemoteCommand cmd) {
-        boolean ipIsValid = false;
-        boolean hostIsValid = false;
+        boolean ipIsValid;
         try {
             Socket socket = new Socket(cmd.target.ipAddress, cmd.sshPort());
             ipIsValid = true;
@@ -100,6 +116,7 @@ public class RemoteAsyncTask extends AsyncTask<RemoteCommand, RemoteCommand, Rem
             ipIsValid = false;
         }
 
+        boolean hostIsValid;
         try {
             Socket socket = new Socket(cmd.target.hostname, cmd.sshPort());
             hostIsValid = true;
@@ -115,7 +132,7 @@ public class RemoteAsyncTask extends AsyncTask<RemoteCommand, RemoteCommand, Rem
         return cmd.target.ipAddress;
     }
 
-    private String sendWolPacket(String mac, String broadcastIp, int wolPort) throws UnknownHostException, SocketException, IOException, IllegalArgumentException {
+    private String sendWolPacket(String mac, String broadcastIp, int wolPort) throws IOException, IllegalArgumentException {
         if (broadcastIp == null || broadcastIp.equals(NetInfo.NOIP)) {
             return "invalid gateway";
         }
@@ -231,7 +248,8 @@ public class RemoteAsyncTask extends AsyncTask<RemoteCommand, RemoteCommand, Rem
             out.flush();
         }
 
-        String result = "";
+        String result;
+        StringBuilder resultBuilder = new StringBuilder();
 
         byte[] tmp = new byte[1024];
         while (true) {
@@ -240,8 +258,9 @@ public class RemoteAsyncTask extends AsyncTask<RemoteCommand, RemoteCommand, Rem
                 if (i < 0) {
                     break;
                 }
-                result = result + new String(tmp, 0, i);
+                resultBuilder.append(new String(tmp, 0, i));
             }
+            result = resultBuilder.toString();
             if (channel.isClosed() || isCancelled()) {
                 break;
             }
@@ -256,5 +275,30 @@ public class RemoteAsyncTask extends AsyncTask<RemoteCommand, RemoteCommand, Rem
         session.disconnect();
 
         return result;
+    }
+
+    private void sendRPC(RemoteCommand cmd) throws IOException {
+        final SMBClient smbClient = new SMBClient();
+        final String[] usernameSplit = cmd.target.winUser.split("\\\\");
+        final String username = usernameSplit[usernameSplit.length - 1];
+        String domain = "WORKGROUP";
+        if (usernameSplit.length > 1) {
+            domain = usernameSplit[0];
+        }
+        final String password = cmd.target.winPassword;
+        final String serverAddress = decideIpOrHost(cmd);
+        final int timeout = 10;
+        final boolean forceAppsClosed = true;
+        final boolean reboot = cmd.command.equals("reboot");
+
+        final Connection smbConnection = smbClient.connect(serverAddress);
+        final AuthenticationContext smbAuthenticationCtx = new AuthenticationContext(username,
+                password.toCharArray(), domain);
+        final com.hierynomus.smbj.session.Session session = smbConnection.authenticate(smbAuthenticationCtx);
+
+        final RPCTransport transport = SMBTransportFactories.INITSHUTDOWN.getTransport(session);
+        final ShutdownService shutdownService = new ShutdownService(transport);
+
+        shutdownService.shutdown(null, timeout, forceAppsClosed, reboot);
     }
 }

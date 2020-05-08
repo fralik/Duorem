@@ -11,50 +11,68 @@
         android:orientation="vertical"
         tools:context="com.vadimfrolov.duorem.TargetConfigurationFragment">
 
-        <!-- Hostname AKA nickname -->
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_hostname"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/layout_name"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="10dp"
-            android:hint="@string/host_name"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/app_bar">
+            app:layout_constraintTop_toBottomOf="@+id/app_bar"
+            android:orientation="horizontal">
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/edit_hostname"
-                android:layout_width="match_parent"
+            <!-- Hostname AKA nickname -->
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_hostname"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:ems="8"
-                android:inputType="textPersonName"
-                android:nextFocusForward="@+id/mac_1"
-                android:nextFocusDown="@+id/mac_1" />
-        </android.support.design.widget.TextInputLayout>
+                android:hint="@string/host_name"
+                android:layout_gravity="start"
+                android:layout_weight="3"
+                >
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edit_hostname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="8"
+                    android:inputType="textPersonName"
+                    android:nextFocusForward="@+id/mac_1"
+                    android:nextFocusDown="@+id/mac_1" />
+            </android.support.design.widget.TextInputLayout>
+
+            <ImageView
+                android:id="@+id/img_host_type"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:layout_gravity="end"
+                app:srcCompat="@drawable/ic_ssh"
+                android:contentDescription="@string/descr_host_type_icon" />
+
+        </LinearLayout>
 
         <!-- MAC address -->
         <TextView
             android:id="@+id/label_mac_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="10dp"
             android:text="@string/mac_address"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintLeft_toLeftOf="@+id/input_layout_hostname"
+            app:layout_constraintLeft_toLeftOf="@+id/layout_name"
             app:layout_constraintRight_toLeftOf="@+id/mac_1"
-            app:layout_constraintTop_toBottomOf="@id/input_layout_hostname" />
+            app:layout_constraintTop_toBottomOf="@id/layout_name" />
 
         <EditText
             android:id="@+id/mac_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:imeOptions="actionNext"
@@ -62,13 +80,14 @@
             android:maxLength="17"
             android:nextFocusForward="@+id/mac_2"
             android:selectAllOnFocus="true"
-            android:text="FF"
+            android:text="@string/mac_part_default"
             app:layout_constraintBaseline_toBaselineOf="@+id/label_mac_address"
             app:layout_constraintLeft_toRightOf="@+id/label_mac_address"
             app:layout_constraintRight_toLeftOf="@+id/mac_sep_1"
             app:layout_constraintTop_toTopOf="@+id/label_mac_address"
             tools:layout_constraintLeft_creator="1"
-            tools:layout_constraintTop_creator="1" />
+            tools:layout_constraintTop_creator="1"
+            android:importantForAutofill="no"/>
 
         <TextView
             android:id="@+id/mac_sep_1"
@@ -90,7 +109,7 @@
             android:maxLength="17"
             android:nextFocusForward="@+id/mac_3"
             android:selectAllOnFocus="true"
-            android:text="FF"
+            android:text="@string/mac_part_default"
             app:layout_constraintBaseline_toBaselineOf="@+id/label_mac_address"
             app:layout_constraintLeft_toRightOf="@+id/mac_sep_1"
             app:layout_constraintRight_toLeftOf="@+id/mac_sep_2"
@@ -118,7 +137,7 @@
             android:maxLength="17"
             android:nextFocusForward="@+id/mac_4"
             android:selectAllOnFocus="true"
-            android:text="FF"
+            android:text="@string/mac_part_default"
             app:layout_constraintBaseline_toBaselineOf="@+id/label_mac_address"
             app:layout_constraintLeft_toRightOf="@+id/mac_sep_2"
             app:layout_constraintRight_toLeftOf="@+id/mac_sep_3"
@@ -146,7 +165,7 @@
             android:maxLength="17"
             android:nextFocusForward="@+id/mac_5"
             android:selectAllOnFocus="true"
-            android:text="FF"
+            android:text="@string/mac_part_default"
             app:layout_constraintBaseline_toBaselineOf="@+id/label_mac_address"
             app:layout_constraintLeft_toRightOf="@+id/mac_sep_3"
             app:layout_constraintRight_toLeftOf="@+id/mac_sep_4"
@@ -174,7 +193,7 @@
             android:maxLength="17"
             android:nextFocusForward="@+id/mac_6"
             android:selectAllOnFocus="true"
-            android:text="FF"
+            android:text="@string/mac_part_default"
             app:layout_constraintBaseline_toBaselineOf="@+id/label_mac_address"
             app:layout_constraintLeft_toRightOf="@+id/mac_sep_4"
             app:layout_constraintRight_toLeftOf="@+id/mac_sep_5"
@@ -202,7 +221,7 @@
             android:maxLength="17"
             android:nextFocusForward="@+id/edit_broadcast_address"
             android:selectAllOnFocus="true"
-            android:text="FF"
+            android:text="@string/mac_part_default"
             app:layout_constraintBaseline_toBaselineOf="@+id/label_mac_address"
             app:layout_constraintLeft_toRightOf="@+id/mac_sep_5"
             app:layout_constraintRight_toRightOf="parent"
@@ -245,7 +264,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/obtain_broadcast_address"
-            android:visibility="visible"
+            android:visibility="gone"
             android:textAllCaps="false"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -308,7 +327,7 @@
             android:id="@+id/switch_platform"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:nextFocusForward="@+id/edit_wol_port"
             android:splitTrack="false"
@@ -431,21 +450,6 @@
                     android:nextFocusForward="@+id/edit_hostname" />
             </android.support.design.widget.TextInputLayout>
 
-            <!-- Advanced options -->
-            <Switch
-                android:id="@+id/switch_advanced"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:nextFocusForward="@+id/edit_wol_port"
-                android:text="@string/show_advanced"
-                android:visibility="gone"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/input_layout_ssh_port" />
-
             <!-- Shutdown command -->
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/input_layout_shutdown_cmd"
@@ -493,9 +497,27 @@
                     android:layout_height="wrap_content"
                     android:ems="8"
                     android:inputType="textPersonName"
-                    android:nextFocusForward="@id/edit_ssh_password" />
+                    android:nextFocusForward="@id/edit_win_password" />
             </android.support.design.widget.TextInputLayout>
 
+            <!-- Windows password -->
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_win_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/win_password"
+                app:passwordToggleEnabled="true"
+                >
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edit_win_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="8"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPassword"
+                    android:nextFocusForward="@+id/edit_hostname" />
+            </android.support.design.widget.TextInputLayout>
         </LinearLayout>
 
 

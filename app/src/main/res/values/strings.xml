@@ -61,7 +61,10 @@
     <string name="ssh">SSH</string>
     <string name="win">Windows</string>
     <string name="win_username">Windows username</string>
+    <string name="win_password">Windows password</string>
     <string name="unsupported_key">Unsupported key format</string>
+    <string name="descr_host_type_icon">Windows or SSH logo</string>
+    <string name="mac_part_default">FF</string>
 
     <!-- used on About dialog -->
     <string name="about_title">About Duorem</string>

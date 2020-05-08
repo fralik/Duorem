@@ -16,6 +16,8 @@ public class RemoteCommand {
     public static final int WOL = 1;
     /** This is an ssh command */
     public static final int SSH = 2;
+    /** Windows RPC command */
+    public static final int RPC = 3;
     /** This is invalid command */
     public static final int INVALID_CMD = -1;
 

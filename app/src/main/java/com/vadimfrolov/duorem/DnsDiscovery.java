@@ -44,36 +44,34 @@ public class DnsDiscovery extends AbstractDiscovery {
 
     @Override
     protected Void doInBackground(Void... params) {
-        if (mDiscover != null) {
-            final DiscoveryListener discover = mDiscover.get();
-            if (discover != null) {
-                int timeout = discover.getTimeout();
-                long numChunks = mSize / sChunkSize;
-                long numLeft = mSize % sChunkSize;
-                mPool = Executors.newFixedThreadPool(sThreads);
+        final DiscoveryListener discover = mDiscover.get();
+        if (discover != null) {
+            int timeout = discover.getTimeout();
+            long numChunks = mSize / sChunkSize;
+            long numLeft = mSize % sChunkSize;
+            mPool = Executors.newFixedThreadPool(sThreads);
 
-                for (long i = 1; i <= numChunks; i++) {
-                    long start = mStart-1 + ((i - 1) * sChunkSize + 1);
-                    long stop = start + sChunkSize - 1;
-                    launch(start, stop, timeout, discover.getGatewayIp());
-                }
-                if (numLeft > 0) {
-                    long start = mStart-1 + (numChunks * sChunkSize + 1);
-                    long stop = mEnd;
-                    launch(start, stop, timeout, discover.getGatewayIp());
-                }
-                mPool.shutdown();
-                try {
-                    if (!mPool.awaitTermination(TIMEOUT_SCAN, TimeUnit.SECONDS)) {
-                        mPool.shutdownNow();
-                        if (!mPool.awaitTermination(TIMEOUT_SHUTDOWN, TimeUnit.SECONDS)) {
-                            Log.w(TAG, "Pool did not shutdown");
-                        }
-                    }
-                } catch (InterruptedException e) {
+            for (long i = 1; i <= numChunks; i++) {
+                long start = mStart-1 + ((i - 1) * sChunkSize + 1);
+                long stop = start + sChunkSize - 1;
+                launch(start, stop, timeout, discover.getGatewayIp());
+            }
+            if (numLeft > 0) {
+                long start = mStart-1 + (numChunks * sChunkSize + 1);
+                long stop = mEnd;
+                launch(start, stop, timeout, discover.getGatewayIp());
+            }
+            mPool.shutdown();
+            try {
+                if (!mPool.awaitTermination(TIMEOUT_SCAN, TimeUnit.SECONDS)) {
                     mPool.shutdownNow();
-                    Thread.currentThread().interrupt();
+                    if (!mPool.awaitTermination(TIMEOUT_SHUTDOWN, TimeUnit.SECONDS)) {
+                        Log.w(TAG, "Pool did not shutdown");
+                    }
                 }
+            } catch (InterruptedException e) {
+                mPool.shutdownNow();
+                Thread.currentThread().interrupt();
             }
         }
         return null;
@@ -109,18 +107,18 @@ public class DnsDiscovery extends AbstractDiscovery {
             mGatewayIp = gatewayIp;
         }
 
-        private boolean isReachable(String addr, int openPort, int timeOutMillis) {
-            // Any Open port on other machine
-            // openPort =  22 - ssh, 80 or 443 - webserver, 25 - mailserver etc.
-            try {
-                try (Socket soc = new Socket()) {
-                    soc.connect(new InetSocketAddress(addr, openPort), timeOutMillis);
-                }
-                return true;
-            } catch (IOException ex) {
-                return false;
-            }
-        }
+//        private boolean isReachable(String addr, int openPort, int timeOutMillis) {
+//            // Any Open port on other machine
+//            // openPort =  22 - ssh, 80 or 443 - webserver, 25 - mailserver etc.
+//            try {
+//                try (Socket soc = new Socket()) {
+//                    soc.connect(new InetSocketAddress(addr, openPort), timeOutMillis);
+//                }
+//                return true;
+//            } catch (IOException ex) {
+//                return false;
+//            }
+//        }
 
         public void run() {
             if (isCancelled()) {
