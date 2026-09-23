@@ -62,4 +62,23 @@
     <string name="about_license">License</string>
     <string name="license_gplv3_later">GNU General Public License version 3 or later</string>
     <string name="close">Close</string>
+    <string name="allow_network">Allow local network access</string>
+    <string name="network_permission_required">Duorem needs local network access to find, wake and control your computer. Choose Allow local network access to grant permission.</string>
+    <string name="discovery_help">Connect to your home Wi-Fi or Ethernet network to discover reachable devices. You can always enter a device manually. On Android 10 and later, enter its MAC address from the computer or router for Wake-on-LAN.</string>
+    <string name="mac_required">Enter a MAC address for Wake-on-LAN</string>
+    <string name="discovery_failed">Discovery was blocked. Check local network permission and your connection.</string>
+    <string name="settings_load_failed">Could not read the saved device. Its settings have not been overwritten. Try again, or delete the device and configure it again.</string>
+    <string name="settings_save_failed">Could not save device settings. Please try again.</string>
+    <string name="invalid_ip">Enter a valid IPv4 address.</string>
+    <string name="invalid_port">Enter a port between 1 and 65535.</string>
+    <string name="invalid_mac">Enter six pairs of hexadecimal digits.</string>
+    <string name="target_required">Enter an IP address, hostname, or MAC address.</string>
+    <string name="broadcast_guess_failed">Enter a valid IP address and connect to an IPv4 network, or enter the broadcast address manually.</string>
+    <string name="command_sending">Sending command...</string>
+    <string name="command_failed">Command failed: %1$s</string>
+    <string name="command_cancelled">Network operation cancelled. A command already sent to the computer may still run.</string>
+    <string name="host_key_unknown">Verify SSH server identity</string>
+    <string name="host_key_changed">Warning: SSH server key changed</string>
+    <string name="host_key_confirm">Server: %1$s\nKey type: %2$s\nFingerprint: %3$s\n\nVerify this fingerprint directly on your computer before trusting it. A changed key can indicate a different computer or an intercepted connection.</string>
+    <string name="trust_and_retry">Trust and retry</string>
 </resources>

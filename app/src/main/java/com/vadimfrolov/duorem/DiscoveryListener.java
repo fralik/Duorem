@@ -14,8 +14,8 @@ import com.vadimfrolov.duorem.Network.HostBean;
 public interface DiscoveryListener {
     void onNewHost(HostBean host);
     int getTimeout();
-    String getGatewayIp();
     void onStartDiscovering();
     void onStopDiscovering();
     void setDiscoverProgress(int progress);
+    void onDiscoveryError();
 }

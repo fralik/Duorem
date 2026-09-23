@@ -60,5 +60,24 @@
     <string name="about_license">许可证</string>
     <string name="license_gplv3_later">GNU General Public License version 3 or later</string>
     <string name="close">关闭</string>
+    <string name="unknown_mac">00:00:00:00:00:00</string>
+    <string name="allow_network">允许访问本地网络</string>
+    <string name="network_permission_required">Duorem 需要访问本地网络才能查找、唤醒和控制计算机。请选择“允许访问本地网络”以授予权限。</string>
+    <string name="discovery_help">连接家庭 Wi-Fi 或以太网以发现可访问的设备。你也可以手动输入设备。从 Android 10 开始，使用 Wake-on-LAN 需要手动输入计算机或路由器上显示的 MAC 地址。</string>
+    <string name="mac_required">请输入用于 Wake-on-LAN 的 MAC 地址</string>
+    <string name="discovery_failed">搜索被阻止。请检查本地网络权限和网络连接。</string>
+    <string name="settings_load_failed">无法读取已保存的设备，设置未被覆盖。请重试，或删除设备后重新配置。</string>
+    <string name="settings_save_failed">无法保存设备设置，请重试。</string>
+    <string name="invalid_ip">请输入有效的 IPv4 地址。</string>
+    <string name="invalid_port">请输入 1 到 65535 之间的端口号。</string>
+    <string name="invalid_mac">请输入六组两位十六进制数字。</string>
+    <string name="target_required">请输入 IP 地址、主机名或 MAC 地址。</string>
+    <string name="broadcast_guess_failed">请输入有效的 IP 地址并连接 IPv4 网络，或手动输入广播地址。</string>
+    <string name="command_sending">正在发送命令...</string>
+    <string name="command_failed">命令失败：%1$s</string>
+    <string name="command_cancelled">网络操作已取消。已发送到计算机的命令仍可能执行。</string>
+    <string name="host_key_unknown">验证 SSH 服务器身份</string>
+    <string name="host_key_changed">警告：SSH 服务器密钥已更改</string>
+    <string name="host_key_confirm">服务器：%1$s\n密钥类型：%2$s\n指纹：%3$s\n\n信任此密钥之前，请直接在计算机上核对指纹。密钥更改可能表示连接到了另一台计算机，或连接遭到拦截。</string>
+    <string name="trust_and_retry">信任并重试</string>
 </resources>
-

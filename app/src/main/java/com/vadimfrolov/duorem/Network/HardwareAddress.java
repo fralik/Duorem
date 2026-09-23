@@ -7,6 +7,7 @@
 package com.vadimfrolov.duorem.Network;
 
 import android.util.Log;
+import android.os.Build;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -31,6 +32,10 @@ public final class HardwareAddress {
     private final static int BUF = 8 * 1024;
 
     public static String getHardwareAddress(String ip) {
+        if (Build.VERSION.SDK_INT >= 29) {
+            // Android no longer permits apps to read the ARP table.
+            return NetInfo.NOMAC;
+        }
         String hw = NetInfo.NOMAC;
         BufferedReader bufferedReader = null;
         if (ip == null) {

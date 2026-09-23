@@ -2,85 +2,55 @@
  * Copyright (C) 2017 Vadim Frolov
  * Licensed under GNU's GPL 3 or any later version, see README
  */
-
 package com.vadimfrolov.duorem;
 
-
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 
-import com.google.gson.Gson;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NavUtils;
+import androidx.fragment.app.Fragment;
+
 import com.vadimfrolov.duorem.Network.HostBean;
 import com.vadimfrolov.duorem.Network.NetInfo;
+import com.vadimfrolov.duorem.Network.NetworkAddress;
+import com.vadimfrolov.duorem.Network.WakeOnLan;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link TargetConfigurationFragment#newInstance} factory method to
- * create an instance of this fragment.
- *
- * This class should get host information, i.e. HostBean
- */
 public class TargetConfigurationFragment extends Fragment {
-    static final String ARG_BEAN = "com.vadimfrolov.Duorem.TargetConfigurationFragment.bean";
+    private static final String ARG_BEAN = "com.vadimfrolov.Duorem.TargetConfigurationFragment.bean";
+    private HostBean host;
+    private EditText hostname;
+    private EditText ip;
+    private EditText broadcast;
+    private EditText wolPort;
+    private EditText username;
+    private EditText password;
+    private EditText sshPort;
+    private EditText shutdown;
+    private Switch advanced;
+    private View commandLayout;
+    private final List<EditText> macFields = new ArrayList<>();
+    private boolean updatingMac;
 
-    private HostBean mHostBean;
-
-    private TextInputEditText mEditHostname;
-    private TextInputEditText mEditIpAddress;
-    private TextInputEditText mEditBroadcastAddress;
-    private View mViewBroadcastLayout;
-    private Button mBtnGuessBroadcast;
-    private Switch mSwitchAdvanced;
-    private TextInputEditText mEditWolPort;
-    private View mViewWolLayout;
-    private TextInputEditText mEditSshUsername;
-    private TextInputEditText mEditSshPassword;
-    private TextInputEditText mEditSshPort;
-    private List<EditText> mEditMac;
-    private View mViewShutdownCmd;
-    private TextInputEditText mEditShutdownCmd;
-
-    private boolean mIsTablet = false;
-    SharedPreferences mPrefs;
-    Context mContext;
-
-    public TargetConfigurationFragment() {
-        // Required empty public constructor
-        mEditMac = new ArrayList<>();
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param host Parameter 1.
-     * @return A new instance of fragment TargetConfigurationFragment.
-     */
     public static TargetConfigurationFragment newInstance(HostBean host) {
         TargetConfigurationFragment fragment = new TargetConfigurationFragment();
         Bundle args = new Bundle();
@@ -90,278 +60,207 @@ public class TargetConfigurationFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Bundle args = getArguments();
-        if (args != null) {
-            mHostBean = args.getParcelable(HostBean.EXTRA);
-        }
-
-        mContext = (Context) getActivity();
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            mHostBean = savedInstanceState.getParcelable(HostBean.EXTRA);
-        }
-
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_target_configuration, container, false);
+    public void onCreate(Bundle state) {
+        super.onCreate(state);
         setHasOptionsMenu(true);
-
-        mEditHostname = (TextInputEditText) v.findViewById(R.id.edit_hostname);
-        mEditIpAddress = (TextInputEditText) v.findViewById(R.id.edit_ip_address);
-        mEditBroadcastAddress = (TextInputEditText) v.findViewById(R.id.edit_broadcast_address);
-        mViewBroadcastLayout = v.findViewById(R.id.input_layout_broadcast_address);
-        mBtnGuessBroadcast = (Button) v.findViewById(R.id.btn_get_broadcast);
-        mEditWolPort = (TextInputEditText)v.findViewById(R.id.edit_wol_port);
-        mViewWolLayout = v.findViewById(R.id.input_layout_wol_port);
-        mEditSshUsername = (TextInputEditText) v.findViewById(R.id.edit_ssh_username);
-        mEditSshPassword = (TextInputEditText)v.findViewById(R.id.edit_ssh_password);
-        mEditSshPort = (TextInputEditText) v.findViewById(R.id.edit_ssh_port);
-        mSwitchAdvanced = (Switch) v.findViewById(R.id.switch_advanced);
-
-        mEditShutdownCmd = (TextInputEditText) v.findViewById(R.id.edit_shutdown_cmd);
-        mViewShutdownCmd = v.findViewById(R.id.input_layout_shutdown_cmd);
-
-        EditText mac = (EditText)v.findViewById(R.id.mac_1);
-        mEditMac.add(mac);
-        mac = (EditText)v.findViewById(R.id.mac_2);
-        mEditMac.add(mac);
-        mac = (EditText)v.findViewById(R.id.mac_3);
-        mEditMac.add(mac);
-        mac = (EditText)v.findViewById(R.id.mac_4);
-        mEditMac.add(mac);
-        mac = (EditText)v.findViewById(R.id.mac_5);
-        mEditMac.add(mac);
-        mac = (EditText)v.findViewById(R.id.mac_6);
-        mEditMac.add(mac);
-
-        // This class does three things:
-        // 1. Accepts full MAC address when user pastes it from the clipboard.
-        // 2. Prevents entering of more than two characters in any of the MAC fields.
-        // 3. Moves focus when user enters two characters in any of the MAC fields.
-        TextWatcher macTextWatcher = new TextWatcher() {
-            private boolean mIsPasting = false;
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (count == NetInfo.NOMAC.length() && s.toString().contains(":")) {
-                    String mac = s.toString();
-                    String[] parts = mac.split(":");
-                    if (parts.length != 6)
-                        return;
-
-                    mIsPasting = true;
-                    for (int i = 0; i < 6; i++) {
-                        mEditMac.get(i).setText(parts[i]);
-                    }
-                    mIsPasting = false;
-                    mEditBroadcastAddress.requestFocus();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (mIsPasting)
-                    return;
-
-                int len = s.toString().length();
-                if (len == 2) {
-                    int target = -1;
-                    for (int i = 0; i < mEditMac.size(); i++) {
-                        EditText candidate = mEditMac.get(i);
-                        if (candidate.getText().hashCode() == s.hashCode()) {
-                            target = i;
-                            break;
-                        }
-                    }
-                    if (target == -1)
-                        return;
-
-                    if (target == 5) {
-                        mEditBroadcastAddress.requestFocus();
-                    } else {
-                        mEditMac.get(target + 1).requestFocus();
-                    }
-                }
-
-                if (len > 2) {
-                    s.delete(2, len);
-                }
-            }
-        };
-
-        for (EditText macEditor : mEditMac) {
-            macEditor.addTextChangedListener(macTextWatcher);
+        if (state != null) {
+            host = state.getParcelable(ARG_BEAN);
+        } else if (getArguments() != null) {
+            host = getArguments().getParcelable(HostBean.EXTRA);
         }
-
-        mBtnGuessBroadcast.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NetInfo ni = new NetInfo(mContext);
-                String ip = mEditIpAddress.getText().toString();
-                String broadcastIp = NetInfo.getBroadcastFromIpAndCidr(ip, ni.cidr);
-                mEditBroadcastAddress.setText(broadcastIp);
-            }
-        });
-
-        mSwitchAdvanced.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                setAdvancedVisibility(isChecked);
-            }
-        });
-
-        return v;
+        if (host == null) host = new HostBean();
+        host.normalize();
     }
 
     @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            HostBean host = savedInstanceState.getParcelable(ARG_BEAN);
-            updateTarget(host);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
+        View view = inflater.inflate(R.layout.fragment_target_configuration, container, false);
+        hostname = view.findViewById(R.id.edit_hostname);
+        ip = view.findViewById(R.id.edit_ip_address);
+        broadcast = view.findViewById(R.id.edit_broadcast_address);
+        wolPort = view.findViewById(R.id.edit_wol_port);
+        username = view.findViewById(R.id.edit_ssh_username);
+        password = view.findViewById(R.id.edit_ssh_password);
+        sshPort = view.findViewById(R.id.edit_ssh_port);
+        shutdown = view.findViewById(R.id.edit_shutdown_cmd);
+        advanced = view.findViewById(R.id.switch_advanced);
+        commandLayout = view.findViewById(R.id.input_layout_shutdown_cmd);
+        macFields.clear();
+        for (int id : new int[]{R.id.mac_1, R.id.mac_2, R.id.mac_3, R.id.mac_4, R.id.mac_5, R.id.mac_6}) {
+            macFields.add(view.findViewById(id));
         }
-        super.onViewStateRestored(savedInstanceState);
+        refreshView();
+        for (int index = 0; index < macFields.size(); index++) {
+            final int position = index;
+            macFields.get(index).addTextChangedListener(new TextWatcher() {
+                @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+                @Override
+                public void afterTextChanged(Editable value) {
+                    if (updatingMac) return;
+                    if (WakeOnLan.isValidMac(value.toString())) {
+                        setMac(value.toString());
+                        broadcast.requestFocus();
+                    } else if (value.length() > 2) {
+                        value.delete(2, value.length());
+                    } else if (value.length() == 2 && macFields.get(position).hasFocus()) {
+                        if (position == 5) broadcast.requestFocus();
+                        else macFields.get(position + 1).requestFocus();
+                    }
+                }
+            });
+        }
+        advanced.setOnCheckedChangeListener((button, checked) ->
+                commandLayout.setVisibility(checked ? View.VISIBLE : View.GONE));
+        view.findViewById(R.id.btn_get_broadcast).setOnClickListener(button -> {
+            NetInfo network = new NetInfo(requireContext());
+            String address = text(ip);
+            if (address.isEmpty() || NetInfo.NOIP.equals(address)) address = network.ip;
+            if (!NetworkAddress.isIpv4(address) || NetInfo.NOIP.equals(network.ip)) {
+                broadcast.setError(getString(R.string.broadcast_guess_failed));
+                return;
+            }
+            broadcast.setText(NetInfo.getBroadcastFromIpAndCidr(address, network.cidr));
+        });
+        return view;
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle state) {
+        super.onViewStateRestored(state);
+        commandLayout.setVisibility(advanced.isChecked() ? View.VISIBLE : View.GONE);
     }
 
     public void resetAppBar() {
-        // Create action bar as a toolbar
-        AppCompatActivity act = (AppCompatActivity)getActivity();
-        Toolbar toolbar = (Toolbar) act.findViewById(R.id.main_toolbar);
-        act.setSupportActionBar(toolbar);
-        if (toolbar != null) {
-            act.getSupportActionBar().setTitle(getResources().getString(R.string.edit_host));
-            // Add Up Navigation, part 1
-            act.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        AppCompatActivity activity = (AppCompatActivity) requireActivity();
+        activity.setSupportActionBar((Toolbar) activity.findViewById(R.id.main_toolbar));
+        if (activity.getSupportActionBar() != null) {
+            activity.getSupportActionBar().setTitle(R.string.edit_host);
+            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 
-    private void setAdvancedVisibility(boolean visible) {
-        int visibility = visible ? View.VISIBLE : View.GONE;
-
-        mViewShutdownCmd.setVisibility(visibility);
+    public void updateTarget(HostBean item) {
+        host = item == null ? new HostBean() : item;
+        host.normalize();
+        if (getView() != null) refreshView();
     }
 
-    private void saveTargetToSettings() {
-        if (mHostBean.broadcastIp == null) {
-            // host added manually, let's try to find out broadcast address
-            NetInfo ni = new NetInfo(mContext);
-            mHostBean.broadcastIp = NetInfo.getBroadcastFromIpAndCidr(mHostBean.ipAddress, ni.cidr);
+    private void refreshView() {
+        hostname.setText(host.hostname);
+        ip.setText(host.ipAddress);
+        broadcast.setText(host.broadcastIp);
+        wolPort.setText(host.wolPort);
+        username.setText(host.sshUsername);
+        password.setText(host.sshPassword);
+        sshPort.setText(host.sshPort);
+        shutdown.setText(host.sshShutdownCmd);
+        setMac(host.hardwareAddress);
+    }
+
+    private void setMac(String mac) {
+        updatingMac = true;
+        String[] parts = (WakeOnLan.isValidMac(mac) ? mac : NetInfo.NOMAC).split(":");
+        for (int i = 0; i < 6; i++) macFields.get(i).setText(parts[i].toUpperCase(Locale.ROOT));
+        updatingMac = false;
+    }
+
+    private static String text(EditText field) {
+        return field.getText().toString().trim();
+    }
+
+    private void readFields() {
+        host.hostname = text(hostname);
+        host.ipAddress = text(ip);
+        host.broadcastIp = text(broadcast);
+        host.wolPort = text(wolPort);
+        host.sshPort = text(sshPort);
+        host.sshUsername = text(username);
+        host.sshPassword = password.getText().toString();
+        host.sshShutdownCmd = text(shutdown);
+        StringBuilder mac = new StringBuilder();
+        for (EditText field : macFields) {
+            if (mac.length() > 0) mac.append(':');
+            mac.append(text(field));
         }
-        Gson gson = new Gson();
-        String targetJson = gson.toJson(mHostBean);
-
-        SharedPreferences.Editor editor = mPrefs.edit();
-        editor.putString(MainActivity.KEY_PREF_TARGET, targetJson);
-        editor.commit();
+        host.hardwareAddress = mac.toString();
     }
 
-    // invoked when the activity may be temporarily destroyed, save the instance state here
+    private boolean validate() {
+        boolean valid = true;
+        for (EditText address : new EditText[]{ip, broadcast}) {
+            address.setError(null);
+            if (!text(address).isEmpty() && !NetworkAddress.isIpv4(text(address))) {
+                address.setError(getString(R.string.invalid_ip));
+                valid = false;
+            }
+        }
+        for (EditText port : new EditText[]{wolPort, sshPort}) {
+            port.setError(null);
+            try {
+                NetworkAddress.port(text(port));
+            } catch (IllegalArgumentException e) {
+                port.setError(getString(R.string.invalid_port));
+                valid = false;
+            }
+        }
+        macFields.get(0).setError(null);
+        if (!WakeOnLan.isValidMac(host.hardwareAddress)) {
+            macFields.get(0).setError(getString(R.string.invalid_mac));
+            valid = false;
+        }
+        if (valid) {
+            host.normalize();
+            if (!host.canWake() && !host.hasAddress()) {
+                ip.setError(getString(R.string.target_required));
+                valid = false;
+            }
+        }
+        return valid;
+    }
+
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        if (mHostBean == null) {
-            mHostBean = new HostBean();
-            mHostBean.resetForView();
-        }
-        outState.putParcelable(ARG_BEAN, mHostBean);
-        super.onSaveInstanceState(outState);
+    public void onSaveInstanceState(Bundle state) {
+        if (getView() != null) readFields();
+        state.putParcelable(ARG_BEAN, host);
+        super.onSaveInstanceState(state);
+    }
+
+    @Override
+    public void onDestroyView() {
+        readFields();
+        macFields.clear();
+        hostname = ip = broadcast = wolPort = username = password = sshPort = shutdown = null;
+        advanced = null;
+        commandLayout = null;
+        super.onDestroyView();
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.save_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                // Add Up Navigation, part 2 (final)
-                NavUtils.navigateUpFromSameTask(getActivity());
+        if (item.getItemId() == android.R.id.home) {
+            NavUtils.navigateUpFromSameTask(requireActivity());
+            return true;
+        }
+        if (item.getItemId() == R.id.action_save) {
+            readFields();
+            if (!validate()) return true;
+            try {
+                new HostStore(requireContext()).save(host);
+            } catch (IOException | GeneralSecurityException e) {
+                Log.e("TargetConfiguration", "Could not save device", e);
+                new AlertDialog.Builder(requireContext()).setMessage(R.string.settings_save_failed)
+                        .setPositiveButton(android.R.string.ok, null).show();
                 return true;
-
-            case R.id.action_save:
-                mHostBean.hostname = mEditHostname.getText().toString();
-                mHostBean.ipAddress = mEditIpAddress.getText().toString();
-                String broadcastIp = mEditBroadcastAddress.getText().toString();
-                if (!broadcastIp.equals(NetInfo.NOIP)) {
-                    mHostBean.broadcastIp = mEditBroadcastAddress.getText().toString();
-                }
-                mHostBean.wolPort = mEditWolPort.getText().toString();
-                mHostBean.hardwareAddress = fields2Mac();
-                mHostBean.sshUsername = mEditSshUsername.getText().toString();
-                mHostBean.sshPassword = mEditSshPassword.getText().toString();
-                mHostBean.sshPort = mEditSshPort.getText().toString();
-                mHostBean.sshShutdownCmd = mEditShutdownCmd.getText().toString();
-
-                saveTargetToSettings();
-
-                Intent startMain = new Intent(mContext, MainActivity.class);
-                startMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(startMain);
-                return true;
+            }
+            startActivity(new Intent(requireContext(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+            return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void updateTarget(HostBean item) {
-        mHostBean = item;
-        NetInfo ni = new NetInfo(mContext);
-
-        refreshView();
-    }
-
-    // disable action bar
-    public void prepareForTablet() {
-        mIsTablet = true;
-    }
-
-    private void refreshView() {
-        if (mHostBean == null) {
-            mHostBean = new HostBean();
-            mHostBean.resetForView();
-        }
-        mEditHostname.setText(mHostBean.hostname);
-        mEditIpAddress.setText(mHostBean.ipAddress);
-        mEditBroadcastAddress.setText(mHostBean.broadcastIp);
-        mEditWolPort.setText(mHostBean.wolPort);
-        mac2Fields(mHostBean.hardwareAddress);
-
-        mEditSshUsername.setText(mHostBean.sshUsername);
-        mEditSshPassword.setText(mHostBean.sshPassword);
-        mEditSshPort.setText(mHostBean.sshPort);
-        mEditShutdownCmd.setText(mHostBean.sshShutdownCmd);
-    }
-
-    private void mac2Fields(String macAddress) {
-        String[] parts = macAddress.split(":");
-        if (parts.length == 0 || mEditMac.isEmpty()) {
-            return;
-        }
-        for (int i = 0; i < parts.length; i++) {
-            mEditMac.get(i).setText(parts[i].toUpperCase());
-        }
-    }
-
-    private String fields2Mac() {
-        String result = "";
-        for (EditText mac : mEditMac) {
-            result = result + mac.getText().toString() + ":";
-        }
-        if (result.length() > 1) {
-            result = result.substring(0, result.length() - 1);
-        }
-        return result;
     }
 }

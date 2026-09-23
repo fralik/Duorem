@@ -21,10 +21,10 @@ public class HostBean implements Parcelable {
     public static final String SHUTDOWN_CMD = "sudo shutdown -h now";
 
     /** Indicates if host is reachable AKA is alive */
-    public boolean isAlive = false;
+    public transient boolean isAlive = false;
     /** String representation of IPv4 address */
-    public String ipAddress = null;
-    public String hostname = null;
+    public String ipAddress = NetInfo.NOIP;
+    public String hostname = "";
     public String hardwareAddress = NetInfo.NOMAC;
     public String sshUsername = "";
     public String sshPassword = "";
@@ -33,7 +33,7 @@ public class HostBean implements Parcelable {
     public String sshShutdownCmd = SHUTDOWN_CMD;
     /** Wake On Lan port */
     public String wolPort = "9";
-    public String broadcastIp = null;
+    public String broadcastIp = NetInfo.NOIP;
 
     public HostBean() {
         // New object
@@ -55,7 +55,7 @@ public class HostBean implements Parcelable {
         this.sshPassword = sshPassword;
         this.sshPort = sshPort;
         this.broadcastIp = broadcastIp;
-        this.sshShutdownCmd = sshShutdownCmd;
+        this.sshShutdownCmd = SHUTDOWN_CMD;
     }
 
     public int describeContents() {
@@ -125,7 +125,31 @@ public class HostBean implements Parcelable {
         sshShutdownCmd = SHUTDOWN_CMD;
     }
 
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+    public void normalize() {
+        if (ipAddress == null || ipAddress.isEmpty()) ipAddress = NetInfo.NOIP;
+        if (hostname == null) hostname = "";
+        if (hardwareAddress == null || hardwareAddress.isEmpty()) hardwareAddress = NetInfo.NOMAC;
+        if (broadcastIp == null || broadcastIp.isEmpty()) broadcastIp = NetInfo.NOIP;
+        if (sshUsername == null) sshUsername = "";
+        if (sshPassword == null) sshPassword = "";
+        if (sshPort == null || sshPort.isEmpty()) sshPort = "22";
+        if (wolPort == null || wolPort.isEmpty()) wolPort = "9";
+        if (sshShutdownCmd == null || sshShutdownCmd.isEmpty()) sshShutdownCmd = SHUTDOWN_CMD;
+    }
+
+    public boolean hasAddress() {
+        return !NetInfo.NOIP.equals(ipAddress) || !hostname.trim().isEmpty();
+    }
+
+    public boolean canWake() {
+        return WakeOnLan.isValidMac(hardwareAddress) && !NetInfo.NOMAC.equals(hardwareAddress);
+    }
+
+    public boolean canUseSsh() {
+        return hasAddress() && !sshUsername.trim().isEmpty();
+    }
+
+    public static final Parcelable.Creator<HostBean> CREATOR = new Parcelable.Creator<HostBean>() {
         public HostBean createFromParcel(Parcel in) {
             return new HostBean(in);
         }

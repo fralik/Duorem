@@ -61,4 +61,24 @@
     <string name="about_license">Лицензия</string>
     <string name="license_gplv3_later">GNU General Public License version 3 or later</string>
     <string name="close">Закрыть</string>
+    <string name="unknown_mac">00:00:00:00:00:00</string>
+    <string name="allow_network">Разрешить доступ к локальной сети</string>
+    <string name="network_permission_required">Для поиска, включения и управления компьютером нужен доступ к локальной сети. Выберите «Разрешить доступ к локальной сети».</string>
+    <string name="discovery_help">Подключитесь к домашней сети Wi-Fi или Ethernet для поиска доступных устройств. Устройство также можно ввести вручную. На Android 10 и новее для Wake-on-LAN нужно ввести MAC-адрес, указанный на компьютере или роутере.</string>
+    <string name="mac_required">Введите MAC-адрес для Wake-on-LAN</string>
+    <string name="discovery_failed">Поиск заблокирован. Проверьте разрешение на доступ к локальной сети и подключение.</string>
+    <string name="settings_load_failed">Не удалось прочитать сохранённое устройство. Настройки не перезаписаны. Повторите попытку или удалите устройство и настройте его заново.</string>
+    <string name="settings_save_failed">Не удалось сохранить настройки. Повторите попытку.</string>
+    <string name="invalid_ip">Введите корректный IPv4-адрес.</string>
+    <string name="invalid_port">Введите порт от 1 до 65535.</string>
+    <string name="invalid_mac">Введите шесть пар шестнадцатеричных цифр.</string>
+    <string name="target_required">Введите IP-адрес, имя хоста или MAC-адрес.</string>
+    <string name="broadcast_guess_failed">Введите корректный IP-адрес и подключитесь к сети IPv4 или введите широковещательный адрес вручную.</string>
+    <string name="command_sending">Отправка команды...</string>
+    <string name="command_failed">Ошибка команды: %1$s</string>
+    <string name="command_cancelled">Сетевая операция отменена. Уже отправленная команда может быть выполнена на компьютере.</string>
+    <string name="host_key_unknown">Проверьте подлинность SSH-сервера</string>
+    <string name="host_key_changed">Внимание: ключ SSH-сервера изменился</string>
+    <string name="host_key_confirm">Сервер: %1$s\nТип ключа: %2$s\nОтпечаток: %3$s\n\nПеред подтверждением проверьте отпечаток непосредственно на компьютере. Изменение ключа может означать подключение к другому компьютеру или перехват соединения.</string>
+    <string name="trust_and_retry">Доверять и повторить</string>
 </resources>

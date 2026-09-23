@@ -3,6 +3,23 @@ All notable changes to Duorem will be documented in this file.
 
 ## [Current version]
 
+## [1.2.0] - 2026-09-23
+
+### Changed
+ - Minimum Android version is now Android 8.0 (API 26); target and compile SDK are Android 17 (API 37).
+ - Updated Gradle/AGP and migrated support libraries to AndroidX/Material, replacing JCenter.
+ - Replaced AsyncTask, connectivity broadcasts, DHCP/shell-based network detection and UI-thread socket operations with cancellable network workers and network callbacks.
+ - Updated SSH to the maintained JSch fork; new and changed server keys require explicit confirmation.
+ - Encrypt saved device settings with Android Keystore and migrate existing plaintext preferences without changing the app ID.
+ - Handle system bar and keyboard insets, exported components, backup exclusions, and Android 17 local-network permission.
+
+### Fixed
+ - Discovery no longer discards devices without reverse DNS or readable MAC addresses. On Android 10+, new WOL devices require manual MAC entry.
+ - WOL-only configurations no longer depend on SSH connectivity or DNS resolution.
+ - Polling and commands close sockets and stop with the screen lifecycle; command failures are no longer inferred from nonempty SSH output.
+ - Preserve edited settings across screen recreation, validate addresses and ports, and do not resurrect deleted settings during activity destruction.
+ - Add JVM and device regression tests, updated build instructions, and localized permission/error messages.
+
 ## [1.1.4] - 2020-02-04
 
 ### Added
@@ -52,4 +69,3 @@ All notable changes to Duorem will be documented in this file.
 
 ### Added
  - Initial release
-

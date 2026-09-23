@@ -56,4 +56,27 @@
     <string name="about_license">ライセンス</string>
     <string name="license_gplv3_later">GNU General Public License version 3 or later</string>
     <string name="close">閉じる</string>
+    <string name="offline">オフラインです</string>
+    <string name="unknown_host">&lt;名前&gt;</string>
+    <string name="unknown_mac">00:00:00:00:00:00</string>
+    <string name="shutdown_cmd">シャットダウンコマンド</string>
+    <string name="allow_network">ローカルネットワークへのアクセスを許可</string>
+    <string name="network_permission_required">コンピューターの検索、起動、操作にはローカルネットワークへのアクセスが必要です。「ローカルネットワークへのアクセスを許可」を選択してください。</string>
+    <string name="discovery_help">自宅の Wi-Fi または Ethernet に接続すると、応答するデバイスを検索できます。手動入力も可能です。Android 10 以降では、Wake-on-LAN 用の MAC アドレスをコンピューターやルーターで確認して入力してください。</string>
+    <string name="mac_required">Wake-on-LAN 用の MAC アドレスを入力してください</string>
+    <string name="discovery_failed">検索がブロックされました。ローカルネットワークの権限と接続を確認してください。</string>
+    <string name="settings_load_failed">保存したデバイスを読み込めません。設定は上書きされていません。再試行するか、デバイスを削除して再設定してください。</string>
+    <string name="settings_save_failed">設定を保存できません。もう一度お試しください。</string>
+    <string name="invalid_ip">有効な IPv4 アドレスを入力してください。</string>
+    <string name="invalid_port">1 から 65535 のポート番号を入力してください。</string>
+    <string name="invalid_mac">16 進数 2 桁を 6 組入力してください。</string>
+    <string name="target_required">IP アドレス、ホスト名、または MAC アドレスを入力してください。</string>
+    <string name="broadcast_guess_failed">有効な IP アドレスを入力して IPv4 ネットワークに接続するか、ブロードキャストアドレスを手動で入力してください。</string>
+    <string name="command_sending">コマンドを送信中...</string>
+    <string name="command_failed">コマンドに失敗しました: %1$s</string>
+    <string name="command_cancelled">ネットワーク操作を中止しました。すでに送信したコマンドは実行される可能性があります。</string>
+    <string name="host_key_unknown">SSH サーバーの識別情報を確認</string>
+    <string name="host_key_changed">警告: SSH サーバーの鍵が変更されました</string>
+    <string name="host_key_confirm">サーバー: %1$s\n鍵の種類: %2$s\nフィンガープリント: %3$s\n\n信頼する前にコンピューター上でこのフィンガープリントを確認してください。鍵の変更は、別のコンピューターへの接続や通信の傍受を示す場合があります。</string>
+    <string name="trust_and_retry">信頼して再試行</string>
 </resources>

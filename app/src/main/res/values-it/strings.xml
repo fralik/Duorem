@@ -60,4 +60,23 @@
     <string name="about_license">Licenza</string>
     <string name="license_gplv3_later">GNU General Public License versione 3 o successiva</string>
     <string name="close">Chiudi</string>
+    <string name="allow_network">Consenti accesso alla rete locale</string>
+    <string name="network_permission_required">Duorem richiede accesso alla rete locale per trovare, accendere e controllare il computer. Seleziona «Consenti accesso alla rete locale».</string>
+    <string name="discovery_help">Connettiti alla rete Wi-Fi o Ethernet di casa per trovare i dispositivi raggiungibili. Puoi sempre inserirli manualmente. Da Android 10, per Wake-on-LAN inserisci il MAC indicato sul computer o sul router.</string>
+    <string name="mac_required">Inserisci un indirizzo MAC per Wake-on-LAN</string>
+    <string name="discovery_failed">Ricerca bloccata. Controlla il permesso di accesso alla rete locale e la connessione.</string>
+    <string name="settings_load_failed">Impossibile leggere il dispositivo salvato. Le impostazioni non sono state sovrascritte. Riprova oppure elimina il dispositivo e configuralo di nuovo.</string>
+    <string name="settings_save_failed">Impossibile salvare le impostazioni. Riprova.</string>
+    <string name="invalid_ip">Inserisci un indirizzo IPv4 valido.</string>
+    <string name="invalid_port">Inserisci una porta tra 1 e 65535.</string>
+    <string name="invalid_mac">Inserisci sei coppie di cifre esadecimali.</string>
+    <string name="target_required">Inserisci un indirizzo IP, un nome host o un indirizzo MAC.</string>
+    <string name="broadcast_guess_failed">Inserisci un IP valido e connettiti a una rete IPv4, oppure inserisci manualmente un indirizzo di trasmissione.</string>
+    <string name="command_sending">Invio del comando...</string>
+    <string name="command_failed">Comando fallito: %1$s</string>
+    <string name="command_cancelled">Operazione di rete annullata. Un comando già inviato al computer potrebbe essere eseguito.</string>
+    <string name="host_key_unknown">Verifica identità del server SSH</string>
+    <string name="host_key_changed">Attenzione: chiave del server SSH cambiata</string>
+    <string name="host_key_confirm">Server: %1$s\nTipo di chiave: %2$s\nImpronta: %3$s\n\nVerifica questa impronta direttamente sul computer prima di fidarti. Una chiave diversa può indicare un altro computer o una connessione intercettata.</string>
+    <string name="trust_and_retry">Considera attendibile e riprova</string>
 </resources>

@@ -6,7 +6,7 @@
 package com.vadimfrolov.duorem;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +16,6 @@ import com.vadimfrolov.duorem.HostSearchFragment.OnListFragmentInteractionListen
 import com.vadimfrolov.duorem.Network.HostBean;
 import com.vadimfrolov.duorem.Network.NetInfo;
 
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,11 +32,6 @@ public class HostInfoRecyclerViewAdapter extends RecyclerView.Adapter<HostInfoRe
     private final OnListFragmentInteractionListener mListener;
     private Context mContext;
 
-    public HostInfoRecyclerViewAdapter(List<HostBean> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
-        mListener = listener;
-    }
-
     public HostInfoRecyclerViewAdapter(Context context, OnListFragmentInteractionListener listener) {
         mListener = listener;
         mValues = new ArrayList<>();
@@ -48,24 +42,17 @@ public class HostInfoRecyclerViewAdapter extends RecyclerView.Adapter<HostInfoRe
     public void clear() {
         mValues.clear();
         addManual();
+        notifyDataSetChanged();
     }
 
     private void addManual() {
         if (mContext != null && mValues != null) {
             HostBean manual = new HostBean();
             manual.resetForView();
-            manual.hostname = mContext.getResources().getString(R.string.hosts_manual);
             manual.hardwareAddress = NetInfo.NOMAC;
             manual.ipAddress = NetInfo.NOIP;
             manual.broadcastIp = NetInfo.NOIP;
             mValues.add(manual);
-
-//            HostBean second = new HostBean();
-//            second.resetForView();
-//            second.hostname = "test";
-//            second.ipAddress = "192.168.1.5";
-//            second.hardwareAddress = "FF:FF:FF:EB:AB:40";
-//            mValues.add(second);
         }
     }
 
@@ -79,8 +66,10 @@ public class HostInfoRecyclerViewAdapter extends RecyclerView.Adapter<HostInfoRe
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).name());
-        holder.mMacView.setText(mValues.get(position).hardwareAddress.toUpperCase());
+        holder.mIdView.setText(position == 0 ? mContext.getString(R.string.hosts_manual) : mValues.get(position).name());
+        String mac = mValues.get(position).hardwareAddress;
+        holder.mMacView.setText(position == 0 ? "" : NetInfo.NOMAC.equals(mac)
+                ? mContext.getString(R.string.mac_required) : mac.toUpperCase(java.util.Locale.ROOT));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,24 +89,17 @@ public class HostInfoRecyclerViewAdapter extends RecyclerView.Adapter<HostInfoRe
     }
 
     public void addItem(HostBean bean) {
-        if (bean != null && !bean.hardwareAddress.equals(NetInfo.NOMAC)) {
+        if (bean != null) {
+            for (HostBean existing : mValues) {
+                if (existing.ipAddress.equals(bean.ipAddress)) return;
+            }
             mValues.add(bean);
             Collections.sort(mValues, new Comparator<HostBean>() {
                 @Override
                 public int compare(HostBean lhs, HostBean rhs) {
                     long leftIp = NetInfo.getUnsignedLongFromIp(lhs.ipAddress);
                     long rightIp = NetInfo.getUnsignedLongFromIp(rhs.ipAddress);
-                    if (leftIp == 0) {
-                        return -1;
-                    }
-                    if (rightIp == 0) {
-                        return 1;
-                    }
-                    if (leftIp > rightIp)
-                        return 1;
-                    if (leftIp == rightIp)
-                        return 0;
-                    return -1;
+                    return Long.compare(leftIp, rightIp);
                 }
             });
             // we have to notify of the whole dataset change since we do the sorting
