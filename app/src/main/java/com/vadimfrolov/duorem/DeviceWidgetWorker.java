@@ -57,7 +57,8 @@ public final class DeviceWidgetWorker extends Worker {
             if (target == null) {
                 return finish(appWidgetId, R.string.widget_status_no_device, true);
             }
-            try (RemoteClient client = new RemoteClient(network.network)) {
+            try (RemoteClient client = new RemoteClient(
+                    network.network, network.networkInterface)) {
                 if (ACTION_REFRESH.equals(action)) {
                     return refresh(client, target, appWidgetId);
                 }

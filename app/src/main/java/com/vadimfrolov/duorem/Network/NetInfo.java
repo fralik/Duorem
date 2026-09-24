@@ -14,6 +14,8 @@ import android.net.NetworkCapabilities;
 import android.net.RouteInfo;
 
 import java.net.Inet4Address;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 
 public final class NetInfo {
     public static final String NOMAC = "00:00:00:00:00:00";
@@ -21,6 +23,7 @@ public final class NetInfo {
 
     public boolean isConnected;
     public Network network;
+    public NetworkInterface networkInterface;
     public String ip = NOIP;
     public int cidr = 32;
     public String gatewayIp = NOIP;
@@ -43,6 +46,14 @@ public final class NetInfo {
         isConnected = properties != null;
         if (properties == null) {
             return;
+        }
+        String interfaceName = properties.getInterfaceName();
+        if (interfaceName != null) {
+            try {
+                networkInterface = NetworkInterface.getByName(interfaceName);
+            } catch (SocketException e) {
+                networkInterface = null;
+            }
         }
         for (LinkAddress address : properties.getLinkAddresses()) {
             if (address.getAddress() instanceof Inet4Address) {

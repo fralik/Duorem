@@ -43,9 +43,11 @@ public class RemoteClientTest {
         try (ServerSocket unused = new ServerSocket(0)) {
             closedPort = unused.getLocalPort();
         }
-        try (RemoteClient client = new RemoteClient(null)) {
+        InetAddress loopback = InetAddress.getByName("127.0.0.1");
+        try (RemoteClient client = new RemoteClient(
+                null, java.net.NetworkInterface.getByInetAddress(loopback))) {
             HostBean host = new HostBean();
-            host.ipAddress = "127.0.0.1";
+            host.ipAddress = loopback.getHostAddress();
             host.sshUsername = "user";
             host.sshPort = String.valueOf(closedPort);
             RemoteClient.ProbeResult result = client.probe(host, 1000);

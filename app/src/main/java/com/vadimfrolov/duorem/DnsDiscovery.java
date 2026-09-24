@@ -98,7 +98,10 @@ public final class DnsDiscovery implements AutoCloseable {
                 reachable = true;
             } catch (IOException e) {
                 // Not every reachable device runs SSH.
-                if (!cancelled) reachable = address.isReachable(listener.getTimeout());
+                if (!cancelled && network.networkInterface != null) {
+                    reachable = address.isReachable(
+                            network.networkInterface, 0, listener.getTimeout());
+                }
             } finally {
                 sockets.remove(socket);
             }

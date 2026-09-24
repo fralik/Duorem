@@ -175,7 +175,8 @@ public class MainActivity extends ActivityNet {
         int token = generation;
         poll = executor.scheduleWithFixedDelay(() -> {
             RemoteClient.ProbeResult probe;
-            RemoteClient client = new RemoteClient(network.network);
+            RemoteClient client = new RemoteClient(
+                    network.network, network.networkInterface);
             clients.add(client);
             try (client) {
                 probe = client.probe(current, 1000);
@@ -205,7 +206,8 @@ public class MainActivity extends ActivityNet {
         int token = generation;
         NetInfo network = mNetInfo;
         HostKeyStore keys = new HostKeyStore(this);
-        RemoteClient client = new RemoteClient(network.network);
+        RemoteClient client = new RemoteClient(
+                network.network, network.networkInterface);
         clients.add(client);
         log(getString(R.string.command_sending));
         updateView();

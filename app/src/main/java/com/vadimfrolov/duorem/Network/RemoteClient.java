@@ -19,6 +19,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
@@ -31,13 +32,19 @@ public final class RemoteClient implements AutoCloseable {
     private static final int CONNECT_TIMEOUT_MS = 3000;
     private static final int COMMAND_TIMEOUT_MS = 30000;
     private final Network network;
+    private final NetworkInterface networkInterface;
     private volatile boolean cancelled;
     private volatile Socket activeSocket;
     private volatile Session activeSession;
     private volatile DatagramSocket activeDatagram;
 
     public RemoteClient(Network network) {
+        this(network, null);
+    }
+
+    public RemoteClient(Network network, NetworkInterface networkInterface) {
         this.network = network;
+        this.networkInterface = networkInterface;
     }
 
     public static final class ProbeResult {
@@ -111,7 +118,10 @@ public final class RemoteClient implements AutoCloseable {
         for (String candidate : candidateAddresses(target)) {
             try {
                 checkCancelled();
-                online = resolve(candidate).isReachable(timeout);
+                InetAddress address = resolve(candidate);
+                online = networkInterface != null
+                        ? address.isReachable(networkInterface, 0, timeout)
+                        : network == null && address.isReachable(timeout);
                 if (online) break;
             } catch (IOException | SecurityException e) {
                 // Try another configured address before reporting the device unreachable.
