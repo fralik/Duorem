@@ -3,6 +3,8 @@ package com.vadimfrolov.duorem.Network;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class RootNeighborLookupTest {
     @Test
@@ -27,5 +29,13 @@ public class RootNeighborLookupTest {
                 "192.168.1.2 dev wlan0 lladdr 00:00:00:00:00:00 FAILED",
                 "192.168.1.2"));
         assertEquals(NetInfo.NOMAC, RootNeighborLookup.parse("", "not-an-ip"));
+    }
+
+    @Test
+    public void commandLimitsArpOutputToRequestedHost() {
+        String command = RootNeighborLookup.commandFor("192.168.1.2");
+        assertTrue(command.contains("ip neigh show 192.168.1.2"));
+        assertTrue(command.contains("$1 == \"192.168.1.2\""));
+        assertFalse(command.contains("cat /proc/net/arp"));
     }
 }

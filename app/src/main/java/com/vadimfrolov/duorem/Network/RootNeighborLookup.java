@@ -24,8 +24,7 @@ public final class RootNeighborLookup implements AutoCloseable {
             return NetInfo.NOMAC;
         }
 
-        String command = "{ ip neigh show " + ip
-                + " 2>/dev/null || true; cat /proc/net/arp 2>/dev/null || true; }";
+        String command = commandFor(ip);
         Process process = null;
         try {
             process = new ProcessBuilder("su", "-c", command)
@@ -82,6 +81,12 @@ public final class RootNeighborLookup implements AutoCloseable {
         String mac = matcher.group(1).toUpperCase(Locale.ROOT);
         return NetInfo.NOMAC.equals(mac) || "FF:FF:FF:FF:FF:FF".equals(mac)
                 ? NetInfo.NOMAC : mac;
+    }
+
+    static String commandFor(String ip) {
+        return "{ ip neigh show " + ip + " 2>/dev/null || true; "
+                + "awk '$1 == \"" + ip
+                + "\" { print; exit }' /proc/net/arp 2>/dev/null || true; }";
     }
 
     private static void closeProcessStreams(Process process) {

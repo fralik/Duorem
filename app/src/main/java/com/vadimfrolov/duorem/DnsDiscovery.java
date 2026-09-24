@@ -127,7 +127,8 @@ public final class DnsDiscovery implements AutoCloseable {
             if (cancelled) return null;
             HostBean host = new HostBean();
             host.ipAddress = ip;
-            host.hostname = address.getCanonicalHostName();
+            String hostname = address.getCanonicalHostName();
+            host.hostname = ip.equals(hostname) ? "" : hostname;
             host.hardwareAddress = hardwareAddress;
             host.broadcastIp = network.broadcastIp;
             host.isAlive = true;

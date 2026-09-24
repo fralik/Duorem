@@ -28,7 +28,7 @@ public final class NetInfo {
 
     public NetInfo(Context context) {
         ConnectivityManager manager = context.getSystemService(ConnectivityManager.class);
-        network = manager.getActiveNetwork();
+        network = null;
         // A home LAN need not have Internet access or be the default network.
         for (Network candidate : manager.getAllNetworks()) {
             NetworkCapabilities capabilities = manager.getNetworkCapabilities(candidate);
