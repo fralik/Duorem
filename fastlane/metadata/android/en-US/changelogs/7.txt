@@ -1,0 +1,7 @@
+Duorem has been modernized for Android 10 and newer.
+
+- Added system light/dark theme support and an in-app help section.
+- Added configurable home-screen widgets with device status updates.
+- Added safer SSH host-key verification and encrypted saved credentials.
+- Improved LAN discovery, Wake-on-LAN, SSH reliability, and error reporting.
+- Added optional NetBIOS and root-assisted MAC address lookup.
