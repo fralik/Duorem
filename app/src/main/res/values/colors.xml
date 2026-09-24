@@ -12,4 +12,10 @@
     <color name="statusOnline">#2E7D32</color>
     <color name="statusWarning">#7A3E00</color>
     <color name="statusOffline">#C62828</color>
+    <color name="widgetBackground">#F1F8F1</color>
+    <color name="widgetBorder">#2E7D32</color>
+    <color name="widgetActionIcon">#1B5E20</color>
+    <color name="widgetText">#1B1B1F</color>
+    <color name="widgetStatus">#3F5541</color>
+    <color name="widgetButtonBackground">#DCEEDC</color>
 </resources>

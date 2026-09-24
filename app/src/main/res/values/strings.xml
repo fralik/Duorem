@@ -91,4 +91,34 @@
     <string name="host_key_changed">Warning: SSH server key changed</string>
     <string name="host_key_confirm">Server: %1$s\nKey type: %2$s\nFingerprint: %3$s\n\nVerify this fingerprint directly on your computer before trusting it. A changed key can indicate a different computer or an intercepted connection.</string>
     <string name="trust_and_retry">Trust and retry</string>
+
+    <!-- home-screen widget -->
+    <string name="widget_description">Control the configured Duorem device</string>
+    <string name="widget_configure_title">Configure Duorem widget</string>
+    <string name="widget_configure_device_first">Configure a device in Duorem before adding a widget.</string>
+    <string name="widget_configure_device_incomplete">Add a MAC address for Wake-on-LAN or SSH settings before creating a widget.</string>
+    <string name="widget_single_device_help">All Duorem widgets control this single configured device and follow it when you edit or replace it.</string>
+    <string name="widget_label">Widget label</string>
+    <string name="widget_label_required">Enter a widget label.</string>
+    <string name="widget_controls_help">The Power button shuts down when SSH is ready and sends Wake-on-LAN when the device is unreachable. Restart requires SSH. The widget checks status only after a tap.</string>
+    <string name="widget_power">Wake / Shut down</string>
+    <string name="add_widget">Add widget</string>
+    <string name="widget_settings_save_failed">Could not save widget settings.</string>
+    <string name="widget_content_description">%1$s, %2$s</string>
+    <string name="widget_power_content_description">Wake or shut down %1$s</string>
+    <string name="widget_restart_content_description">Restart %1$s</string>
+    <string name="widget_status_ready">Ready</string>
+    <string name="widget_status_working">Working…</string>
+    <string name="widget_status_wake_sent">Wake sent</string>
+    <string name="widget_status_shutdown_sent">Shutdown sent</string>
+    <string name="widget_status_restart_sent">Restart sent</string>
+    <string name="widget_status_no_network">No network</string>
+    <string name="widget_status_permission">Open Duorem</string>
+    <string name="widget_status_no_device">No device</string>
+    <string name="widget_status_mac_required">MAC needed</string>
+    <string name="widget_status_ssh_unavailable">SSH unavailable</string>
+    <string name="widget_status_ssh_not_configured">SSH not set</string>
+    <string name="widget_status_trust_required">Trust SSH in app</string>
+    <string name="widget_status_settings_error">Settings error</string>
+    <string name="widget_status_failed">Failed</string>
 </resources>

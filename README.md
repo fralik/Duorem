@@ -36,6 +36,7 @@ The app supports **Android 10 (API 29) and newer** and compiles/targets **Androi
 - Discovery uses the connected IPv4 subnet, preferring Wi-Fi/Ethernet even without Internet access. It probes SSH port 22 and ICMP, skips the phone and gateway, and uses ten workers rather than queuing the entire subnet. Large subnets take longer; leaving the discovery screen cancels the scan. Firewalls or nonstandard SSH ports can make a host undiscoverable; use manual configuration.
 - Android 10+ blocks ordinary apps from reading `/proc/net/arp`. Duorem first tries a NetBIOS node-status query, which works only for devices that support it. On a rooted phone, **Use root for MAC lookup** can be enabled from the discovery menu; it is disabled by default and invokes `su` only after NetBIOS fails. If root is unavailable, denied, or times out, the option disables itself. Otherwise, enter the computer's wired MAC address from its settings or router.
 - The status indicator checks both device reachability and the configured SSH port every five seconds while the main screen is visible. It distinguishes **Online · SSH ready**, **Online · SSH unavailable/not configured**, and **Unreachable**. Shutdown and restart require SSH readiness; Wake-on-LAN is offered when the device is unreachable.
+- Home-screen widgets provide 2×2 **Wake / Shut down** and **Restart** controls for Duorem's single configured device. Multiple widgets can use different labels and follow the device when it is edited or replaced. Widgets do not poll in the background: the power control checks status only after a tap, shuts down only when SSH is ready, and wakes only when the device is unreachable.
 - Leaving the main screen cancels local network work. A command already delivered to the remote computer may still execute. SSH success requires a zero exit status; a disconnect without an exit status is reported as an unknown outcome, not success. A sent WOL datagram does not prove the computer woke up.
 - Phone, landscape/tablet layouts and TV launcher support are retained. Existing translations are retained and new messages are provided in the same languages.
 
@@ -85,7 +86,6 @@ Todo
 ----
 
 - Add RecyclerView list item selection. This might be useful on tablets, when user can see the list and configuration dialog at the same time.
-- Widget support. Might be even easier to have two buttons as a widget. However, I constantly poll the target, so it is a potential battery drain.
 
 GPLv3 License
 -------

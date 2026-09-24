@@ -33,6 +33,27 @@
             android:name="com.vadimfrolov.duorem.TargetConfigurationActivity"
             android:exported="false"
             android:parentActivityName="com.vadimfrolov.duorem.SearchConfigureActivity" />
+        <activity
+            android:name="com.vadimfrolov.duorem.WidgetConfigureActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+        <receiver
+            android:name="com.vadimfrolov.duorem.DeviceWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.intent.action.CONFIGURATION_CHANGED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/device_widget_info" />
+        </receiver>
+        <receiver
+            android:name="com.vadimfrolov.duorem.DeviceWidgetActionReceiver"
+            android:exported="false" />
     </application>
 
 </manifest>
