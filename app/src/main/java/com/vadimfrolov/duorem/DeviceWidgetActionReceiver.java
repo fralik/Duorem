@@ -33,8 +33,8 @@ public final class DeviceWidgetActionReceiver extends BroadcastReceiver {
         OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(DeviceWidgetWorker.class)
                 .setInputData(input)
                 .build();
-        WorkManager.getInstance(context).enqueueUniqueWork(
+WorkManager.getInstance(context).enqueueUniqueWork(
                 DeviceWidgetProvider.workName(appWidgetId),
-                ExistingWorkPolicy.REPLACE, request);
+                ExistingWorkPolicy.KEEP, request);
     }
 }
