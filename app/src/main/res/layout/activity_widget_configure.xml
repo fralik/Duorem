@@ -58,6 +58,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:labelFor="@id/widget_monitor_interval"
+            android:text="@string/widget_monitor_interval"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+
+        <Spinner
+            android:id="@+id/widget_monitor_interval"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:entries="@array/widget_monitor_intervals"
+            android:spinnerMode="dropdown" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/widget_monitor_help"
+            android:textColor="?android:attr/textColorSecondary" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:text="@string/widget_controls_help"
             android:textColor="?android:attr/textColorSecondary" />
 

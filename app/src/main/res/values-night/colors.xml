@@ -18,4 +18,5 @@
     <color name="widgetText">#F5F5F5</color>
     <color name="widgetStatus">#C8E6C9</color>
     <color name="widgetButtonBackground">#244B28</color>
+    <color name="helpCardBorder">#466A49</color>
 </resources>

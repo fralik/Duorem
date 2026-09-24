@@ -7,7 +7,8 @@ All notable changes to Duorem will be documented in this file.
  - Follow the system light or dark theme, with improved readability across menus, dialogs, forms, and system bars.
  - Automatically detect MAC addresses from devices that support NetBIOS. Rooted phones can optionally use root-assisted lookup when NetBIOS is unavailable; manual entry remains available.
  - Ask users to verify new or changed SSH host keys before sending credentials or commands.
- - Add configurable 2×2 home-screen widgets with status-aware Wake/Shutdown and Restart controls for Duorem's configured device. Multiple widgets can use different labels without background polling.
+ - Add configurable 2×2 home-screen widgets with status-aware Wake/Shutdown and Restart controls for Duorem's configured device. Multiple widgets can use different labels and optionally refresh their status in the background.
+ - Add an in-app Help section covering setup, Android discovery limits, status meanings, Wake-on-LAN, SSH, widgets, and troubleshooting.
 
 ### Changed
  - Minimum supported version is now Android 10. The app is updated for current Android releases, including Android 17 local-network permission.

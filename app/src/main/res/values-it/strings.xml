@@ -8,6 +8,7 @@
     <string name="settings">Impostazioni</string>
     <string name="add_manually">Inserisci manualmente</string>
     <string name="restart">Riavvia</string>
+    <string name="action_help">Guida</string>
     <string name="action_about">Informazioni</string>
 
     <string name="reboot_sent">Inviato comando di riavvio</string>
@@ -89,6 +90,24 @@
     <string name="host_key_changed">Attenzione: chiave del server SSH cambiata</string>
     <string name="host_key_confirm">Server: %1$s\nTipo di chiave: %2$s\nImpronta: %3$s\n\nVerifica questa impronta direttamente sul computer prima di fidarti. Una chiave diversa può indicare un altro computer o una connessione intercettata.</string>
     <string name="trust_and_retry">Considera attendibile e riprova</string>
+    <string name="help_title">Guida</string>
+    <string name="help_capabilities_title">Cosa fa Duorem</string>
+    <string name="help_capabilities_body">Duorem controlla un computer nella rete locale. Wake-on-LAN invia un magic packet per accenderlo. Spegnimento e Riavvio si collegano tramite SSH ed eseguono comandi sul computer. Wake-on-LAN e SSH sono funzioni separate e possono essere configurate indipendentemente.</string>
+    <string name="help_discovery_title">Perché la ricerca può non trovare un dispositivo</string>
+    <string name="help_discovery_body">Durante la ricerca il computer deve essere acceso e connesso alla stessa rete IPv4 Wi-Fi o Ethernet. Android 10 e versioni successive impediscono alle app normali di leggere la tabella ARP, quindi Duorem prova prima a ottenere il MAC tramite NetBIOS. Non tutti i dispositivi lo supportano. Un telefono con root può provare facoltativamente la tabella dei vicini di rete; altrimenti inserisci manualmente il MAC della scheda cablata dal computer o dal router. Anche firewall, sottoreti grandi e risposte lente possono nascondere un dispositivo.</string>
+    <string name="help_addresses_title">Indirizzi MAC, IP e broadcast</string>
+    <string name="help_addresses_body">Il MAC identifica la scheda di rete ed è necessario per Wake-on-LAN. L’indirizzo IP o il nome host viene usato per controllare lo stato e collegarsi tramite SSH. L’indirizzo broadcast WOL è la destinazione del magic packet e nelle reti domestiche spesso termina con .255. Duorem normalmente lo calcola dalla rete corrente, ma configurazioni insolite possono richiedere valori manuali.</string>
+    <string name="help_status_title">Capire lo stato del dispositivo</string>
+    <string name="help_status_body">Verde significa che il dispositivo è raggiungibile e SSH è pronto. Verde con testo ambra significa che il dispositivo è raggiungibile ma SSH non è disponibile o non è configurato. Ambra indica una verifica in corso. Rosso significa che il dispositivo non è raggiungibile o che il telefono non dispone di una rete locale utilizzabile. Un computer può essere online anche se ignora il ping; anche una porta SSH configurata e aperta indica che è raggiungibile.</string>
+    <string name="help_wol_title">Limiti di Wake-on-LAN</string>
+    <string name="help_wol_body">Wake-on-LAN deve essere abilitato nel firmware, nel sistema operativo e nella scheda di rete del computer. È più affidabile con Ethernet cablata; molti computer non possono riattivarsi tramite Wi-Fi. Duorem è progettato per la rete IPv4 locale. Normalmente i router non inoltrano pacchetti broadcast dai dati mobili o da Internet. L’invio riuscito del pacchetto non dimostra che il computer lo abbia ricevuto o si sia acceso.</string>
+    <string name="help_ssh_title">Spegnimento, riavvio e sicurezza SSH</string>
+    <string name="help_ssh_body">Il computer deve avere un server SSH con autenticazione tramite password e il permesso di eseguire il comando di spegnimento configurato. Duorem usa per impostazione predefinita comandi sudo shutdown e riutilizza la password SSH per sudo. Le chiavi SSH e una password sudo separata non sono supportate. Prima del primo comando confronta l’impronta del server con quella del computer e autorizzala nell’app. Duorem non accetta mai automaticamente chiavi nuove o modificate.</string>
+    <string name="help_widget_title">Comportamento dei widget</string>
+    <string name="help_widget_body">Tutti i widget seguono l’unico dispositivo configurato in Duorem, anche dopo la modifica o la sostituzione. Ogni widget può avere un’etichetta diversa. Gli aggiornamenti dello stato in background possono essere disattivati o richiesti ogni 30 secondi, 1, 5, 10 o 30 minuti oppure ogni 1 o 2 ore. Il valore predefinito è 30 minuti. Android può ritardare questi controlli, quindi lo stato non è in tempo reale. Ogni tocco esegue comunque una nuova verifica: il pulsante di alimentazione spegne quando SSH è pronto, riattiva quando il dispositivo non è raggiungibile e non invia comandi quando il dispositivo è online senza SSH. Riavvia richiede sempre SSH.</string>
+    <string name="help_troubleshooting_title">Controlli per la risoluzione dei problemi</string>
+    <string name="help_troubleshooting_body">Controlla che il telefono sia sulla rete locale corretta e che l’accesso alla rete locale sia consentito. Verifica MAC cablato, indirizzo broadcast, porta SSH, nome utente, password e comando di spegnimento. Controlla i firewall del computer e del router. Se la ricerca non riesce, prova la configurazione manuale. Dopo aver modificato il server SSH, apri Duorem e verifica la nuova impronta prima di usare un widget.</string>
+    <string name="help_report_issue">Segnala un problema su GitHub</string>
     <string name="widget_description">Controlla il dispositivo configurato in Duorem</string>
     <string name="widget_configure_title">Configura widget Duorem</string>
     <string name="widget_configure_device_first">Configura un dispositivo in Duorem prima di aggiungere un widget.</string>
@@ -96,7 +115,19 @@
     <string name="widget_single_device_help">Tutti i widget Duorem controllano questo unico dispositivo configurato e lo seguono quando lo modifichi o lo sostituisci.</string>
     <string name="widget_label">Etichetta widget</string>
     <string name="widget_label_required">Inserisci un\'etichetta per il widget.</string>
-    <string name="widget_controls_help">Il pulsante di accensione spegne il dispositivo quando SSH è pronto e invia Wake-on-LAN quando il dispositivo non è raggiungibile. Il riavvio richiede SSH. Il widget controlla lo stato solo dopo un tocco.</string>
+    <string name="widget_monitor_help">Android può ritardare i controlli in background per risparmiare energia, soprattutto con intervalli brevi. I comandi verificano sempre di nuovo lo stato corrente.</string>
+    <string name="widget_monitor_interval">Intervallo di aggiornamento dello stato</string>
+    <string-array name="widget_monitor_intervals">
+        <item>Disattivato</item>
+        <item>30 secondi</item>
+        <item>1 minuto</item>
+        <item>5 minuti</item>
+        <item>10 minuti</item>
+        <item>30 minuti</item>
+        <item>1 ora</item>
+        <item>2 ore</item>
+    </string-array>
+    <string name="widget_controls_help">Il pulsante di accensione spegne il dispositivo quando SSH è pronto e invia Wake-on-LAN quando il dispositivo non è raggiungibile. Il riavvio richiede SSH. Ogni tocco controlla lo stato corrente prima di agire.</string>
     <string name="widget_power">Accendi / Spegni</string>
     <string name="add_widget">Aggiungi widget</string>
     <string name="widget_settings_save_failed">Impossibile salvare le impostazioni del widget.</string>

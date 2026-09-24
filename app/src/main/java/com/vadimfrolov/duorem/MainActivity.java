@@ -377,6 +377,8 @@ public class MainActivity extends ActivityNet {
             }
         } else if (id == R.id.action_network_permission) {
             requestNetworkPermission();
+        } else if (id == R.id.action_help) {
+            startActivity(new Intent(this, HelpActivity.class));
         } else if (id == R.id.action_about) {
             AboutDialog.newInstance(getString(R.string.about_title), getVersionName(this))
                     .show(getSupportFragmentManager(), "about_dialog");

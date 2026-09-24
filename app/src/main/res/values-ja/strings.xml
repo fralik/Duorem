@@ -8,6 +8,7 @@
     <string name="settings">設定</string>
     <string name="add_manually">手動で入力</string>
     <string name="restart">再起動</string>
+    <string name="action_help">ヘルプ</string>
     <string name="action_about">アプリについて</string>
 
     <string name="reboot_sent">リブートコマンドを送信しました。</string>
@@ -89,6 +90,24 @@
     <string name="host_key_changed">警告: SSH サーバーの鍵が変更されました</string>
     <string name="host_key_confirm">サーバー: %1$s\n鍵の種類: %2$s\nフィンガープリント: %3$s\n\n信頼する前にコンピューター上でこのフィンガープリントを確認してください。鍵の変更は、別のコンピューターへの接続や通信の傍受を示す場合があります。</string>
     <string name="trust_and_retry">信頼して再試行</string>
+    <string name="help_title">ヘルプ</string>
+    <string name="help_capabilities_title">Duorem でできること</string>
+    <string name="help_capabilities_body">Duorem はローカルネットワーク上の 1 台のコンピューターを操作します。Wake-on-LAN はマジックパケットを送信して電源を入れます。シャットダウンと再起動は SSH で接続し、コンピューター上でコマンドを実行します。Wake-on-LAN と SSH は別の機能で、それぞれ個別に設定できます。</string>
+    <string name="help_discovery_title">デバイスが検索で見つからない理由</string>
+    <string name="help_discovery_body">検索中は、コンピューターの電源が入っており、同じ IPv4 Wi-Fi または Ethernet ネットワークに接続されている必要があります。Android 10 以降では通常のアプリが ARP テーブルを読めないため、Duorem は最初に NetBIOS で MAC アドレスを問い合わせます。すべてのデバイスが対応しているわけではありません。root 化された端末ではネットワーク近隣テーブルを任意で試せます。それ以外の場合は、コンピューターまたはルーターで有線 LAN の MAC アドレスを確認して手動入力してください。ファイアウォール、大きなサブネット、応答の遅さでも見つからないことがあります。</string>
+    <string name="help_addresses_title">MAC、IP、ブロードキャストアドレス</string>
+    <string name="help_addresses_body">MAC アドレスはネットワークアダプターを識別し、Wake-on-LAN に必要です。IP アドレスまたはホスト名は状態確認と SSH 接続に使います。WOL ブロードキャストアドレスはマジックパケットの送信先で、家庭内ネットワークでは通常 .255 で終わります。Duorem は通常、現在のネットワークから計算できますが、特殊なネットワーク構成では手動設定が必要です。</string>
+    <string name="help_status_title">デバイス状態の見方</string>
+    <string name="help_status_body">緑はデバイスに到達でき、SSH も使用可能であることを示します。緑の点と琥珀色の文字は、デバイスには到達できるものの SSH が使用不可または未設定であることを示します。琥珀色は確認中、赤はデバイスに到達できないか、端末で利用可能なローカルネットワークがない状態です。ping に応答しないコンピューターでもオンラインの場合があります。設定した SSH ポートが開いていれば到達可能と判断します。</string>
+    <string name="help_wol_title">Wake-on-LAN の制限</string>
+    <string name="help_wol_body">Wake-on-LAN はコンピューターのファームウェア、OS、ネットワークアダプターで有効にする必要があります。有線 Ethernet が最も確実で、多くのコンピューターは Wi-Fi 経由では起動できません。Duorem はローカル IPv4 ネットワーク向けです。通常、ルーターはモバイルデータやインターネットからのブロードキャストパケットを転送しません。パケットの送信成功は、コンピューターが受信して起動したことを保証しません。</string>
+    <string name="help_ssh_title">シャットダウン、再起動、SSH の安全性</string>
+    <string name="help_ssh_body">コンピューターにはパスワード認証対応の SSH サーバーと、設定したシャットダウンコマンドを実行する権限が必要です。Duorem は既定で sudo shutdown コマンドを使用し、SSH パスワードを sudo にも使います。SSH 鍵と別の sudo パスワードには対応していません。初回コマンドの前に、表示されたサーバーのフィンガープリントをコンピューター上の値と比較してアプリで信頼してください。新しい鍵や変更された鍵を自動的に受け入れることはありません。</string>
+    <string name="help_widget_title">ホーム画面ウィジェットの動作</string>
+    <string name="help_widget_body">すべてのウィジェットは Duorem に設定された 1 台のデバイスに従い、編集または置換後も現在のデバイスを操作します。ラベルはウィジェットごとに設定できます。バックグラウンド状態更新はオフ、30 秒、1、5、10、30 分、1 時間、2 時間から選べます。既定値は 30 分です。Android が確認を遅らせる場合があるため、リアルタイムの状態ではありません。ボタンをタップすると必ず最新の状態を確認します。電源ボタンは SSH が使用可能ならシャットダウンし、デバイスに到達できなければ起動信号を送り、オンラインでも SSH が使えない場合はコマンドを送りません。再起動には常に SSH が必要です。</string>
+    <string name="help_troubleshooting_title">トラブルシューティング</string>
+    <string name="help_troubleshooting_body">端末が正しいローカルネットワークに接続され、ローカルネットワークへのアクセスが許可されていることを確認してください。有線 LAN の MAC、ブロードキャストアドレス、SSH ポート、ユーザー名、パスワード、シャットダウンコマンドを確認します。コンピューターとルーターのファイアウォールも確認してください。検索に失敗する場合は手動設定を試してください。SSH サーバーを変更した後は、ウィジェットを使う前に Duorem を開いて新しいフィンガープリントを確認してください。</string>
+    <string name="help_report_issue">GitHub で問題を報告</string>
     <string name="widget_description">設定済みの Duorem デバイスを操作</string>
     <string name="widget_configure_title">Duorem ウィジェットを設定</string>
     <string name="widget_configure_device_first">ウィジェットを追加する前に Duorem でデバイスを設定してください。</string>
@@ -96,7 +115,19 @@
     <string name="widget_single_device_help">すべての Duorem ウィジェットは、この 1 台の設定済みデバイスを操作し、編集または置換後も現在のデバイスに従います。</string>
     <string name="widget_label">ウィジェット名</string>
     <string name="widget_label_required">ウィジェット名を入力してください。</string>
-    <string name="widget_controls_help">電源ボタンは SSH が利用可能な場合にシャットダウンし、デバイスに到達できない場合に Wake-on-LAN を送信します。再起動には SSH が必要です。ウィジェットはタップしたときだけ状態を確認します。</string>
+    <string name="widget_monitor_help">省電力のため、特に短い間隔では Android がバックグラウンド確認を遅らせる場合があります。コマンド実行時には常に現在の状態を再確認します。</string>
+    <string name="widget_monitor_interval">バックグラウンド状態更新の間隔</string>
+    <string-array name="widget_monitor_intervals">
+        <item>オフ</item>
+        <item>30 秒</item>
+        <item>1 分</item>
+        <item>5 分</item>
+        <item>10 分</item>
+        <item>30 分</item>
+        <item>1 時間</item>
+        <item>2 時間</item>
+    </string-array>
+    <string name="widget_controls_help">電源ボタンは SSH が利用可能な場合にシャットダウンし、デバイスに到達できない場合に Wake-on-LAN を送信します。再起動には SSH が必要です。ボタンをタップするたびに、実行前に現在の状態を確認します。</string>
     <string name="widget_power">起動 / シャットダウン</string>
     <string name="add_widget">ウィジェットを追加</string>
     <string name="widget_settings_save_failed">ウィジェット設定を保存できません。</string>

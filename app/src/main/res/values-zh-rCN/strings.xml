@@ -8,6 +8,7 @@
     <string name="settings">设置</string>
     <string name="add_manually">手动输入</string>
     <string name="restart">重启</string>
+    <string name="action_help">帮助</string>
     <string name="action_about">关于</string>
 
     <string name="reboot_sent">已发送重启命令。</string>
@@ -90,6 +91,24 @@
     <string name="host_key_changed">警告：SSH 服务器密钥已更改</string>
     <string name="host_key_confirm">服务器：%1$s\n密钥类型：%2$s\n指纹：%3$s\n\n信任此密钥之前，请直接在计算机上核对指纹。密钥更改可能表示连接到了另一台计算机，或连接遭到拦截。</string>
     <string name="trust_and_retry">信任并重试</string>
+    <string name="help_title">帮助</string>
+    <string name="help_capabilities_title">Duorem 可以做什么</string>
+    <string name="help_capabilities_body">Duorem 用于控制本地网络中的一台计算机。Wake-on-LAN 通过发送魔术包开机；关机和重启通过 SSH 连接并在计算机上执行命令。Wake-on-LAN 与 SSH 是相互独立的功能，可以分别配置。</string>
+    <string name="help_discovery_title">为什么搜索可能找不到设备</string>
+    <string name="help_discovery_body">搜索时，计算机必须已开机并连接到同一个 IPv4 Wi-Fi 或以太网网络。Android 10 及更高版本禁止普通应用读取系统 ARP 表，因此 Duorem 会先通过 NetBIOS 请求 MAC 地址，但并非所有设备都支持。已获取 root 权限的手机可选择查询网络邻居表；否则请从计算机或路由器中查找有线网卡的 MAC 地址并手动输入。防火墙、较大的子网和响应缓慢也可能导致设备未被发现。</string>
+    <string name="help_addresses_title">MAC、IP 和广播地址</string>
+    <string name="help_addresses_body">MAC 地址用于标识网卡，是 Wake-on-LAN 必需的信息。IP 地址或主机名用于检查状态和通过 SSH 连接。WOL 广播地址是魔术包的发送目标，家庭网络中通常以 .255 结尾。Duorem 一般可以根据当前网络计算该地址，但特殊网络配置可能需要手动填写。</string>
+    <string name="help_status_title">理解设备状态</string>
+    <string name="help_status_body">绿色表示设备可访问且 SSH 已就绪。绿色圆点配琥珀色文字表示设备可访问，但 SSH 不可用或未配置。琥珀色表示正在检查。红色表示设备无法访问，或手机没有可用的本地网络。计算机即使不响应 ping 也可能在线；已配置的 SSH 端口开放时也会被视为可访问。</string>
+    <string name="help_wol_title">Wake-on-LAN 的限制</string>
+    <string name="help_wol_body">必须在计算机固件、操作系统和网卡中启用 Wake-on-LAN。使用有线以太网最可靠，许多计算机无法通过 Wi-Fi 唤醒。Duorem 面向本地 IPv4 网络；路由器通常不会转发来自移动数据或互联网的广播包。成功发送魔术包并不能证明计算机已经收到或开机。</string>
+    <string name="help_ssh_title">关机、重启与 SSH 安全</string>
+    <string name="help_ssh_body">计算机需要运行支持密码认证的 SSH 服务器，并允许执行已配置的关机命令。Duorem 默认运行 sudo shutdown 命令，并将 SSH 密码用于 sudo。目前不支持 SSH 密钥或单独的 sudo 密码。首次发送命令前，请将显示的服务器指纹与计算机上的指纹核对，并在应用中信任它。Duorem 不会自动接受新的或已更改的主机密钥。</string>
+    <string name="help_widget_title">主屏幕小组件的行为</string>
+    <string name="help_widget_body">所有小组件都会跟随 Duorem 中唯一配置的设备，即使该设备被编辑或替换。每个小组件可以使用不同标签。后台状态更新可关闭，也可设置为每隔 30 秒、1、5、10 或 30 分钟，或每隔 1 或 2 小时请求一次。默认值为 30 分钟。Android 可能会延迟这些检查，因此该状态并非实时状态。每次点按按钮时都会重新检查当前状态。电源按钮会在 SSH 可用时关机、在设备无法访问时唤醒；设备在线但 SSH 不可用时不会发送命令。重启始终需要 SSH。</string>
+    <string name="help_troubleshooting_title">故障排查清单</string>
+    <string name="help_troubleshooting_body">确认手机连接到正确的本地网络，并已允许本地网络访问。核对有线网卡 MAC、广播地址、SSH 端口、用户名、密码和关机命令。检查计算机和路由器的防火墙。如果自动搜索失败，请尝试手动配置。更改 SSH 服务器后，请先打开 Duorem 验证新的指纹，再使用小组件。</string>
+    <string name="help_report_issue">在 GitHub 上报告问题</string>
     <string name="widget_description">控制 Duorem 中已配置的设备</string>
     <string name="widget_configure_title">配置 Duorem 小组件</string>
     <string name="widget_configure_device_first">添加小组件前，请先在 Duorem 中配置设备。</string>
@@ -97,7 +116,19 @@
     <string name="widget_single_device_help">所有 Duorem 小组件都控制这一个已配置设备，并会在编辑或替换设备后自动跟随当前设备。</string>
     <string name="widget_label">小组件标签</string>
     <string name="widget_label_required">请输入小组件标签。</string>
-    <string name="widget_controls_help">电源按钮会在 SSH 可用时关机，并在设备不可访问时发送 Wake-on-LAN。重启需要 SSH。小组件仅在点按后检查状态。</string>
+    <string name="widget_monitor_help">Android 可能为了节省电量而延迟后台检查，尤其是在间隔较短时。执行命令前始终会重新检查当前状态。</string>
+    <string name="widget_monitor_interval">后台状态更新间隔</string>
+    <string-array name="widget_monitor_intervals">
+        <item>关闭</item>
+        <item>30 秒</item>
+        <item>1 分钟</item>
+        <item>5 分钟</item>
+        <item>10 分钟</item>
+        <item>30 分钟</item>
+        <item>1 小时</item>
+        <item>2 小时</item>
+    </string-array>
+    <string name="widget_controls_help">电源按钮会在 SSH 可用时关机，并在设备不可访问时发送 Wake-on-LAN。重启需要 SSH。每次点按都会在执行前检查当前状态。</string>
     <string name="widget_power">唤醒 / 关机</string>
     <string name="add_widget">添加小组件</string>
     <string name="widget_settings_save_failed">无法保存小组件设置。</string>

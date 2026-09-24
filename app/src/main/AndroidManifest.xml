@@ -34,6 +34,10 @@
             android:exported="false"
             android:parentActivityName="com.vadimfrolov.duorem.SearchConfigureActivity" />
         <activity
+            android:name="com.vadimfrolov.duorem.HelpActivity"
+            android:exported="false"
+            android:parentActivityName="com.vadimfrolov.duorem.MainActivity" />
+        <activity
             android:name="com.vadimfrolov.duorem.WidgetConfigureActivity"
             android:exported="true">
             <intent-filter>

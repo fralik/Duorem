@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.widget.RemoteViews;
 
+import androidx.annotation.ColorRes;
 import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 import androidx.work.WorkManager;
@@ -31,6 +32,10 @@ public final class DeviceWidgetProvider extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager manager, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
             update(context, appWidgetId, R.string.widget_status_ready, false);
+            WidgetStore.Settings settings = new WidgetStore(context).load(appWidgetId);
+            if (settings != null) {
+                WidgetMonitorScheduler.configure(context, appWidgetId, settings);
+            }
         }
     }
 
@@ -41,18 +46,25 @@ public final class DeviceWidgetProvider extends AppWidgetProvider {
         for (int appWidgetId : appWidgetIds) {
             store.delete(appWidgetId);
             workManager.cancelUniqueWork(workName(appWidgetId));
+            WidgetMonitorScheduler.cancel(context, appWidgetId);
         }
     }
 
     static void update(Context context, int appWidgetId,
                        @StringRes int statusText, boolean error) {
+        update(context, appWidgetId, statusText,
+                error ? R.color.statusOffline : R.color.widgetStatus);
+    }
+
+    static void update(Context context, int appWidgetId,
+                       @StringRes int statusText, @ColorRes int statusColor) {
         WidgetStore.Settings settings = new WidgetStore(context).load(appWidgetId);
         if (settings == null) return;
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.device_widget);
         views.setTextViewText(R.id.widget_label, settings.label);
         views.setTextViewText(R.id.widget_status, context.getString(statusText));
-        views.setTextColor(R.id.widget_status, ContextCompat.getColor(context,
-                error ? R.color.statusOffline : R.color.widgetStatus));
+        views.setTextColor(R.id.widget_status,
+                ContextCompat.getColor(context, statusColor));
         String description = context.getString(R.string.widget_content_description,
                 settings.label, context.getString(statusText));
         views.setContentDescription(R.id.widget_root, description);
