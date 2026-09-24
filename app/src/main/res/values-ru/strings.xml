@@ -27,6 +27,12 @@
     <string name="turn_on">Включить</string>
     <string name="shutdown">Выключить</string>
     <string name="alive_content_description">Host connection indicator</string>
+    <string name="connection_checking">Проверка…</string>
+    <string name="connection_online_ssh_ready">В сети · SSH доступен</string>
+    <string name="connection_online_ssh_unavailable">В сети · SSH недоступен</string>
+    <string name="connection_online_ssh_not_configured">В сети · SSH не настроен</string>
+    <string name="connection_unreachable">Недоступно</string>
+    <string name="connection_network_unavailable">Сеть недоступна</string>
     <string name="no_device">Отсутсвует информация об устройстве. Вы можете добавить новое устройство.</string>
     <string name="alert_icon">Alert icon</string>
 

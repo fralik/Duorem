@@ -27,6 +27,12 @@
     <string name="turn_on">Accendi</string>
     <string name="shutdown">Spegnimento</string>
     <string name="alive_content_description">Indicatore della connessione host</string>
+    <string name="connection_checking">Verifica in corso…</string>
+    <string name="connection_online_ssh_ready">Online · SSH disponibile</string>
+    <string name="connection_online_ssh_unavailable">Online · SSH non disponibile</string>
+    <string name="connection_online_ssh_not_configured">Online · SSH non configurato</string>
+    <string name="connection_unreachable">Non raggiungibile</string>
+    <string name="connection_network_unavailable">Rete non disponibile</string>
     <string name="no_device">Nessun dispositivo è configurato. Aggiungerne uno.</string>
     <string name="alert_icon">Icona di allerta</string>
 

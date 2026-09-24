@@ -31,6 +31,8 @@
                 android:layout_height="wrap_content"
                 style="?android:attr/progressBarStyle"
                 android:layout_gravity="right"
+                android:indeterminateTint="@color/toolbarActionIcon"
+                android:progressTint="@color/toolbarActionIcon"
                 android:visibility="gone"
                 />
         </androidx.appcompat.widget.Toolbar>

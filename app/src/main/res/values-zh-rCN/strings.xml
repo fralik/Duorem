@@ -27,6 +27,12 @@
     <string name="turn_on">开机</string>
     <string name="shutdown">关机</string>
     <string name="alive_content_description">设备连接状态指示器</string>
+    <string name="connection_checking">正在检查…</string>
+    <string name="connection_online_ssh_ready">在线 · SSH 可用</string>
+    <string name="connection_online_ssh_unavailable">在线 · SSH 不可用</string>
+    <string name="connection_online_ssh_not_configured">在线 · SSH 未配置</string>
+    <string name="connection_unreachable">无法访问</string>
+    <string name="connection_network_unavailable">网络不可用</string>
     <string name="no_device">没有已配置的设备，请添加一个。</string>
     <string name="alert_icon">警告图标</string>
 

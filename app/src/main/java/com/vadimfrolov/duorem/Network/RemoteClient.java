@@ -40,6 +40,18 @@ public final class RemoteClient implements AutoCloseable {
         this.network = network;
     }
 
+    public static final class ProbeResult {
+        public final boolean online;
+        public final boolean sshConfigured;
+        public final boolean sshAvailable;
+
+        public ProbeResult(boolean online, boolean sshConfigured, boolean sshAvailable) {
+            this.online = online;
+            this.sshConfigured = sshConfigured;
+            this.sshAvailable = sshAvailable;
+        }
+    }
+
     private void checkCancelled() {
         if (cancelled || Thread.currentThread().isInterrupted()) {
             throw new CancellationException("Operation cancelled");
@@ -66,16 +78,8 @@ public final class RemoteClient implements AutoCloseable {
     }
 
     private String reachableAddress(HostBean target) throws IOException {
-        List<String> candidates = new ArrayList<>();
-        if (target.ipAddress != null && !target.ipAddress.isEmpty() && !NetInfo.NOIP.equals(target.ipAddress)) {
-            candidates.add(target.ipAddress);
-        }
-        if (target.hostname != null && !target.hostname.trim().isEmpty()
-                && !candidates.contains(target.hostname)) {
-            candidates.add(target.hostname);
-        }
         IOException failure = new IOException("No target address is configured");
-        for (String address : candidates) {
+        for (String address : candidateAddresses(target)) {
             try (Socket socket = connect(address, NetworkAddress.port(target.sshPort))) {
                 return address;
             } catch (IOException e) {
@@ -88,6 +92,46 @@ public final class RemoteClient implements AutoCloseable {
     public boolean isReachable(HostBean target) throws IOException {
         reachableAddress(target);
         return true;
+    }
+
+    public ProbeResult probe(HostBean target, int timeout) {
+        checkCancelled();
+        boolean sshConfigured = target.canUseSsh();
+        boolean sshAvailable = false;
+        if (sshConfigured) {
+            try {
+                sshAvailable = isReachable(target);
+            } catch (IOException | IllegalArgumentException e) {
+                // Reachability is checked separately when SSH is unavailable.
+            }
+        }
+        if (sshAvailable) return new ProbeResult(true, true, true);
+
+        boolean online = false;
+        for (String candidate : candidateAddresses(target)) {
+            try {
+                checkCancelled();
+                online = resolve(candidate).isReachable(timeout);
+                if (online) break;
+            } catch (IOException | SecurityException e) {
+                // Try another configured address before reporting the device unreachable.
+            }
+        }
+        checkCancelled();
+        return new ProbeResult(online, sshConfigured, false);
+    }
+
+    private static List<String> candidateAddresses(HostBean target) {
+        List<String> candidates = new ArrayList<>();
+        if (target.ipAddress != null && !target.ipAddress.isEmpty()
+                && !NetInfo.NOIP.equals(target.ipAddress)) {
+            candidates.add(target.ipAddress);
+        }
+        if (target.hostname != null && !target.hostname.trim().isEmpty()
+                && !candidates.contains(target.hostname)) {
+            candidates.add(target.hostname);
+        }
+        return candidates;
     }
 
     public void wake(RemoteCommand command, String currentBroadcast) throws IOException {

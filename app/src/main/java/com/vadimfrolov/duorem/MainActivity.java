@@ -43,6 +43,7 @@ public class MainActivity extends ActivityNet {
     private HostBean target;
     private HostStore store;
     private TextView name;
+    private TextView connection;
     private TextView status;
     private ImageView alive;
     private Button power;
@@ -54,8 +55,18 @@ public class MainActivity extends ActivityNet {
     private String networkIdentity;
     private ScheduledFuture<?> poll;
     private AlertDialog trustDialog;
+    private ConnectionState connectionState = ConnectionState.CHECKING;
     private final Set<RemoteClient> clients = ConcurrentHashMap.newKeySet();
     private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
+
+    private enum ConnectionState {
+        CHECKING,
+        ONLINE_SSH_READY,
+        ONLINE_SSH_UNAVAILABLE,
+        ONLINE_SSH_NOT_CONFIGURED,
+        UNREACHABLE,
+        NETWORK_UNAVAILABLE
+    }
 
     @Override
     protected void onCreate(Bundle state) {
@@ -64,6 +75,7 @@ public class MainActivity extends ActivityNet {
         setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
         store = new HostStore(this);
         name = findViewById(R.id.id);
+        connection = findViewById(R.id.connection_status);
         status = findViewById(R.id.text_status);
         alive = findViewById(R.id.alive);
         power = findViewById(R.id.btn_toggle_power);
@@ -76,8 +88,8 @@ public class MainActivity extends ActivityNet {
             if (!hasNetworkPermission()) {
                 requestNetworkPermission();
             } else if (target != null) {
-                RemoteCommand command = new RemoteCommand(target,
-                        target.isAlive && target.canUseSsh() ? RemoteCommand.SSH : RemoteCommand.WOL);
+                RemoteCommand command = new RemoteCommand(target, connectionState
+                        == ConnectionState.ONLINE_SSH_READY ? RemoteCommand.SSH : RemoteCommand.WOL);
                 command.command = target.sshShutdownCmd;
                 runCommand(command);
             }
@@ -99,6 +111,7 @@ public class MainActivity extends ActivityNet {
         unreadableSettings = false;
         try {
             target = store.load();
+            connectionState = ConnectionState.CHECKING;
         } catch (IOException | GeneralSecurityException e) {
             target = null;
             unreadableSettings = true;
@@ -144,7 +157,11 @@ public class MainActivity extends ActivityNet {
         if (!identity.equals(networkIdentity) || !mIsConnected) {
             cancelNetworkWork();
             networkIdentity = identity;
-            if (target != null) target.isAlive = false;
+            if (target != null) {
+                target.isAlive = false;
+                connectionState = mIsConnected
+                        ? ConnectionState.CHECKING : ConnectionState.NETWORK_UNAVAILABLE;
+            }
         }
         startPolling();
         updateView();
@@ -157,25 +174,24 @@ public class MainActivity extends ActivityNet {
         NetInfo network = mNetInfo;
         int token = generation;
         poll = executor.scheduleWithFixedDelay(() -> {
-            boolean reachable = false;
+            RemoteClient.ProbeResult probe;
             RemoteClient client = new RemoteClient(network.network);
             clients.add(client);
             try (client) {
-                reachable = client.isReachable(current);
-            } catch (IOException e) {
-                // A closed SSH port or an offline host is a normal polling result.
-                Log.d("MainActivity", "Host is not reachable");
+                probe = client.probe(current, 1000);
             } catch (IllegalArgumentException | SecurityException e) {
                 Log.w("MainActivity", "Invalid or inaccessible polling endpoint", e);
+                probe = new RemoteClient.ProbeResult(false, current.canUseSsh(), false);
             } catch (CancellationException e) {
                 return;
             } finally {
                 clients.remove(client);
             }
-            boolean result = reachable;
+            RemoteClient.ProbeResult result = probe;
             runOnUiThread(() -> {
                 if (resumed && token == generation && target == current) {
-                    target.isAlive = result;
+                    target.isAlive = result.online;
+                    connectionState = connectionState(result);
                     updateView();
                 }
             });
@@ -254,16 +270,20 @@ public class MainActivity extends ActivityNet {
 
     private void updateView() {
         if (power == null) return;
-        boolean isAlive = target != null && target.isAlive;
-        boolean shutdown = isAlive && target.canUseSsh();
+        boolean online = connectionState == ConnectionState.ONLINE_SSH_READY
+                || connectionState == ConnectionState.ONLINE_SSH_UNAVAILABLE
+                || connectionState == ConnectionState.ONLINE_SSH_NOT_CONFIGURED;
+        boolean sshReady = connectionState == ConnectionState.ONLINE_SSH_READY;
+        boolean unreachable = connectionState == ConnectionState.UNREACHABLE;
         name.setText(target == null ? getString(R.string.no_device) : target.name());
         alive.setVisibility(target == null ? View.GONE : View.VISIBLE);
-        alive.setColorFilter(ContextCompat.getColor(this,
-                isAlive ? R.color.statusOnline : R.color.statusOffline));
-        power.setText(shutdown ? R.string.shutdown : R.string.turn_on);
+        connection.setVisibility(target == null ? View.GONE : View.VISIBLE);
+        if (target != null) updateConnectionIndicator();
+        power.setText(connectionState == ConnectionState.CHECKING
+                ? R.string.connection_checking : online ? R.string.shutdown : R.string.turn_on);
         power.setEnabled(!commandRunning && mNetInfo.isConnected && target != null
-                && (shutdown || target.canWake()));
-        restart.setEnabled(!commandRunning && mNetInfo.isConnected && target != null && target.canUseSsh());
+                && (sshReady || (unreachable && target.canWake())));
+        restart.setEnabled(!commandRunning && mNetInfo.isConnected && target != null && sshReady);
         if (!hasNetworkPermission()) {
             status.setText(R.string.network_permission_required);
         } else if (!mNetInfo.isConnected) {
@@ -273,6 +293,53 @@ public class MainActivity extends ActivityNet {
             status.setText("");
         }
         invalidateOptionsMenu();
+    }
+
+    private ConnectionState connectionState(RemoteClient.ProbeResult result) {
+        if (!result.online) return ConnectionState.UNREACHABLE;
+        if (!result.sshConfigured) return ConnectionState.ONLINE_SSH_NOT_CONFIGURED;
+        return result.sshAvailable
+                ? ConnectionState.ONLINE_SSH_READY : ConnectionState.ONLINE_SSH_UNAVAILABLE;
+    }
+
+    private void updateConnectionIndicator() {
+        int text;
+        int dotColor;
+        int textColor;
+        switch (connectionState) {
+            case ONLINE_SSH_READY:
+                text = R.string.connection_online_ssh_ready;
+                dotColor = textColor = R.color.statusOnline;
+                break;
+            case ONLINE_SSH_UNAVAILABLE:
+                text = R.string.connection_online_ssh_unavailable;
+                dotColor = R.color.statusOnline;
+                textColor = R.color.statusWarning;
+                break;
+            case ONLINE_SSH_NOT_CONFIGURED:
+                text = R.string.connection_online_ssh_not_configured;
+                dotColor = R.color.statusOnline;
+                textColor = R.color.statusWarning;
+                break;
+            case NETWORK_UNAVAILABLE:
+                text = R.string.connection_network_unavailable;
+                dotColor = textColor = R.color.statusOffline;
+                break;
+            case UNREACHABLE:
+                text = R.string.connection_unreachable;
+                dotColor = textColor = R.color.statusOffline;
+                break;
+            case CHECKING:
+            default:
+                text = R.string.connection_checking;
+                dotColor = textColor = R.color.statusWarning;
+                break;
+        }
+        String description = getString(text);
+        connection.setText(description);
+        connection.setTextColor(ContextCompat.getColor(this, textColor));
+        alive.setColorFilter(ContextCompat.getColor(this, dotColor));
+        alive.setContentDescription(description);
     }
 
     @Override

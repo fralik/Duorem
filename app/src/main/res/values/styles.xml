@@ -22,7 +22,8 @@
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="colorControlNormal">@color/colorOnPrimary</item>
+        <item name="colorControlNormal">@color/toolbarActionIcon</item>
+        <item name="actionMenuTextColor">@color/toolbarActionIcon</item>
     </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat">

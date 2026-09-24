@@ -27,6 +27,12 @@
     <string name="turn_on">Turn on</string>
     <string name="shutdown">Shutdown</string>
     <string name="alive_content_description">Host connection indicator</string>
+    <string name="connection_checking">Checking…</string>
+    <string name="connection_online_ssh_ready">Online · SSH ready</string>
+    <string name="connection_online_ssh_unavailable">Online · SSH unavailable</string>
+    <string name="connection_online_ssh_not_configured">Online · SSH not configured</string>
+    <string name="connection_unreachable">Unreachable</string>
+    <string name="connection_network_unavailable">Network unavailable</string>
     <string name="no_device">No device is configured. Add one.</string>
     <string name="alert_icon">Alert icon</string>
 

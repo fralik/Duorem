@@ -38,6 +38,54 @@ public class RemoteClientTest {
     }
 
     @Test
+    public void probeDistinguishesOnlineFromSshAvailability() throws Exception {
+        int closedPort;
+        try (ServerSocket unused = new ServerSocket(0)) {
+            closedPort = unused.getLocalPort();
+        }
+        try (RemoteClient client = new RemoteClient(null)) {
+            HostBean host = new HostBean();
+            host.ipAddress = "127.0.0.1";
+            host.sshUsername = "user";
+            host.sshPort = String.valueOf(closedPort);
+            RemoteClient.ProbeResult result = client.probe(host, 1000);
+            assertTrue(result.online);
+            assertTrue(result.sshConfigured);
+            assertFalse(result.sshAvailable);
+        }
+    }
+
+    @Test
+    public void probeReportsSshReadyWhenConfiguredPortAcceptsConnections() throws Exception {
+        try (ServerSocket server = new ServerSocket(0, 1, InetAddress.getByName("127.0.0.1"));
+             RemoteClient client = new RemoteClient(null)) {
+            HostBean host = new HostBean();
+            host.ipAddress = "127.0.0.1";
+            host.sshUsername = "user";
+            host.sshPort = String.valueOf(server.getLocalPort());
+            RemoteClient.ProbeResult result = client.probe(host, 1000);
+            assertTrue(result.online);
+            assertTrue(result.sshConfigured);
+            assertTrue(result.sshAvailable);
+            try (Socket ignored = server.accept()) {
+                // The probe only needs to establish and close the TCP connection.
+            }
+        }
+    }
+
+    @Test
+    public void probeReportsOnlineWhenSshIsNotConfigured() {
+        try (RemoteClient client = new RemoteClient(null)) {
+            HostBean host = new HostBean();
+            host.ipAddress = "127.0.0.1";
+            RemoteClient.ProbeResult result = client.probe(host, 1000);
+            assertTrue(result.online);
+            assertFalse(result.sshConfigured);
+            assertFalse(result.sshAvailable);
+        }
+    }
+
+    @Test
     public void cancelledClientsCannotStartNewWork() {
         RemoteClient client = new RemoteClient(null);
         client.close();

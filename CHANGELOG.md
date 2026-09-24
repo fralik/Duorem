@@ -17,6 +17,7 @@ All notable changes to Duorem will be documented in this file.
  - Discover devices even when they do not provide a hostname or MAC address.
  - Allow Wake-on-LAN-only configurations without requiring SSH or hostname resolution.
  - Improve reliability and error reporting for discovery, Wake-on-LAN, SSH shutdown/restart, permissions, and changing network connections.
+ - Distinguish device reachability from SSH availability so online devices are not shown as offline merely because SSH is unavailable.
  - Preserve edited settings across screen recreation, validate entered addresses and ports, and keep deleted devices deleted.
 
 ## [1.1.4] - 2020-02-04

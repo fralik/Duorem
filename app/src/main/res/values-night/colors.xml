@@ -8,6 +8,8 @@
     <color name="colorOnSurface">#F5F5F5</color>
     <color name="colorBackground">#121212</color>
     <color name="colorOnBackground">#F5F5F5</color>
+    <color name="toolbarActionIcon">@color/colorAccent</color>
     <color name="statusOnline">#66BB6A</color>
+    <color name="statusWarning">#FFB74D</color>
     <color name="statusOffline">#EF5350</color>
 </resources>

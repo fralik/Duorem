@@ -27,6 +27,12 @@
     <string name="turn_on">オンにする</string>
     <string name="shutdown">シャットダウン</string>
     <string name="alive_content_description">ホスト接続インジケーター</string>
+    <string name="connection_checking">確認中…</string>
+    <string name="connection_online_ssh_ready">オンライン · SSH 使用可能</string>
+    <string name="connection_online_ssh_unavailable">オンライン · SSH 使用不可</string>
+    <string name="connection_online_ssh_not_configured">オンライン · SSH 未設定</string>
+    <string name="connection_unreachable">到達できません</string>
+    <string name="connection_network_unavailable">ネットワークを利用できません</string>
     <string name="no_device">デバイスは設定されていません。追加してください。</string>
     <string name="alert_icon">アラートアイコン</string>
 
