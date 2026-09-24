@@ -5,7 +5,6 @@
 package com.vadimfrolov.duorem;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -18,6 +17,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import com.jcraft.jsch.HostKey;
 import com.jcraft.jsch.JSchException;
@@ -258,7 +258,8 @@ public class MainActivity extends ActivityNet {
         boolean shutdown = isAlive && target.canUseSsh();
         name.setText(target == null ? getString(R.string.no_device) : target.name());
         alive.setVisibility(target == null ? View.GONE : View.VISIBLE);
-        alive.setColorFilter(isAlive ? Color.GREEN : Color.RED);
+        alive.setColorFilter(ContextCompat.getColor(this,
+                isAlive ? R.color.statusOnline : R.color.statusOffline));
         power.setText(shutdown ? R.string.shutdown : R.string.turn_on);
         power.setEnabled(!commandRunning && mNetInfo.isConnected && target != null
                 && (shutdown || target.canWake()));
