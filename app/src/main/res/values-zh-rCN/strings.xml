@@ -63,7 +63,7 @@
     <string name="unknown_mac">00:00:00:00:00:00</string>
     <string name="allow_network">允许访问本地网络</string>
     <string name="network_permission_required">Duorem 需要访问本地网络才能查找、唤醒和控制计算机。请选择“允许访问本地网络”以授予权限。</string>
-    <string name="discovery_help">连接家庭 Wi-Fi 或以太网以发现可访问的设备。你也可以手动输入设备。从 Android 10 开始，使用 Wake-on-LAN 需要手动输入计算机或路由器上显示的 MAC 地址。</string>
+    <string name="discovery_help">连接家庭 Wi-Fi 或以太网以发现可访问的设备。Duorem 可以检测支持 NetBIOS 的设备的 MAC 地址。对于其他设备，请输入计算机或路由器上显示的 MAC 地址。</string>
     <string name="mac_required">请输入用于 Wake-on-LAN 的 MAC 地址</string>
     <string name="discovery_failed">搜索被阻止。请检查本地网络权限和网络连接。</string>
     <string name="settings_load_failed">无法读取已保存的设备，设置未被覆盖。请重试，或删除设备后重新配置。</string>

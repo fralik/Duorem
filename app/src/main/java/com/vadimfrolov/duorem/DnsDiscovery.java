@@ -12,9 +12,11 @@ import android.util.Log;
 import com.vadimfrolov.duorem.Network.HardwareAddress;
 import com.vadimfrolov.duorem.Network.HostBean;
 import com.vadimfrolov.duorem.Network.NetInfo;
+import com.vadimfrolov.duorem.Network.NetBiosNodeStatus;
 import com.vadimfrolov.duorem.Network.NetworkAddress;
 
 import java.io.IOException;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -29,6 +31,7 @@ public final class DnsDiscovery implements AutoCloseable {
     private static final int WORKERS = 10;
     private final ExecutorService workers = Executors.newFixedThreadPool(WORKERS);
     private final Set<Socket> sockets = ConcurrentHashMap.newKeySet();
+    private final Set<DatagramSocket> datagramSockets = ConcurrentHashMap.newKeySet();
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final DiscoveryListener listener;
     private final NetInfo network;
@@ -96,10 +99,26 @@ public final class DnsDiscovery implements AutoCloseable {
                 sockets.remove(socket);
             }
             if (!reachable || cancelled) return null;
+            String hardwareAddress = HardwareAddress.getHardwareAddress(ip);
+            if (NetInfo.NOMAC.equals(hardwareAddress)) {
+                DatagramSocket datagramSocket = new DatagramSocket(null);
+                datagramSockets.add(datagramSocket);
+                try (datagramSocket) {
+                    network.network.bindSocket(datagramSocket);
+                    datagramSocket.bind(new InetSocketAddress(0));
+                    hardwareAddress = NetBiosNodeStatus.query(datagramSocket, address,
+                            listener.getTimeout());
+                } catch (IOException e) {
+                    Log.d("DnsDiscovery", "NetBIOS lookup failed for " + ip);
+                } finally {
+                    datagramSockets.remove(datagramSocket);
+                }
+            }
+            if (cancelled) return null;
             HostBean host = new HostBean();
             host.ipAddress = ip;
             host.hostname = address.getCanonicalHostName();
-            host.hardwareAddress = HardwareAddress.getHardwareAddress(ip);
+            host.hardwareAddress = hardwareAddress;
             host.broadcastIp = network.broadcastIp;
             host.isAlive = true;
             return host;
@@ -122,5 +141,7 @@ public final class DnsDiscovery implements AutoCloseable {
             }
         }
         sockets.clear();
+        for (DatagramSocket socket : datagramSockets) socket.close();
+        datagramSockets.clear();
     }
 }

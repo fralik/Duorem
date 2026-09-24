@@ -62,7 +62,7 @@
     <string name="shutdown_cmd">シャットダウンコマンド</string>
     <string name="allow_network">ローカルネットワークへのアクセスを許可</string>
     <string name="network_permission_required">コンピューターの検索、起動、操作にはローカルネットワークへのアクセスが必要です。「ローカルネットワークへのアクセスを許可」を選択してください。</string>
-    <string name="discovery_help">自宅の Wi-Fi または Ethernet に接続すると、応答するデバイスを検索できます。手動入力も可能です。Android 10 以降では、Wake-on-LAN 用の MAC アドレスをコンピューターやルーターで確認して入力してください。</string>
+    <string name="discovery_help">自宅の Wi-Fi または Ethernet に接続すると、応答するデバイスを検索できます。Duorem は NetBIOS に対応するデバイスの MAC アドレスを検出できます。その他のデバイスでは、コンピューターまたはルーターで確認した MAC アドレスを入力してください。</string>
     <string name="mac_required">Wake-on-LAN 用の MAC アドレスを入力してください</string>
     <string name="discovery_failed">検索がブロックされました。ローカルネットワークの権限と接続を確認してください。</string>
     <string name="settings_load_failed">保存したデバイスを読み込めません。設定は上書きされていません。再試行するか、デバイスを削除して再設定してください。</string>

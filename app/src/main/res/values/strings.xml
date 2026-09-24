@@ -64,7 +64,7 @@
     <string name="close">Close</string>
     <string name="allow_network">Allow local network access</string>
     <string name="network_permission_required">Duorem needs local network access to find, wake and control your computer. Choose Allow local network access to grant permission.</string>
-    <string name="discovery_help">Connect to your home Wi-Fi or Ethernet network to discover reachable devices. You can always enter a device manually. On Android 10 and later, enter its MAC address from the computer or router for Wake-on-LAN.</string>
+    <string name="discovery_help">Connect to your home Wi-Fi or Ethernet network to discover reachable devices. Duorem can detect MAC addresses from devices that support NetBIOS. For other devices, enter the MAC address from the computer or router.</string>
     <string name="mac_required">Enter a MAC address for Wake-on-LAN</string>
     <string name="discovery_failed">Discovery was blocked. Check local network permission and your connection.</string>
     <string name="settings_load_failed">Could not read the saved device. Its settings have not been overwritten. Try again, or delete the device and configure it again.</string>
