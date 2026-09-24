@@ -3,6 +3,8 @@ All notable changes to Duorem will be documented in this file.
 
 ## [Current version]
 
+## [1.2.0] - 2026-09-24
+
 ### Added
  - Follow the system light or dark theme, with improved readability across menus, dialogs, forms, and system bars.
  - Automatically detect MAC addresses from devices that support NetBIOS. Rooted phones can optionally use root-assisted lookup when NetBIOS is unavailable; manual entry remains available.
