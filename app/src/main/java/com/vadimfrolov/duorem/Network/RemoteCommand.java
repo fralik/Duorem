@@ -25,6 +25,8 @@ public class RemoteCommand {
     public String command = null;
     /** Result of command execution */
     public String result = null;
+    public boolean success;
+    public String error;
     public int commandType = INVALID_CMD;
 
     public RemoteCommand(HostBean target) {
@@ -41,11 +43,10 @@ public class RemoteCommand {
     }
 
     public int sshPort() {
-        return Integer.parseInt(target.sshPort);
+        return NetworkAddress.port(target.sshPort);
     }
 
     public int wolPort() {
-        return Integer.parseInt(target.wolPort);
+        return NetworkAddress.port(target.wolPort);
     }
 };
-

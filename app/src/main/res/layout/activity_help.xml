@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/app_bar"
+        layout="@layout/toolbar_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="12dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="16dp">
+
+            <com.google.android.material.card.MaterialCardView style="@style/HelpCard">
+                <LinearLayout style="@style/HelpCardContent">
+                    <TextView
+                        style="@style/HelpCardTitle"
+                        android:text="@string/help_capabilities_title" />
+                    <TextView
+                        style="@style/HelpCardBody"
+                        android:text="@string/help_capabilities_body" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView style="@style/HelpCard">
+                <LinearLayout style="@style/HelpCardContent">
+                    <TextView
+                        style="@style/HelpCardTitle"
+                        android:text="@string/help_discovery_title" />
+                    <TextView
+                        style="@style/HelpCardBody"
+                        android:text="@string/help_discovery_body" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView style="@style/HelpCard">
+                <LinearLayout style="@style/HelpCardContent">
+                    <TextView
+                        style="@style/HelpCardTitle"
+                        android:text="@string/help_addresses_title" />
+                    <TextView
+                        style="@style/HelpCardBody"
+                        android:text="@string/help_addresses_body" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView style="@style/HelpCard">
+                <LinearLayout style="@style/HelpCardContent">
+                    <TextView
+                        style="@style/HelpCardTitle"
+                        android:text="@string/help_status_title" />
+                    <TextView
+                        style="@style/HelpCardBody"
+                        android:text="@string/help_status_body" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView style="@style/HelpCard">
+                <LinearLayout style="@style/HelpCardContent">
+                    <TextView
+                        style="@style/HelpCardTitle"
+                        android:text="@string/help_wol_title" />
+                    <TextView
+                        style="@style/HelpCardBody"
+                        android:text="@string/help_wol_body" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView style="@style/HelpCard">
+                <LinearLayout style="@style/HelpCardContent">
+                    <TextView
+                        style="@style/HelpCardTitle"
+                        android:text="@string/help_ssh_title" />
+                    <TextView
+                        style="@style/HelpCardBody"
+                        android:text="@string/help_ssh_body" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView style="@style/HelpCard">
+                <LinearLayout style="@style/HelpCardContent">
+                    <TextView
+                        style="@style/HelpCardTitle"
+                        android:text="@string/help_widget_title" />
+                    <TextView
+                        style="@style/HelpCardBody"
+                        android:text="@string/help_widget_body" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView style="@style/HelpCard">
+                <LinearLayout style="@style/HelpCardContent">
+                    <TextView
+                        style="@style/HelpCardTitle"
+                        android:text="@string/help_troubleshooting_title" />
+                    <TextView
+                        style="@style/HelpCardBody"
+                        android:text="@string/help_troubleshooting_body" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/report_issue"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:minHeight="48dp"
+                        android:text="@string/help_report_issue"
+                        android:textColor="@color/colorAccent" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

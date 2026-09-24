@@ -7,15 +7,15 @@ package com.vadimfrolov.duorem;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.vadimfrolov.duorem.Network.HostBean;
 import com.vadimfrolov.duorem.Network.NetInfo;
 
-public class SearchConfigureActivity extends AppCompatActivity
+public class SearchConfigureActivity extends ActivityNet
     implements HostSearchFragment.OnListFragmentInteractionListener {
 
     ProgressBar progressBarFooter;
@@ -32,6 +32,7 @@ public class SearchConfigureActivity extends AppCompatActivity
             searchFragment.resetAppBar();
         }
 
+        mHostDetailsView = (ViewGroup) findViewById(R.id.host_details_fragement);
         if (savedInstanceState != null) {
             // The fragment manager will handle restoring them if we are being restored from a save state
         } else {
@@ -39,7 +40,6 @@ public class SearchConfigureActivity extends AppCompatActivity
             if (mHostDetailsView != null) {
                 HostBean manual = new HostBean();
                 manual.resetForView();
-                manual.hostname = getApplicationContext().getResources().getString(R.string.hosts_manual);
                 manual.hardwareAddress = NetInfo.NOMAC;
                 manual.ipAddress = NetInfo.NOIP;
                 manual.broadcastIp = NetInfo.NOIP;
@@ -48,12 +48,15 @@ public class SearchConfigureActivity extends AppCompatActivity
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(mHostDetailsView.getId(), configurationFragment, TargetConfigurationFragment.class.getName());
                 fragmentTransaction.commit();
-                configurationFragment.prepareForTablet();
-            }
-            if (searchFragment != null) {
-                searchFragment.setTablet(mHostDetailsView != null);
             }
         }
+    }
+
+    @Override
+    protected void updateNetworkStatus() {
+        HostSearchFragment fragment = (HostSearchFragment)
+                getSupportFragmentManager().findFragmentById(R.id.host_list_fragment);
+        if (fragment != null) fragment.updateNetworkStatus();
     }
 
     @Override

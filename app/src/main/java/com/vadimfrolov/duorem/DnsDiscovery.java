@@ -3,150 +3,160 @@
  * Copyright (C) 2017 Vadim Frolov
  * Licensed under GNU's GPL 3 or any later version, see README
  */
-
 package com.vadimfrolov.duorem;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
-import com.vadimfrolov.duorem.Network.HardwareAddress;
 import com.vadimfrolov.duorem.Network.HostBean;
 import com.vadimfrolov.duorem.Network.NetInfo;
+import com.vadimfrolov.duorem.Network.NetBiosNodeStatus;
+import com.vadimfrolov.duorem.Network.NetworkAddress;
+import com.vadimfrolov.duorem.Network.RootNeighborLookup;
 
 import java.io.IOException;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * Based on DnsDiscovery from {@link https://github.com/rorist/android-network-discovery|Android Network Discovery} app.
- * Changes:
- * 1. Perform search in batches instead of a single for loop.
- * 2. Filter gateways out.
- * 3. Do not check NIC vendor.
- */
+public final class DnsDiscovery implements AutoCloseable {
+    private static final int WORKERS = 10;
+    private final ExecutorService workers = Executors.newFixedThreadPool(WORKERS);
+    private final Set<Socket> sockets = ConcurrentHashMap.newKeySet();
+    private final Set<DatagramSocket> datagramSockets = ConcurrentHashMap.newKeySet();
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private final DiscoveryListener listener;
+    private final NetInfo network;
+    private final RootNeighborLookup rootLookup;
+    private final AtomicBoolean rootFailureReported = new AtomicBoolean();
+    private volatile boolean cancelled;
 
-public class DnsDiscovery extends AbstractDiscovery {
+    public DnsDiscovery(DiscoveryListener listener, NetInfo network, boolean useRootLookup) {
+        this.listener = listener;
+        this.network = network;
+        rootLookup = useRootLookup ? new RootNeighborLookup() : null;
+    }
 
-    private final String TAG = "DnsDiscovery";
-    private final static long sChunkSize = 10;
-    // number of threads for pool of async tasks.
-    private final static int sThreads = 10;
-    private ExecutorService mPool;
-    private final static int TIMEOUT_SCAN = 3600; // seconds
-    private final static int TIMEOUT_SHUTDOWN = 10; // seconds
+    public void start() {
+        long[] range = NetworkAddress.hostRange(network.ip, network.cidr);
+        long total = range[1] - range[0] + 1;
+        AtomicLong next = new AtomicLong(range[0]);
+        AtomicLong completed = new AtomicLong();
+        AtomicInteger active = new AtomicInteger(WORKERS);
+        listener.onStartDiscovering();
+        for (int i = 0; i < WORKERS; i++) {
+            workers.execute(() -> {
+                try {
+                    long address;
+                    while (!cancelled && (address = next.getAndIncrement()) <= range[1]) {
+                        HostBean host = probe(NetworkAddress.fromLong(address));
+                        int progress = (int) (completed.incrementAndGet() * 10000 / total);
+                        handler.post(() -> {
+                            if (!cancelled) {
+                                if (host != null) listener.onNewHost(host);
+                                listener.setDiscoverProgress(progress);
+                            }
+                        });
+                    }
+                } catch (SecurityException e) {
+                    Log.e("DnsDiscovery", "Local network access was denied", e);
+                    handler.post(() -> {
+                        if (!cancelled) listener.onDiscoveryError();
+                    });
+                } finally {
+                    if (active.decrementAndGet() == 0) {
+                        handler.post(() -> {
+                            if (!cancelled) listener.onStopDiscovering();
+                        });
+                    }
+                }
+            });
+        }
+        workers.shutdown();
+    }
 
-    public DnsDiscovery(DiscoveryListener discover) {
-        super(discover);
+    private HostBean probe(String ip) {
+        if (ip.equals(network.ip) || ip.equals(network.gatewayIp)) return null;
+        try {
+            InetAddress address = network.network.getByName(ip);
+            boolean reachable = false;
+            Socket socket = new Socket();
+            sockets.add(socket);
+            try (socket) {
+                network.network.bindSocket(socket);
+                if (cancelled) return null;
+                socket.connect(new InetSocketAddress(address, 22), listener.getTimeout());
+                reachable = true;
+            } catch (IOException e) {
+                // Not every reachable device runs SSH.
+                if (!cancelled && network.networkInterface != null) {
+                    reachable = address.isReachable(
+                            network.networkInterface, 0, listener.getTimeout());
+                }
+            } finally {
+                sockets.remove(socket);
+            }
+            if (!reachable || cancelled) return null;
+            String hardwareAddress = NetInfo.NOMAC;
+            DatagramSocket datagramSocket = new DatagramSocket(null);
+            datagramSockets.add(datagramSocket);
+            try (datagramSocket) {
+                network.network.bindSocket(datagramSocket);
+                datagramSocket.bind(new InetSocketAddress(0));
+                hardwareAddress = NetBiosNodeStatus.query(datagramSocket, address,
+                        listener.getTimeout());
+            } catch (IOException e) {
+                Log.d("DnsDiscovery", "NetBIOS lookup failed for " + ip);
+            } finally {
+                datagramSockets.remove(datagramSocket);
+            }
+            if (NetInfo.NOMAC.equals(hardwareAddress) && rootLookup != null && !cancelled) {
+                hardwareAddress = rootLookup.query(ip);
+                if (rootLookup.isUnavailable() && rootFailureReported.compareAndSet(false, true)) {
+                    handler.post(() -> {
+                        if (!cancelled) listener.onRootLookupUnavailable();
+                    });
+                }
+            }
+            if (cancelled) return null;
+            HostBean host = new HostBean();
+            host.ipAddress = ip;
+            String hostname = address.getCanonicalHostName();
+            host.hostname = ip.equals(hostname) ? "" : hostname;
+            host.hardwareAddress = hardwareAddress;
+            host.broadcastIp = network.broadcastIp;
+            host.isAlive = true;
+            return host;
+        } catch (IOException e) {
+            Log.d("DnsDiscovery", "Probe failed for " + ip);
+            return null;
+        }
     }
 
     @Override
-    protected Void doInBackground(Void... params) {
-        if (mDiscover != null) {
-            final DiscoveryListener discover = mDiscover.get();
-            if (discover != null) {
-                int timeout = discover.getTimeout();
-                long numChunks = mSize / sChunkSize;
-                long numLeft = mSize % sChunkSize;
-                mPool = Executors.newFixedThreadPool(sThreads);
-
-                for (long i = 1; i <= numChunks; i++) {
-                    long start = mStart-1 + ((i - 1) * sChunkSize + 1);
-                    long stop = start + sChunkSize - 1;
-                    launch(start, stop, timeout, discover.getGatewayIp());
-                }
-                if (numLeft > 0) {
-                    long start = mStart-1 + (numChunks * sChunkSize + 1);
-                    long stop = mEnd;
-                    launch(start, stop, timeout, discover.getGatewayIp());
-                }
-                mPool.shutdown();
-                try {
-                    if (!mPool.awaitTermination(TIMEOUT_SCAN, TimeUnit.SECONDS)) {
-                        mPool.shutdownNow();
-                        if (!mPool.awaitTermination(TIMEOUT_SHUTDOWN, TimeUnit.SECONDS)) {
-                            Log.w(TAG, "Pool did not shutdown");
-                        }
-                    }
-                } catch (InterruptedException e) {
-                    mPool.shutdownNow();
-                    Thread.currentThread().interrupt();
-                }
+    public void close() {
+        cancelled = true;
+        workers.shutdownNow();
+        handler.removeCallbacksAndMessages(null);
+        for (Socket socket : sockets) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                Log.w("DnsDiscovery", "Could not close discovery socket", e);
             }
         }
-        return null;
-    }
-
-    @Override
-    protected void onCancelled() {
-        if (mPool != null) {
-            synchronized (mPool) {
-                mPool.shutdown();
-            }
-        }
-        super.onCancelled();
-    }
-
-    private void launch(long start, long stop, int timeout, String gatewayIp) {
-        if (!mPool.isShutdown()) {
-            Log.d(TAG, "Making new pool " + start + "-" + stop + ", " + NetInfo.getIpFromLongUnsigned(start) + "-" + NetInfo.getIpFromLongUnsigned(stop));
-            mPool.execute(new CheckRunnable(start, stop, timeout, gatewayIp));
-        }
-    }
-
-    private class CheckRunnable implements Runnable {
-        private final long mStart;
-        private final long mStop;
-        private final int mTimeout;
-        private final String mGatewayIp;
-
-        CheckRunnable(long start, long stop, int timeout, String gatewayIp) {
-            mStart = start;
-            mStop = stop;
-            mTimeout = timeout;
-            mGatewayIp = gatewayIp;
-        }
-
-        public void run() {
-            if (isCancelled()) {
-                publishProgress((HostBean)null);
-                return;
-            }
-
-            for (long i = mStart; i <= mStop; i++) {
-                HostBean host = new HostBean();
-                host.hardwareAddress = NetInfo.NOMAC;
-                host.hostname = null;
-                host.ipAddress = NetInfo.getIpFromLongUnsigned(i);
-                host.broadcastIp = null;
-                try {
-                    InetAddress ia = InetAddress.getByName(host.ipAddress);
-                    host.hostname = ia.getCanonicalHostName();
-                    host.isAlive = ia.isReachable(mTimeout);
-                } catch (java.net.UnknownHostException e) {
-                    // not critical for us
-                } catch (IOException e) {
-                    // not critical for us
-                }
-                if (host.hostname != null && !host.hostname.equals(host.ipAddress)) {
-                    // Is gateway ?
-                    if (mGatewayIp.equals(host.ipAddress)) {
-                        publishProgress((HostBean) null);
-                        continue;
-                    }
-
-                    // Mac address
-                    host.hardwareAddress = HardwareAddress.getHardwareAddress(host.ipAddress);
-                    if (host.hardwareAddress.equals(NetInfo.NOMAC)) {
-                        publishProgress((HostBean) null);
-                    } else {
-                        Log.d(TAG, i + " (" + host.ipAddress + ") seems to be valid. Publishing it");
-                        publishProgress(host);
-                    }
-                } else {
-                    publishProgress((HostBean) null);
-                }
-            }
-        }
+        sockets.clear();
+        for (DatagramSocket socket : datagramSockets) socket.close();
+        datagramSockets.clear();
+        if (rootLookup != null) rootLookup.close();
     }
 }

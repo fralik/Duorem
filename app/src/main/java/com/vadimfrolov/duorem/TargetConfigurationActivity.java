@@ -6,12 +6,12 @@
 package com.vadimfrolov.duorem;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.vadimfrolov.duorem.Network.HostBean;
 
-public class TargetConfigurationActivity extends AppCompatActivity {
+public class TargetConfigurationActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +24,7 @@ public class TargetConfigurationActivity extends AppCompatActivity {
         Bundle args = intent.getExtras();
         if (args != null && configurationFragment != null) {
             configurationFragment.resetAppBar();
-            if (intent.hasExtra(HostBean.EXTRA)) {
+            if (savedInstanceState == null && intent.hasExtra(HostBean.EXTRA)) {
                 HostBean host = intent.getParcelableExtra(HostBean.EXTRA);
                 configurationFragment.updateTarget(host);
             }

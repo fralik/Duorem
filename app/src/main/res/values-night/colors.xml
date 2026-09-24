@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#1B5E20</color>
+    <color name="colorPrimaryDark">#103B14</color>
+    <color name="colorAccent">#81C784</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorSurface">#1E1E1E</color>
+    <color name="colorOnSurface">#F5F5F5</color>
+    <color name="colorBackground">#121212</color>
+    <color name="colorOnBackground">#F5F5F5</color>
+    <color name="toolbarActionIcon">@color/colorAccent</color>
+    <color name="statusOnline">#66BB6A</color>
+    <color name="statusWarning">#FFB74D</color>
+    <color name="statusOffline">#EF5350</color>
+    <color name="widgetBackground">#17311A</color>
+    <color name="widgetBorder">#81C784</color>
+    <color name="widgetActionIcon">#81C784</color>
+    <color name="widgetText">#F5F5F5</color>
+    <color name="widgetStatus">#C8E6C9</color>
+    <color name="widgetButtonBackground">#244B28</color>
+    <color name="helpCardBorder">#466A49</color>
+</resources>

@@ -2,396 +2,406 @@
  * Copyright (C) 2017 Vadim Frolov
  * Licensed under GNU's GPL 3 or any later version, see README
  */
-
 package com.vadimfrolov.duorem;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+
+import com.jcraft.jsch.HostKey;
+import com.jcraft.jsch.JSchException;
 import com.vadimfrolov.duorem.Network.HostBean;
 import com.vadimfrolov.duorem.Network.NetInfo;
-import com.vadimfrolov.duorem.Network.RemoteAsyncTask;
+import com.vadimfrolov.duorem.Network.RemoteClient;
 import com.vadimfrolov.duorem.Network.RemoteCommand;
-import com.vadimfrolov.duorem.Network.RemoteCommandResult;
 
-import java.net.Socket;
-import java.util.Stack;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+import java.util.Set;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends ActivityNet
-        implements SharedPreferences.OnSharedPreferenceChangeListener,
-        RemoteCommandResult {
+public class MainActivity extends ActivityNet {
+    private HostBean target;
+    private HostStore store;
+    private TextView name;
+    private TextView connection;
+    private TextView status;
+    private ImageView alive;
+    private Button power;
+    private Button restart;
+    private boolean resumed;
+    private boolean commandRunning;
+    private boolean unreadableSettings;
+    private int generation;
+    private String networkIdentity;
+    private ScheduledFuture<?> poll;
+    private AlertDialog trustDialog;
+    private ConnectionState connectionState = ConnectionState.CHECKING;
+    private final Set<RemoteClient> clients = ConcurrentHashMap.newKeySet();
+    private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
 
-    public static final String KEY_PREF_TARGET = "target";
-    private final String TAG = "MainActivity";
-
-    private HostBean mTarget;
-    private TextView mViewName;
-    //private TextView mViewAddress;
-    SharedPreferences mPrefs;
-    ImageView mIconAlive;
-
-    Button mBtnTogglePower;
-    Button mBtnRestart;
-    TextView mViewStatus;
-    Stack<RemoteAsyncTask> mSshTasks;
-    private RemoteCommandResult mDelegate; // reference to this, for code that can not use this directly
-    private ScheduledThreadPoolExecutor mSch = null;
-    private ScheduledFuture<?> mPollFuture = null;
+    private enum ConnectionState {
+        CHECKING,
+        ONLINE_SSH_READY,
+        ONLINE_SSH_UNAVAILABLE,
+        ONLINE_SSH_NOT_CONFIGURED,
+        UNREACHABLE,
+        NETWORK_UNAVAILABLE
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle state) {
+        super.onCreate(state);
         setContentView(R.layout.activity_main);
-
-        // Create action bar as a toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        setSupportActionBar(toolbar);
-
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mPrefs.registerOnSharedPreferenceChangeListener(this);
-
-        mViewName = (TextView) findViewById(R.id.id);
-        // mViewAddress = (TextView) findViewById(R.id.content);
-        mIconAlive = (ImageView) findViewById(R.id.alive);
-        mBtnTogglePower = (Button) findViewById(R.id.btn_toggle_power);
-        mBtnRestart = (Button) findViewById(R.id.btn_restart);
-        mViewStatus = (TextView) findViewById(R.id.text_status);
-
-        mViewStatus.setMovementMethod(new ScrollingMovementMethod());
-
-        Gson gson = new Gson();
-        String targetJson =  mPrefs.getString(KEY_PREF_TARGET, "");
-        if (targetJson.length() > 0) {
-            mTarget = gson.fromJson(targetJson, HostBean.class);
-        }
-
-        mSshTasks = new Stack<>();
-        mDelegate = this;
-        mIsConnected = false;
-
-        mBtnRestart.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                stopTargetPolling();
-
-                RemoteCommand cmd = new RemoteCommand(mTarget, RemoteCommand.SSH);
-                cmd.command = "sudo shutdown -r now";
-                mSshTasks.push(new RemoteAsyncTask(mDelegate));
-                mSshTasks.peek().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, cmd);
-
-                logForUser(getResources().getString(R.string.reboot_sent));
+        setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
+        store = new HostStore(this);
+        name = findViewById(R.id.id);
+        connection = findViewById(R.id.connection_status);
+        status = findViewById(R.id.text_status);
+        alive = findViewById(R.id.alive);
+        power = findViewById(R.id.btn_toggle_power);
+        restart = findViewById(R.id.btn_restart);
+        status.setMovementMethod(new ScrollingMovementMethod());
+        status.setOnClickListener(view -> {
+            if (!hasNetworkPermission()) requestNetworkPermission();
+        });
+        power.setOnClickListener(view -> {
+            if (!hasNetworkPermission()) {
+                requestNetworkPermission();
+            } else if (target != null) {
+                RemoteCommand command = new RemoteCommand(target, connectionState
+                        == ConnectionState.ONLINE_SSH_READY ? RemoteCommand.SSH : RemoteCommand.WOL);
+                command.command = target.sshShutdownCmd;
+                runCommand(command);
             }
         });
-        mBtnTogglePower.setOnClickListener(mPowerActor);
+        restart.setOnClickListener(view -> {
+            if (!hasNetworkPermission()) {
+                requestNetworkPermission();
+            } else if (target != null) {
+                RemoteCommand command = new RemoteCommand(target, RemoteCommand.SSH);
+                command.command = "sudo shutdown -r now";
+                runCommand(command);
+            }
+        });
+    }
 
-        // create a pool with only 3 threads
-        mSch = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(3);
-        mSch.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
+    @Override
+    protected void onResume() {
+        resumed = true;
+        unreadableSettings = false;
+        try {
+            target = store.load();
+            connectionState = ConnectionState.CHECKING;
+        } catch (IOException | GeneralSecurityException e) {
+            target = null;
+            unreadableSettings = true;
+            reportError(getString(R.string.settings_load_failed), e);
+        }
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        resumed = false;
+        cancelNetworkWork();
+        super.onPause();
     }
 
     @Override
     protected void onDestroy() {
+        executor.shutdownNow();
         super.onDestroy();
+    }
 
-        try {
-            Gson gson = new Gson();
-            String targetJson = gson.toJson(mTarget);
-
-            SharedPreferences.Editor editor = mPrefs.edit();
-            editor.putString(MainActivity.KEY_PREF_TARGET, targetJson);
-            editor.apply();
-        } catch (Exception e) {
-            Log.d(TAG, "Failed to save target as JSON: " + e.getMessage());
+    private void cancelNetworkWork() {
+        generation++;
+        if (poll != null) {
+            poll.cancel(true);
+            poll = null;
+        }
+        for (RemoteClient client : clients) client.close();
+        clients.clear();
+        if (commandRunning) {
+            log(getString(R.string.command_cancelled));
+        }
+        commandRunning = false;
+        if (trustDialog != null) {
+            trustDialog.dismiss();
+            trustDialog = null;
         }
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-        if (mIsConnected && mTarget != null && mTarget.ipAddress != null && !mTarget.ipAddress.equals(NetInfo.NOIP)) {
-            startTargetPolling();
+    protected void updateNetworkStatus() {
+        String identity = mNetInfo.identity();
+        if (!identity.equals(networkIdentity) || !mIsConnected) {
+            cancelNetworkWork();
+            networkIdentity = identity;
+            if (target != null) {
+                target.isAlive = false;
+                connectionState = mIsConnected
+                        ? ConnectionState.CHECKING : ConnectionState.NETWORK_UNAVAILABLE;
+            }
         }
+        startPolling();
         updateView();
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        stopTargetPolling();
-        while (!mSshTasks.isEmpty()) {
-            mSshTasks.pop().cancel(true);
-        }
-        // unregisterReceiver(mNetworkReceiver);
+    private void startPolling() {
+        if (!resumed || !mIsConnected || target == null || !target.hasAddress()
+                || poll != null || commandRunning) return;
+        HostBean current = target;
+        NetInfo network = mNetInfo;
+        int token = generation;
+        poll = executor.scheduleWithFixedDelay(() -> {
+            RemoteClient.ProbeResult probe;
+            RemoteClient client = new RemoteClient(
+                    network.network, network.networkInterface);
+            clients.add(client);
+            try (client) {
+                probe = client.probe(current, 1000);
+            } catch (IllegalArgumentException | SecurityException e) {
+                Log.w("MainActivity", "Invalid or inaccessible polling endpoint", e);
+                probe = new RemoteClient.ProbeResult(false, current.canUseSsh(), false);
+            } catch (CancellationException e) {
+                return;
+            } finally {
+                clients.remove(client);
+            }
+            RemoteClient.ProbeResult result = probe;
+            runOnUiThread(() -> {
+                if (resumed && token == generation && target == current) {
+                    target.isAlive = result.online;
+                    connectionState = connectionState(result);
+                    updateView();
+                }
+            });
+        }, 0, 5, TimeUnit.SECONDS);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent = null;
-        switch (item.getItemId()) {
-            case R.id.action_add_host:
-                intent = new Intent(this, SearchConfigureActivity.class);
-//                PendingIntent pendingIntent = TaskStackBuilder.create(this)
-//                        .addNextIntentWithParentStack(intent)
-//                        .getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
-//                NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-//                builder.setContentIntent(pendingIntent);
-                this.startActivity(intent);
-                break;
-
-            case R.id.action_edit_host:
-                intent = new Intent(this, TargetConfigurationActivity.class);
-                intent.putExtra(HostBean.EXTRA, mTarget);
-                this.startActivity(intent);
-                break;
-
-            case R.id.action_delete_host:
-                mPrefs.edit().remove(KEY_PREF_TARGET).apply();
-                mTarget = null;
+    private void runCommand(RemoteCommand command) {
+        if (!resumed || !mIsConnected || commandRunning) return;
+        cancelNetworkWork();
+        commandRunning = true;
+        int token = generation;
+        NetInfo network = mNetInfo;
+        HostKeyStore keys = new HostKeyStore(this);
+        RemoteClient client = new RemoteClient(
+                network.network, network.networkInterface);
+        clients.add(client);
+        log(getString(R.string.command_sending));
+        updateView();
+        executor.execute(() -> {
+            try (client) {
+                if (command.commandType == RemoteCommand.WOL) {
+                    client.wake(command, network.broadcastIp);
+                } else {
+                    client.execute(command, keys);
+                }
+            } catch (IOException | JSchException | IllegalArgumentException | SecurityException e) {
+                command.error = e.getMessage() == null ? e.getClass().getSimpleName() : e.getMessage();
+                Log.w("MainActivity", "Remote command failed: " + e.getClass().getSimpleName());
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return;
+            } catch (CancellationException e) {
+                return;
+            } finally {
+                clients.remove(client);
+            }
+            runOnUiThread(() -> {
+                if (!resumed || token != generation || target != command.target) return;
+                commandRunning = false;
+                if (keys.untrustedKey() != null) {
+                    confirmHostKey(command, keys);
+                } else if (command.success) {
+                    log(getString(command.commandType == RemoteCommand.WOL ? R.string.wol_received
+                            : command.command.equals("sudo shutdown -r now")
+                            ? R.string.reboot_received : R.string.shutdown_received));
+                } else {
+                    log(getString(R.string.command_failed, command.error));
+                }
+                startPolling();
                 updateView();
-                break;
+            });
+        });
+    }
 
-            case R.id.action_about:
-                String version = ActivityNet.getVersionName(mContext);
-                FragmentManager fm = getSupportFragmentManager();
-                AboutDialog dlg = AboutDialog.newInstance(getResources().getString(R.string.about_title), version);
-                dlg.show(fm, "about_dialog");
-                break;
+    private void confirmHostKey(RemoteCommand command, HostKeyStore keys) {
+        HostKey key = keys.untrustedKey();
+        String fingerprint;
+        try {
+            fingerprint = "SHA256:" + Base64.getEncoder().withoutPadding().encodeToString(
+                    MessageDigest.getInstance("SHA-256").digest(Base64.getDecoder().decode(key.getKey())));
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-256 is unavailable", e);
+        }
+        trustDialog = new AlertDialog.Builder(this)
+                .setTitle(keys.hasChanged() ? R.string.host_key_changed : R.string.host_key_unknown)
+                .setMessage(getString(R.string.host_key_confirm, key.getHost(), key.getType(), fingerprint))
+                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(R.string.trust_and_retry, (dialog, which) -> {
+                    try {
+                        keys.trust(key);
+                        runCommand(command);
+                    } catch (IOException e) {
+                        reportError(getString(R.string.settings_save_failed), e);
+                    }
+                }).show();
+    }
 
+    private void updateView() {
+        if (power == null) return;
+        boolean online = connectionState == ConnectionState.ONLINE_SSH_READY
+                || connectionState == ConnectionState.ONLINE_SSH_UNAVAILABLE
+                || connectionState == ConnectionState.ONLINE_SSH_NOT_CONFIGURED;
+        boolean sshReady = connectionState == ConnectionState.ONLINE_SSH_READY;
+        boolean unreachable = connectionState == ConnectionState.UNREACHABLE;
+        name.setText(target == null ? getString(R.string.no_device) : target.name());
+        alive.setVisibility(target == null ? View.GONE : View.VISIBLE);
+        connection.setVisibility(target == null ? View.GONE : View.VISIBLE);
+        if (target != null) updateConnectionIndicator();
+        power.setText(connectionState == ConnectionState.CHECKING
+                ? R.string.connection_checking : online ? R.string.shutdown : R.string.turn_on);
+        power.setEnabled(!commandRunning && mNetInfo.isConnected && target != null
+                && (sshReady || (unreachable && target.canWake())));
+        restart.setEnabled(!commandRunning && mNetInfo.isConnected && target != null && sshReady);
+        if (!hasNetworkPermission()) {
+            status.setText(R.string.network_permission_required);
+        } else if (!mNetInfo.isConnected) {
+            status.setText(R.string.no_network);
+        } else if (status.getText().toString().equals(getString(R.string.network_permission_required))
+                || status.getText().toString().equals(getString(R.string.no_network))) {
+            status.setText("");
+        }
+        invalidateOptionsMenu();
+    }
+
+    private ConnectionState connectionState(RemoteClient.ProbeResult result) {
+        if (!result.online) return ConnectionState.UNREACHABLE;
+        if (!result.sshConfigured) return ConnectionState.ONLINE_SSH_NOT_CONFIGURED;
+        return result.sshAvailable
+                ? ConnectionState.ONLINE_SSH_READY : ConnectionState.ONLINE_SSH_UNAVAILABLE;
+    }
+
+    private void updateConnectionIndicator() {
+        int text;
+        int dotColor;
+        int textColor;
+        switch (connectionState) {
+            case ONLINE_SSH_READY:
+                text = R.string.connection_online_ssh_ready;
+                dotColor = textColor = R.color.statusOnline;
+                break;
+            case ONLINE_SSH_UNAVAILABLE:
+                text = R.string.connection_online_ssh_unavailable;
+                dotColor = R.color.statusOnline;
+                textColor = R.color.statusWarning;
+                break;
+            case ONLINE_SSH_NOT_CONFIGURED:
+                text = R.string.connection_online_ssh_not_configured;
+                dotColor = R.color.statusOnline;
+                textColor = R.color.statusWarning;
+                break;
+            case NETWORK_UNAVAILABLE:
+                text = R.string.connection_network_unavailable;
+                dotColor = textColor = R.color.statusOffline;
+                break;
+            case UNREACHABLE:
+                text = R.string.connection_unreachable;
+                dotColor = textColor = R.color.statusOffline;
+                break;
+            case CHECKING:
             default:
+                text = R.string.connection_checking;
+                dotColor = textColor = R.color.statusWarning;
                 break;
         }
-
-        return super.onOptionsItemSelected(item);
+        String description = getString(text);
+        connection.setText(description);
+        connection.setTextColor(ContextCompat.getColor(this, textColor));
+        alive.setColorFilter(ContextCompat.getColor(this, dotColor));
+        alive.setContentDescription(description);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-        return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem miAdd = (MenuItem) menu.findItem(R.id.action_add_host);
-        MenuItem miEdit = (MenuItem) menu.findItem(R.id.action_edit_host);
-        MenuItem miDelete = (MenuItem) menu.findItem(R.id.action_delete_host);
-        boolean targetIsValid = mTarget != null &&
-                ((mTarget.ipAddress != null && !mTarget.ipAddress.equals(NetInfo.NOIP))
-                || (mTarget.hardwareAddress != null && !mTarget.hardwareAddress.equals(NetInfo.NOMAC)));
-
-        if (targetIsValid) {
-            miAdd.setTitle(getResources().getString(R.string.replace_host));
-        } else
-        {
-            miAdd.setTitle(getResources().getString(R.string.add_host));
-        }
-        miEdit.setEnabled(targetIsValid);
-        miDelete.setEnabled(targetIsValid);
-
-        miEdit.setShowAsAction(targetIsValid ? MenuItem.SHOW_AS_ACTION_ALWAYS : MenuItem.SHOW_AS_ACTION_NEVER);
-        miDelete.setShowAsAction(targetIsValid ? MenuItem.SHOW_AS_ACTION_ALWAYS : MenuItem.SHOW_AS_ACTION_NEVER);
-        // hide replace menu item under the unfoldable menu
-        miAdd.setShowAsAction(targetIsValid ? MenuItem.SHOW_AS_ACTION_NEVER : MenuItem.SHOW_AS_ACTION_ALWAYS);
-
+        menu.findItem(R.id.action_add_host).setTitle(target == null ? R.string.add_host : R.string.replace_host);
+        menu.findItem(R.id.action_edit_host).setEnabled(target != null);
+        menu.findItem(R.id.action_delete_host).setEnabled(target != null || unreadableSettings);
+        menu.findItem(R.id.action_network_permission).setVisible(!hasNetworkPermission());
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key != null && key.equals(KEY_PREF_TARGET)) {
-            Gson gson = new Gson();
-            String json = sharedPreferences.getString(KEY_PREF_TARGET, "");
-            mTarget = gson.fromJson(json, HostBean.class);
-            updateView();
-        }
-    }
-
-    protected void updateView() {
-        mBtnTogglePower.setEnabled(mIsConnected && mTarget != null);
-        if (!mIsConnected) {
-            mViewStatus.setText(getResources().getString(R.string.no_network));
-        }
-
-        boolean isTargetValid = true;
-        boolean isTargetAlive = mTarget != null && mTarget.isAlive;
-        if (mTarget == null || (mTarget.ipAddress.equals(NetInfo.NOIP) && mTarget.hardwareAddress.equals(NetInfo.NOMAC))) {
-            isTargetValid = false;
-            mViewName.setText(getResources().getString(R.string.no_device));
-            //mViewAddress.setText("");
-        }
-
-        if (isTargetValid) {
-            mViewName.setText(mTarget.name());
-            //mViewAddress.setText(mTarget.hardwareAddress.toUpperCase());
-        }
-
-        mBtnRestart.setEnabled(mIsConnected && isTargetAlive);
-        int color = isTargetAlive ? Color.GREEN : Color.RED;
-        mIconAlive.setColorFilter(color);
-        mIconAlive.setVisibility(isTargetValid ? View.VISIBLE : View.GONE);
-        int textId = isTargetAlive ? R.string.shutdown : R.string.turn_on;
-        mBtnTogglePower.setText(getResources().getString(textId));
-
-        invalidateOptionsMenu();
-    }
-
-    protected void updateNetworkStatus() {
-        if (mIsConnected) {
-            mViewStatus.setText("");
-            if (mTarget != null) {
-                if (mTarget.broadcastIp == null || mTarget.broadcastIp.equals(NetInfo.NOIP)) {
-                    mTarget.broadcastIp = mNetInfo.broadcastIp;
-                }
-                startTargetPolling();
-            }
-        } else {
-            if (mTarget != null) {
-                mTarget.isAlive = false;
-            }
-            stopTargetPolling();
-        }
-        updateView();
-    }
-
-    private View.OnClickListener mPowerActor = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (mTarget == null) {
-                return;
-            }
-
-            RemoteCommand cmd = new RemoteCommand(mTarget);
-            if (mTarget.isAlive) {
-                cmd.commandType = RemoteCommand.SSH;
-                cmd.command = mTarget.sshShutdownCmd;
-
-                logForUser(getResources().getString(R.string.shutdown_sent));
-            } else {
-                cmd.commandType = RemoteCommand.WOL;
-
-                logForUser(getResources().getString(R.string.wol_sent));
-            }
-            mSshTasks.push(new RemoteAsyncTask(mDelegate));
-            mSshTasks.peek().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, cmd);
-        }
-    };
-
-    private void startTargetPolling() {
-        Runnable pollTask = new Runnable() {
-            @Override
-            public void run() {
-                if (mIsConnected && mTarget != null) {
-                    RemoteCommand cmd = new RemoteCommand(mTarget, RemoteCommand.PING);
-                    (new RemoteAsyncTask(mDelegate)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, cmd);
-                }
-            }
-        };
-        if (mSch != null) {
-            if (mPollFuture == null) {
-                mPollFuture = mSch.scheduleWithFixedDelay(pollTask, 0, 5, TimeUnit.SECONDS);
-            }
-
-            // check if target is reachable right away. This is good for UI.
-            boolean isAlive = true;
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_add_host) {
+            startActivity(new Intent(this, SearchConfigureActivity.class));
+        } else if (id == R.id.action_edit_host && target != null) {
+            startActivity(new Intent(this, TargetConfigurationActivity.class).putExtra(HostBean.EXTRA, target));
+        } else if (id == R.id.action_delete_host) {
             try {
-                Socket socket = new Socket(mTarget.ipAddress, Integer.parseInt(mTarget.sshPort));
-            } catch (Exception e) {
-                isAlive = false;
+                store.delete();
+                cancelNetworkWork();
+                target = null;
+                unreadableSettings = false;
+                status.setText("");
+                updateView();
+            } catch (IOException e) {
+                reportError(getString(R.string.settings_save_failed), e);
             }
-            mTarget.isAlive = isAlive;
+        } else if (id == R.id.action_network_permission) {
+            requestNetworkPermission();
+        } else if (id == R.id.action_help) {
+            startActivity(new Intent(this, HelpActivity.class));
+        } else if (id == R.id.action_about) {
+            AboutDialog.newInstance(getString(R.string.about_title), getVersionName(this))
+                    .show(getSupportFragmentManager(), "about_dialog");
+        } else {
+            return super.onOptionsItemSelected(item);
         }
+        return true;
     }
 
-    private void stopTargetPolling() {
-        if (mSch != null && mPollFuture != null) {
-            mPollFuture.cancel(true);
-            mPollFuture = null;
-        }
+    private void reportError(String message, Exception error) {
+        Log.e("MainActivity", message, error);
+        new AlertDialog.Builder(this).setMessage(message)
+                .setPositiveButton(android.R.string.ok, null).show();
     }
 
-    @Override
-    public void onRemoteCommandFinished(RemoteCommand output) {
-        if (mTarget == null || mViewStatus == null || output == null)
-            return;
-
-        switch (output.commandType) {
-            case RemoteCommand.PING:
-                mTarget.isAlive = output.result.equals("success");
-                break;
-
-            case RemoteCommand.WOL:
-                if (output.result.equals("success")) {
-                    logForUser(getResources().getString(R.string.wol_received));
-                }
-                if (output.result.equals("invalid gateway")) {
-                    logForUser(getResources().getString(R.string.no_gateway));
-                }
-                break;
-
-            case RemoteCommand.SSH:
-                if (output.command.contains("-r now")) {
-                    if (output.result.length() > 0) {
-                        logForUser(getResources().getString(R.string.reboot_received));
-                    } else {
-                        logForUser(getResources().getString(R.string.reboot_failed));
-                    }
-                    startTargetPolling();
-                } else if (output.command.contains(mTarget.sshShutdownCmd)) {
-                    if (output.result.length() > 0) {
-                        logForUser(getResources().getString(R.string.shutdown_received));
-                    } else {
-                        logForUser(getResources().getString(R.string.shutdown_failed));
-                    }
-                }
-                break;
-
-            default:
-                break;
-        }
-
-        updateView();
-    }
-
-    private void logForUser(String msg) {
-        if (mViewStatus == null)
-            return;
-
-        mViewStatus.setText(mViewStatus.getText().toString() + msg + "\n");
-        try {
-            // find the amount we need to scroll.  This works by
-            // asking the TextView's internal layout for the position
-            // of the final line and then subtracting the TextView's height
-            final int scrollAmount = mViewStatus.getLayout().getLineTop(mViewStatus.getLineCount()) - mViewStatus.getHeight();
-            // if there is no need to scroll, scrollAmount will be <=0
-            if (scrollAmount > 0) {
-                mViewStatus.scrollTo(0, scrollAmount);
-            } else {
-                mViewStatus.scrollTo(0, 0);
+    private void log(String message) {
+        status.append(message + "\n");
+        status.post(() -> {
+            if (status.getLayout() != null) {
+                status.scrollTo(0, Math.max(0, status.getLayout().getHeight() - status.getHeight()));
             }
-        } catch (Exception e) {
-            // we do not bother if we can not scroll
-        }
+        });
     }
 }

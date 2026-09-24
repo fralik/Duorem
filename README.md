@@ -8,15 +8,40 @@ This is an Android app that allows you to power off and on a remote computer. It
 
 Wake On Lan (WOL) technology is used to wake up a remote computer. You might need to do additional configuration of your network and remote computer before you can use it. Note also that WOL works reliably if your remote computer is connected to router/Internet via cable, i.e. not WiFi.
 
-In order to power off and reboot a remote computer, a secure shell Linux command (SSH) is used. This means that your remote computer should run some variant of Linux and have SSH server installed. Normally, not a problem with an Ubuntu/Debian. Note that SSH credentials are save via app shared preferences unencrypted. It seems like if your device is rooted and someone wants your password, encryption won't stop them for long. If your device is not rooted, then shared preferences can be OK location for storing your password. Anyway, you have the choice if you afraid. You can stop using the app, or make a pull request.
+In order to power off and reboot a remote computer, a secure shell Linux command (SSH) is used. Your computer needs an SSH server, password authentication, and permission to run the configured shutdown command. By default, Duorem runs `sudo shutdown -h now` or `sudo shutdown -r now`, using the SSH password for sudo. A custom shutdown command can be entered under Advanced details. SSH-key authentication and a separate sudo password are not supported.
 
-And finally you might use this app as a tutorial in Android app development. I encountered number of issues which were not covered by Android documentation during the development. For example, there are several tutorials about supporting both phone and tablet layouts via fragments. Yet they do not cover the topic of adding an application bar. By using a naive approach, you will end up with a double application bar on tablets. Here is a list of topics covered by the app:
-- App bar implemented via toolbar.
-- Fragments with support of different layouts on different devices and app bars.
-- RecyclerView and it's adapter.
-- Handling connection status; user notification.
-- Working with network; network scanning; host polling.
-- Async tasks.
+Saved settings, including the SSH password, are encrypted using AES-GCM with a key held in Android Keystore. Existing plaintext settings are migrated in place on first launch, preserving the device, ports, credentials, broadcast address and custom command. Migration errors are reported without overwriting the saved data. Credentials and trusted SSH host keys are excluded from cloud backup and device transfer; configure the device again after reinstalling or moving phones.
+
+Before the first SSH command, verify the displayed SHA-256 host-key fingerprint directly on the remote computer (for example, `ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub`). Duorem requires explicit confirmation for new or changed keys before authenticating or sending a command. It does not enable obsolete SSH algorithms automatically.
+
+Android modernization
+---------------------
+
+The app supports **Android 10 (API 29) and newer** and compiles/targets **Android 17 (API 37)**. This is an incremental Java/XML migration, not a UI rewrite. The application ID is unchanged; an update signed with the original signing key retains installed settings.
+
+| Area | Previous implementation | Updated implementation |
+| --- | --- | --- |
+| Build | AGP 3.5, Gradle 5.4, JCenter, target API 25 | AGP 9.4.1, Gradle 9.6, Google Maven/Maven Central, target API 37 |
+| UI/platform | Android support libraries | AndroidX/Material, system light/dark theme, system-bar/keyboard insets, explicit exported activities |
+| Networking | Connectivity broadcasts, Wi-Fi DHCP APIs, shell commands | Network callbacks and LinkProperties; sockets bound to the selected network |
+| Background work | AsyncTask, unbounded socket waits, polling socket on the UI thread | Cancellable executors, connection/command deadlines, foreground-only polling |
+| Discovery | Required reverse DNS and readable ARP entries | Reachability/SSH probes, NetBIOS MAC lookup, and optional root-assisted neighbor lookup |
+| Storage/SSH | Plaintext preferences and unchecked host keys | Keystore-backed encryption with legacy migration; explicit host-key verification |
+
+### Behavior and platform limits
+
+- Wake-on-LAN works independently of SSH: only a MAC address and WOL destination/port are needed. An unset broadcast address uses the current IPv4 network's broadcast address; an explicitly configured address is preserved.
+- The interface follows the system light or dark theme, including menus, dialogs, forms, and system bars.
+- On Android 17+, use **Allow local network access** to grant permission. Denial leaves manual configuration available; discovery, polling, WOL and SSH do not run until permission is granted. After permanent denial, the same action opens the app's system settings.
+- Discovery uses the connected IPv4 subnet, preferring Wi-Fi/Ethernet even without Internet access. It probes SSH port 22 and ICMP, skips the phone and gateway, and uses ten workers rather than queuing the entire subnet. Large subnets take longer; leaving the discovery screen cancels the scan. Firewalls or nonstandard SSH ports can make a host undiscoverable; use manual configuration.
+- Android 10+ blocks ordinary apps from reading `/proc/net/arp`. Duorem first tries a NetBIOS node-status query, which works only for devices that support it. On a rooted phone, **Use root for MAC lookup** can be enabled from the discovery menu; it is disabled by default and invokes `su` only after NetBIOS fails. If root is unavailable, denied, or times out, the option disables itself. Otherwise, enter the computer's wired MAC address from its settings or router.
+- The status indicator checks both device reachability and the configured SSH port every five seconds while the main screen is visible. It distinguishes **Online · SSH ready**, **Online · SSH unavailable/not configured**, and **Unreachable**. Shutdown and restart require SSH readiness; Wake-on-LAN is offered when the device is unreachable.
+- Home-screen widgets provide 2×2 **Wake / Shut down** and **Restart** controls for Duorem's single configured device. Multiple widgets can use different labels and follow the device when it is edited or replaced. Per-widget background status updates can be off or requested every 30 seconds, 1, 5, 10, or 30 minutes, or every 1 or 2 hours; new widgets default to 30 minutes. Android may defer this work, especially at short intervals. Button controls always perform a fresh check before acting: Power shuts down only when SSH is ready and wakes only when the device is unreachable.
+- The app menu includes a theme-aware **Help** section explaining discovery and Android limitations, address fields, status meanings, Wake-on-LAN and SSH requirements, widget behavior, and troubleshooting.
+- Leaving the main screen cancels local network work. A command already delivered to the remote computer may still execute. SSH success requires a zero exit status; a disconnect without an exit status is reported as an unknown outcome, not success. A sent WOL datagram does not prove the computer woke up.
+- Phone, landscape/tablet layouts and TV launcher support are retained. Existing translations are retained and new messages are provided in the same languages.
+
+Platform references: [Android 17 local-network permission](https://developer.android.com/privacy-and-security/local-network-permission), [Android 10 network filesystem restrictions](https://developer.android.com/about/versions/10/privacy/changes#proc-net-filesystem), [edge-to-edge layouts](https://developer.android.com/develop/ui/views/layout/edge-to-edge), and [Android Keystore](https://developer.android.com/privacy-and-security/keystore).
 
 Screenshots
 -----------
@@ -27,22 +52,41 @@ You can find app screenshots in `screenshots` folder. Here is the main screen:
 Build
 -----
 
-- Clone the code
-- Open in Android Studio and build. I've used Android Studio 2.3.x.
+- Use Android Studio with AGP 9.4 support, or a JDK supported by Gradle 9.6 (minimum JDK 17).
+- Install Android SDK Platform 37 and Build Tools 36.0.0 using SDK Manager.
+- Set `JAVA_HOME` to the JDK and `ANDROID_HOME` to the SDK, or set `sdk.dir` in your untracked `local.properties`. The Java 8 runtime used by the old project cannot run this build. Android Studio's bundled JBR can be used.
+- Build with the checked-in wrapper; no system Gradle installation is needed:
+
+```powershell
+.\gradlew.bat :app:assembleDebug :app:testDebugUnitTest :app:lintDebug
+.\gradlew.bat :app:bundleRelease
+```
+
+On macOS/Linux use `./gradlew` instead. The debug APK is `app/build/outputs/apk/debug/app-debug.apk`; the release bundle is `app/build/outputs/bundle/release/app-release.aab`. Release signing is deliberately not configured: use your existing signing key for distribution, and never commit it.
+
+### Verification
+
+JVM tests cover unsigned IPv4/subnet boundaries, NetBIOS and root-neighbor response parsing, input validation, legacy settings compatibility, exact 102-byte magic-packet contents, and a real loopback UDP send with no SSH configuration. Instrumented tests cover Keystore migration, deletion/corruption handling, and the main-screen controls.
+
+With a dedicated emulator or test device connected:
+
+```powershell
+.\gradlew.bat :app:connectedDebugAndroidTest
+```
+
+Before distributing, exercise API 29 and API 37, permission grant/denial/revocation, editing across rotation/process recreation, phone/tablet/TV navigation, a LAN without Internet, and Wi-Fi reconnects. Verify NetBIOS discovery, optional root lookup on a dedicated rooted device, WOL, SSH host-key confirmation/change rejection, shutdown and reboot against a computer you control. An emulator alone cannot prove that a physical computer supports Wake-on-LAN.
 
 Acknowledgment
 --------------
 
 - Network discovery part of the app is based on [Network Discovery](https://github.com/rorist/android-network-discovery) app.
-- [JSch](http://www.jcraft.com/jsch/) is used as a library to work with SSH.
+- The maintained [mwiede/JSch](https://github.com/mwiede/jsch) fork is used for SSH, with Bouncy Castle supplying modern algorithms on older Android runtimes.
 - Japanese translation provided by [naofum](https://github.com/naofum).
 
 Todo
 ----
 
 - Add RecyclerView list item selection. This might be useful on tablets, when user can see the list and configuration dialog at the same time.
-- Theme change via setting or day/night theme activation.
-- Widget support. Might be even easier to have two buttons as a widget. However, I constantly poll the target, so it is a potential battery drain.
 
 GPLv3 License
 -------
@@ -64,4 +108,3 @@ GPLv3 License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 Copy of the license can be found in gpl-3.0.txt
-

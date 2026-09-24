@@ -8,6 +8,7 @@
     <string name="settings">Settings</string>
     <string name="add_manually">Enter manually</string>
     <string name="restart">Restart</string>
+    <string name="action_help">Help</string>
     <string name="action_about">About</string>
 
     <string name="reboot_sent">Sent reboot command.</string>
@@ -27,6 +28,12 @@
     <string name="turn_on">Turn on</string>
     <string name="shutdown">Shutdown</string>
     <string name="alive_content_description">Host connection indicator</string>
+    <string name="connection_checking">Checking…</string>
+    <string name="connection_online_ssh_ready">Online · SSH ready</string>
+    <string name="connection_online_ssh_unavailable">Online · SSH unavailable</string>
+    <string name="connection_online_ssh_not_configured">Online · SSH not configured</string>
+    <string name="connection_unreachable">Unreachable</string>
+    <string name="connection_network_unavailable">Network unavailable</string>
     <string name="no_device">No device is configured. Add one.</string>
     <string name="alert_icon">Alert icon</string>
 
@@ -62,4 +69,90 @@
     <string name="about_license">License</string>
     <string name="license_gplv3_later">GNU General Public License version 3 or later</string>
     <string name="close">Close</string>
+    <string name="allow_network">Allow local network access</string>
+    <string name="network_permission_required">Duorem needs local network access to find, wake and control your computer. Choose Allow local network access to grant permission.</string>
+    <string name="discovery_help">Connect to your home Wi-Fi or Ethernet network to discover reachable devices. Duorem first detects MAC addresses with NetBIOS. On rooted devices, optional root lookup can be enabled from the menu. Otherwise, enter the MAC address from the computer or router.</string>
+    <string name="mac_required">Enter a MAC address for Wake-on-LAN</string>
+    <string name="root_lookup">Use root for MAC lookup</string>
+    <string name="root_lookup_enabled">Root MAC lookup enabled. Approve the superuser request if prompted.</string>
+    <string name="root_lookup_disabled">Root MAC lookup disabled.</string>
+    <string name="root_lookup_unavailable">Root access was unavailable or denied. Root MAC lookup was disabled.</string>
+    <string name="discovery_failed">Discovery was blocked. Check local network permission and your connection.</string>
+    <string name="settings_load_failed">Could not read the saved device. Its settings have not been overwritten. Try again, or delete the device and configure it again.</string>
+    <string name="settings_save_failed">Could not save device settings. Please try again.</string>
+    <string name="invalid_ip">Enter a valid IPv4 address.</string>
+    <string name="invalid_port">Enter a port between 1 and 65535.</string>
+    <string name="invalid_mac">Enter six pairs of hexadecimal digits.</string>
+    <string name="target_required">Enter an IP address, hostname, or MAC address.</string>
+    <string name="broadcast_guess_failed">Enter a valid IP address and connect to an IPv4 network, or enter the broadcast address manually.</string>
+    <string name="command_sending">Sending command...</string>
+    <string name="command_failed">Command failed: %1$s</string>
+    <string name="command_cancelled">Network operation cancelled. A command already sent to the computer may still run.</string>
+    <string name="host_key_unknown">Verify SSH server identity</string>
+    <string name="host_key_changed">Warning: SSH server key changed</string>
+    <string name="host_key_confirm">Server: %1$s\nKey type: %2$s\nFingerprint: %3$s\n\nVerify this fingerprint directly on your computer before trusting it. A changed key can indicate a different computer or an intercepted connection.</string>
+    <string name="trust_and_retry">Trust and retry</string>
+
+    <!-- in-app help -->
+    <string name="help_title">Help</string>
+    <string name="help_capabilities_title">What Duorem does</string>
+    <string name="help_capabilities_body">Duorem controls one computer on your local network. Wake-on-LAN sends a magic packet to turn it on. Shutdown and Restart connect through SSH and run commands on the computer. Wake-on-LAN and SSH are separate features and can be configured independently.</string>
+    <string name="help_discovery_title">Why discovery may miss a device</string>
+    <string name="help_discovery_body">The computer must be on and connected to the same IPv4 Wi-Fi or Ethernet network while you search. Android 10 and newer prevent ordinary apps from reading the system ARP table, so Duorem first asks devices for their MAC address using NetBIOS. Not every device supports that. A rooted phone can optionally try the network neighbor table; otherwise enter the wired MAC address manually from the computer or router. Firewalls, large subnets, and slow responses can also hide a device.</string>
+    <string name="help_addresses_title">MAC, IP, and broadcast addresses</string>
+    <string name="help_addresses_body">The MAC address identifies the network adapter and is required for Wake-on-LAN. The IP address or hostname is used to check status and connect through SSH. The WOL broadcast address is where the magic packet is sent, commonly ending in .255 on a home network. Duorem can usually calculate it from the current network, but unusual network layouts may require manual values.</string>
+    <string name="help_status_title">Understanding device status</string>
+    <string name="help_status_body">Green means the device is reachable and SSH is ready. Green with amber text means the device is reachable but SSH is unavailable or not configured. Amber means Duorem is checking. Red means the device is unreachable or the phone has no usable local network. A computer can be online even when it ignores ping; an open configured SSH port also counts as reachable.</string>
+    <string name="help_wol_title">Wake-on-LAN limitations</string>
+    <string name="help_wol_body">Wake-on-LAN must be enabled in the computer firmware, operating system, and network adapter. It is most reliable over wired Ethernet; many computers cannot wake over Wi-Fi. Duorem is designed for the local IPv4 network. Routers normally do not forward broadcast packets from mobile data or the Internet. Sending a packet successfully does not prove that the computer received it or woke up.</string>
+    <string name="help_ssh_title">Shutdown, restart, and SSH security</string>
+    <string name="help_ssh_body">The computer needs an SSH server with password authentication and permission to run the configured shutdown command. Duorem defaults to sudo shutdown commands and uses the SSH password for sudo. SSH keys and a separate sudo password are not supported. Before the first command, compare the displayed server fingerprint with the computer and trust it in the app. Duorem never accepts new or changed host keys automatically.</string>
+    <string name="help_widget_title">Home-screen widget behavior</string>
+    <string name="help_widget_body">All widgets follow Duorem’s single configured device, even after you edit or replace it. Each widget can have its own label. Background status updates can be turned off or requested every 30 seconds, 1, 5, 10, or 30 minutes, or every 1 or 2 hours. The default is 30 minutes. Android may delay these checks, so the status is not real time. Button taps always perform a fresh check: Power shuts down when SSH is ready, wakes when the device is unreachable, and sends no command when the device is online without SSH. Restart always requires SSH.</string>
+    <string name="help_troubleshooting_title">Troubleshooting checklist</string>
+    <string name="help_troubleshooting_body">Check that the phone is on the correct local network and that local network access is allowed. Verify the wired MAC address, broadcast address, SSH port, username, password, and shutdown command. Check the computer and router firewalls. Try manual configuration if discovery fails. After changing the SSH server, open Duorem and verify its new fingerprint before using a widget.</string>
+    <string name="help_report_issue">Report an issue on GitHub</string>
+    <string name="issues_link" translatable="false">https://github.com/fralik/Duorem/issues</string>
+
+    <!-- home-screen widget -->
+    <string name="widget_description">Control the configured Duorem device</string>
+    <string name="widget_configure_title">Configure Duorem widget</string>
+    <string name="widget_configure_device_first">Configure a device in Duorem before adding a widget.</string>
+    <string name="widget_configure_device_incomplete">Add a MAC address for Wake-on-LAN or SSH settings before creating a widget.</string>
+    <string name="widget_single_device_help">All Duorem widgets control this single configured device and follow it when you edit or replace it.</string>
+    <string name="widget_label">Widget label</string>
+    <string name="widget_label_required">Enter a widget label.</string>
+    <string name="widget_monitor_help">Android may delay background checks to save power, especially at short intervals. Commands always check the current status again.</string>
+    <string name="widget_monitor_interval">Background status update interval</string>
+    <string-array name="widget_monitor_intervals">
+        <item>Off</item>
+        <item>30 seconds</item>
+        <item>1 minute</item>
+        <item>5 minutes</item>
+        <item>10 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>2 hours</item>
+    </string-array>
+    <string name="widget_controls_help">The Power button shuts down when SSH is ready and sends Wake-on-LAN when the device is unreachable. Restart requires SSH. Every button tap checks the current status before acting.</string>
+    <string name="widget_power">Wake / Shut down</string>
+    <string name="add_widget">Add widget</string>
+    <string name="widget_settings_save_failed">Could not save widget settings.</string>
+    <string name="widget_content_description">%1$s, %2$s</string>
+    <string name="widget_power_content_description">Wake or shut down %1$s</string>
+    <string name="widget_restart_content_description">Restart %1$s</string>
+    <string name="widget_status_ready">Ready</string>
+    <string name="widget_status_working">Working…</string>
+    <string name="widget_status_wake_sent">Wake sent</string>
+    <string name="widget_status_shutdown_sent">Shutdown sent</string>
+    <string name="widget_status_restart_sent">Restart sent</string>
+    <string name="widget_status_no_network">No network</string>
+    <string name="widget_status_permission">Open Duorem</string>
+    <string name="widget_status_no_device">No device</string>
+    <string name="widget_status_mac_required">MAC needed</string>
+    <string name="widget_status_ssh_unavailable">SSH unavailable</string>
+    <string name="widget_status_ssh_not_configured">SSH not set</string>
+    <string name="widget_status_trust_required">Trust SSH in app</string>
+    <string name="widget_status_settings_error">Settings error</string>
+    <string name="widget_status_failed">Failed</string>
 </resources>

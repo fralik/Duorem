@@ -8,6 +8,7 @@
     <string name="settings">Настройки</string>
     <string name="add_manually">Ввести вручную</string>
     <string name="restart">Перезапустить</string>
+    <string name="action_help">Справка</string>
     <string name="action_about">О программе</string>
 
     <string name="reboot_sent">Команда на перезагрузку отправлена.</string>
@@ -27,6 +28,12 @@
     <string name="turn_on">Включить</string>
     <string name="shutdown">Выключить</string>
     <string name="alive_content_description">Host connection indicator</string>
+    <string name="connection_checking">Проверка…</string>
+    <string name="connection_online_ssh_ready">В сети · SSH доступен</string>
+    <string name="connection_online_ssh_unavailable">В сети · SSH недоступен</string>
+    <string name="connection_online_ssh_not_configured">В сети · SSH не настроен</string>
+    <string name="connection_unreachable">Недоступно</string>
+    <string name="connection_network_unavailable">Сеть недоступна</string>
     <string name="no_device">Отсутсвует информация об устройстве. Вы можете добавить новое устройство.</string>
     <string name="alert_icon">Alert icon</string>
 
@@ -61,4 +68,86 @@
     <string name="about_license">Лицензия</string>
     <string name="license_gplv3_later">GNU General Public License version 3 or later</string>
     <string name="close">Закрыть</string>
+    <string name="unknown_mac">00:00:00:00:00:00</string>
+    <string name="allow_network">Разрешить доступ к локальной сети</string>
+    <string name="network_permission_required">Для поиска, включения и управления компьютером нужен доступ к локальной сети. Выберите «Разрешить доступ к локальной сети».</string>
+    <string name="discovery_help">Подключитесь к домашней сети Wi-Fi или Ethernet для поиска доступных устройств. Сначала Duorem определяет MAC-адрес через NetBIOS. На устройствах с root-доступом можно включить дополнительный поиск через меню. В остальных случаях введите MAC-адрес, указанный на компьютере или роутере.</string>
+    <string name="mac_required">Введите MAC-адрес для Wake-on-LAN</string>
+    <string name="root_lookup">Использовать root для поиска MAC</string>
+    <string name="root_lookup_enabled">Поиск MAC с root-доступом включён. Подтвердите запрос суперпользователя, если он появится.</string>
+    <string name="root_lookup_disabled">Поиск MAC с root-доступом отключён.</string>
+    <string name="root_lookup_unavailable">Root-доступ недоступен или отклонён. Поиск MAC с root-доступом отключён.</string>
+    <string name="discovery_failed">Поиск заблокирован. Проверьте разрешение на доступ к локальной сети и подключение.</string>
+    <string name="settings_load_failed">Не удалось прочитать сохранённое устройство. Настройки не перезаписаны. Повторите попытку или удалите устройство и настройте его заново.</string>
+    <string name="settings_save_failed">Не удалось сохранить настройки. Повторите попытку.</string>
+    <string name="invalid_ip">Введите корректный IPv4-адрес.</string>
+    <string name="invalid_port">Введите порт от 1 до 65535.</string>
+    <string name="invalid_mac">Введите шесть пар шестнадцатеричных цифр.</string>
+    <string name="target_required">Введите IP-адрес, имя хоста или MAC-адрес.</string>
+    <string name="broadcast_guess_failed">Введите корректный IP-адрес и подключитесь к сети IPv4 или введите широковещательный адрес вручную.</string>
+    <string name="command_sending">Отправка команды...</string>
+    <string name="command_failed">Ошибка команды: %1$s</string>
+    <string name="command_cancelled">Сетевая операция отменена. Уже отправленная команда может быть выполнена на компьютере.</string>
+    <string name="host_key_unknown">Проверьте подлинность SSH-сервера</string>
+    <string name="host_key_changed">Внимание: ключ SSH-сервера изменился</string>
+    <string name="host_key_confirm">Сервер: %1$s\nТип ключа: %2$s\nОтпечаток: %3$s\n\nПеред подтверждением проверьте отпечаток непосредственно на компьютере. Изменение ключа может означать подключение к другому компьютеру или перехват соединения.</string>
+    <string name="trust_and_retry">Доверять и повторить</string>
+    <string name="help_title">Справка</string>
+    <string name="help_capabilities_title">Что умеет Duorem</string>
+    <string name="help_capabilities_body">Duorem управляет одним компьютером в локальной сети. Wake-on-LAN отправляет magic packet для включения. Выключение и перезапуск подключаются по SSH и выполняют команды на компьютере. Wake-on-LAN и SSH — независимые функции, их можно настраивать отдельно.</string>
+    <string name="help_discovery_title">Почему поиск может не найти устройство</string>
+    <string name="help_discovery_body">Во время поиска компьютер должен быть включён и подключён к той же сети IPv4 по Wi-Fi или Ethernet. Android 10 и новее не позволяют обычным приложениям читать таблицу ARP, поэтому сначала Duorem запрашивает MAC-адрес через NetBIOS. Не все устройства это поддерживают. На телефоне с root-доступом можно дополнительно проверить таблицу сетевых соседей; иначе введите вручную MAC-адрес проводного адаптера с компьютера или роутера. Устройство также могут скрыть межсетевой экран, большая подсеть или медленный ответ.</string>
+    <string name="help_addresses_title">MAC-, IP- и широковещательный адреса</string>
+    <string name="help_addresses_body">MAC-адрес определяет сетевой адаптер и нужен для Wake-on-LAN. IP-адрес или имя хоста используются для проверки состояния и подключения по SSH. Широковещательный адрес WOL — это адрес назначения magic packet; в домашней сети он часто заканчивается на .255. Обычно Duorem вычисляет его по текущей сети, но необычная конфигурация может потребовать ручного ввода.</string>
+    <string name="help_status_title">Как понимать состояние устройства</string>
+    <string name="help_status_body">Зелёный означает, что устройство доступно и SSH готов. Зелёная точка с янтарным текстом означает, что устройство доступно, но SSH недоступен или не настроен. Янтарный означает проверку. Красный означает, что устройство недоступно или на телефоне нет подходящей локальной сети. Компьютер может быть в сети, даже если не отвечает на ping; открытый настроенный порт SSH также считается признаком доступности.</string>
+    <string name="help_wol_title">Ограничения Wake-on-LAN</string>
+    <string name="help_wol_body">Wake-on-LAN должен быть включён в прошивке, операционной системе и сетевом адаптере компьютера. Надёжнее всего работает проводной Ethernet; многие компьютеры не могут просыпаться по Wi-Fi. Duorem предназначен для локальной сети IPv4. Обычно роутеры не пересылают широковещательные пакеты из мобильной сети или Интернета. Успешная отправка пакета не означает, что компьютер получил его или включился.</string>
+    <string name="help_ssh_title">Выключение, перезапуск и безопасность SSH</string>
+    <string name="help_ssh_body">На компьютере нужен SSH-сервер с аутентификацией по паролю и разрешением выполнять настроенную команду выключения. По умолчанию Duorem использует команды sudo shutdown и передаёт пароль SSH также в sudo. SSH-ключи и отдельный пароль sudo не поддерживаются. Перед первой командой сравните показанный отпечаток сервера с отпечатком на компьютере и подтвердите его в приложении. Duorem никогда не принимает новые или изменённые ключи автоматически.</string>
+    <string name="help_widget_title">Как работают виджеты</string>
+    <string name="help_widget_body">Все виджеты следуют за единственным устройством, настроенным в Duorem, даже после его изменения или замены. У каждого виджета может быть своя подпись. Фоновое обновление состояния можно выключить или запрашивать каждые 30 секунд, 1, 5, 10 или 30 минут, а также каждый 1 или 2 часа. По умолчанию выбрано 30 минут. Android может задерживать проверки, поэтому это не состояние в реальном времени. При нажатии кнопки состояние всегда проверяется заново. Кнопка питания выключает компьютер, когда SSH готов, будит недоступное устройство и не отправляет команду, если устройство в сети без SSH. Для перезапуска всегда нужен SSH.</string>
+    <string name="help_troubleshooting_title">Проверка неполадок</string>
+    <string name="help_troubleshooting_body">Убедитесь, что телефон подключён к нужной локальной сети и доступ к локальной сети разрешён. Проверьте MAC-адрес проводного адаптера, широковещательный адрес, порт SSH, имя пользователя, пароль и команду выключения. Проверьте межсетевые экраны компьютера и роутера. Если поиск не работает, настройте устройство вручную. После изменения SSH-сервера откройте Duorem и подтвердите новый отпечаток до использования виджета.</string>
+    <string name="help_report_issue">Сообщить о проблеме на GitHub</string>
+    <string name="widget_description">Управление настроенным устройством Duorem</string>
+    <string name="widget_configure_title">Настройка виджета Duorem</string>
+    <string name="widget_configure_device_first">Перед добавлением виджета настройте устройство в Duorem.</string>
+    <string name="widget_configure_device_incomplete">Перед созданием виджета добавьте MAC-адрес для Wake-on-LAN или настройки SSH.</string>
+    <string name="widget_single_device_help">Все виджеты Duorem управляют этим единственным настроенным устройством и переключаются на него после изменения или замены.</string>
+    <string name="widget_label">Название виджета</string>
+    <string name="widget_label_required">Введите название виджета.</string>
+    <string name="widget_monitor_help">Android может задерживать фоновые проверки для экономии энергии, особенно при коротких интервалах. Перед командой текущее состояние всегда проверяется заново.</string>
+    <string name="widget_monitor_interval">Интервал фонового обновления состояния</string>
+    <string-array name="widget_monitor_intervals">
+        <item>Выключено</item>
+        <item>30 секунд</item>
+        <item>1 минута</item>
+        <item>5 минут</item>
+        <item>10 минут</item>
+        <item>30 минут</item>
+        <item>1 час</item>
+        <item>2 часа</item>
+    </string-array>
+    <string name="widget_controls_help">Кнопка питания выключает устройство, когда SSH доступен, и отправляет Wake-on-LAN, когда устройство недоступно. Для перезапуска нужен SSH. При каждом нажатии текущее состояние проверяется перед действием.</string>
+    <string name="widget_power">Включить / Выключить</string>
+    <string name="add_widget">Добавить виджет</string>
+    <string name="widget_settings_save_failed">Не удалось сохранить настройки виджета.</string>
+    <string name="widget_content_description">%1$s, %2$s</string>
+    <string name="widget_power_content_description">Включить или выключить %1$s</string>
+    <string name="widget_restart_content_description">Перезапустить %1$s</string>
+    <string name="widget_status_ready">Готово</string>
+    <string name="widget_status_working">Выполнение…</string>
+    <string name="widget_status_wake_sent">Сигнал включения отправлен</string>
+    <string name="widget_status_shutdown_sent">Выключение отправлено</string>
+    <string name="widget_status_restart_sent">Перезапуск отправлен</string>
+    <string name="widget_status_no_network">Нет сети</string>
+    <string name="widget_status_permission">Откройте Duorem</string>
+    <string name="widget_status_no_device">Нет устройства</string>
+    <string name="widget_status_mac_required">Нужен MAC</string>
+    <string name="widget_status_ssh_unavailable">SSH недоступен</string>
+    <string name="widget_status_ssh_not_configured">SSH не настроен</string>
+    <string name="widget_status_trust_required">Подтвердите SSH в приложении</string>
+    <string name="widget_status_settings_error">Ошибка настроек</string>
+    <string name="widget_status_failed">Ошибка</string>
 </resources>
