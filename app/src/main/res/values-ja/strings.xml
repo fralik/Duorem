@@ -62,8 +62,12 @@
     <string name="shutdown_cmd">シャットダウンコマンド</string>
     <string name="allow_network">ローカルネットワークへのアクセスを許可</string>
     <string name="network_permission_required">コンピューターの検索、起動、操作にはローカルネットワークへのアクセスが必要です。「ローカルネットワークへのアクセスを許可」を選択してください。</string>
-    <string name="discovery_help">自宅の Wi-Fi または Ethernet に接続すると、応答するデバイスを検索できます。Duorem は NetBIOS に対応するデバイスの MAC アドレスを検出できます。その他のデバイスでは、コンピューターまたはルーターで確認した MAC アドレスを入力してください。</string>
+    <string name="discovery_help">自宅の Wi-Fi または Ethernet に接続すると、応答するデバイスを検索できます。Duorem は最初に NetBIOS で MAC アドレスを検出します。root 化された端末では、メニューから任意の root 検索を有効にできます。それ以外の場合は、コンピューターまたはルーターで確認した MAC アドレスを入力してください。</string>
     <string name="mac_required">Wake-on-LAN 用の MAC アドレスを入力してください</string>
+    <string name="root_lookup">root で MAC アドレスを検索</string>
+    <string name="root_lookup_enabled">root による MAC 検索を有効にしました。表示された場合はスーパーユーザー要求を許可してください。</string>
+    <string name="root_lookup_disabled">root による MAC 検索を無効にしました。</string>
+    <string name="root_lookup_unavailable">root アクセスを利用できないか拒否されました。root による MAC 検索を無効にしました。</string>
     <string name="discovery_failed">検索がブロックされました。ローカルネットワークの権限と接続を確認してください。</string>
     <string name="settings_load_failed">保存したデバイスを読み込めません。設定は上書きされていません。再試行するか、デバイスを削除して再設定してください。</string>
     <string name="settings_save_failed">設定を保存できません。もう一度お試しください。</string>

@@ -26,6 +26,8 @@ import com.vadimfrolov.duorem.Network.HostBean;
 import com.vadimfrolov.duorem.Network.NetInfo;
 
 public class HostSearchFragment extends Fragment implements DiscoveryListener {
+    private static final String DISCOVERY_PREFERENCES = "discovery_preferences";
+    private static final String USE_ROOT_LOOKUP = "use_root_lookup";
     private OnListFragmentInteractionListener listener;
     private DnsDiscovery discovery;
     private HostInfoRecyclerViewAdapter adapter;
@@ -76,7 +78,10 @@ public class HostSearchFragment extends Fragment implements DiscoveryListener {
             stopDiscovery();
             networkIdentity = network.identity();
             adapter.clear();
-            discovery = new DnsDiscovery(this, network);
+            boolean useRootLookup = requireContext().getSharedPreferences(
+                    DISCOVERY_PREFERENCES, Context.MODE_PRIVATE)
+                    .getBoolean(USE_ROOT_LOOKUP, false);
+            discovery = new DnsDiscovery(this, network, useRootLookup);
             discovery.start();
         }
         requireActivity().invalidateOptionsMenu();
@@ -134,6 +139,15 @@ public class HostSearchFragment extends Fragment implements DiscoveryListener {
     }
 
     @Override
+    public void onRootLookupUnavailable() {
+        requireContext().getSharedPreferences(DISCOVERY_PREFERENCES, Context.MODE_PRIVATE)
+                .edit().putBoolean(USE_ROOT_LOOKUP, false).apply();
+        requireActivity().invalidateOptionsMenu();
+        Toast.makeText(requireContext(), R.string.root_lookup_unavailable,
+                Toast.LENGTH_LONG).show();
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         listener = (OnListFragmentInteractionListener) context;
@@ -144,6 +158,9 @@ public class HostSearchFragment extends Fragment implements DiscoveryListener {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.discovery_menu, menu);
+        menu.findItem(R.id.action_root_lookup).setChecked(requireContext().getSharedPreferences(
+                DISCOVERY_PREFERENCES, Context.MODE_PRIVATE)
+                .getBoolean(USE_ROOT_LOOKUP, false));
     }
 
     @Override
@@ -157,6 +174,20 @@ public class HostSearchFragment extends Fragment implements DiscoveryListener {
             HostBean host = new HostBean();
             host.resetForView();
             listener.onListFragmentInteraction(host);
+            return true;
+        }
+        if (id == R.id.action_root_lookup) {
+            boolean enabled = !item.isChecked();
+            requireContext().getSharedPreferences(DISCOVERY_PREFERENCES, Context.MODE_PRIVATE)
+                    .edit().putBoolean(USE_ROOT_LOOKUP, enabled).apply();
+            item.setChecked(enabled);
+            Toast.makeText(requireContext(), enabled
+                    ? R.string.root_lookup_enabled : R.string.root_lookup_disabled,
+                    Toast.LENGTH_LONG).show();
+            stopDiscovery();
+            networkIdentity = null;
+            if (adapter != null) adapter.clear();
+            updateNetworkStatus();
             return true;
         }
         return super.onOptionsItemSelected(item);

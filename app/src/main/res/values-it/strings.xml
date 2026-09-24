@@ -62,8 +62,12 @@
     <string name="close">Chiudi</string>
     <string name="allow_network">Consenti accesso alla rete locale</string>
     <string name="network_permission_required">Duorem richiede accesso alla rete locale per trovare, accendere e controllare il computer. Seleziona «Consenti accesso alla rete locale».</string>
-    <string name="discovery_help">Connettiti alla rete Wi-Fi o Ethernet di casa per trovare i dispositivi raggiungibili. Duorem può rilevare gli indirizzi MAC dei dispositivi che supportano NetBIOS. Per gli altri dispositivi, inserisci il MAC indicato sul computer o sul router.</string>
+    <string name="discovery_help">Connettiti alla rete Wi-Fi o Ethernet di casa per trovare i dispositivi raggiungibili. Duorem rileva prima gli indirizzi MAC tramite NetBIOS. Sui dispositivi con root, la ricerca root facoltativa può essere attivata dal menu. Altrimenti, inserisci il MAC indicato sul computer o sul router.</string>
     <string name="mac_required">Inserisci un indirizzo MAC per Wake-on-LAN</string>
+    <string name="root_lookup">Usa root per cercare il MAC</string>
+    <string name="root_lookup_enabled">Ricerca MAC con root attivata. Approva la richiesta superuser se viene visualizzata.</string>
+    <string name="root_lookup_disabled">Ricerca MAC con root disattivata.</string>
+    <string name="root_lookup_unavailable">Accesso root non disponibile o negato. La ricerca MAC con root è stata disattivata.</string>
     <string name="discovery_failed">Ricerca bloccata. Controlla il permesso di accesso alla rete locale e la connessione.</string>
     <string name="settings_load_failed">Impossibile leggere il dispositivo salvato. Le impostazioni non sono state sovrascritte. Riprova oppure elimina il dispositivo e configuralo di nuovo.</string>
     <string name="settings_save_failed">Impossibile salvare le impostazioni. Riprova.</string>

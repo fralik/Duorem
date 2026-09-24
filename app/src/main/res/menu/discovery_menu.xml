@@ -9,4 +9,9 @@
         app:showAsAction="always|withText"
         android:visible="false"
         />
+    <item
+        android:id="@+id/action_root_lookup"
+        android:checkable="true"
+        android:title="@string/root_lookup"
+        app:showAsAction="never" />
 </menu>

@@ -18,4 +18,5 @@ public interface DiscoveryListener {
     void onStopDiscovering();
     void setDiscoverProgress(int progress);
     void onDiscoveryError();
+    void onRootLookupUnavailable();
 }

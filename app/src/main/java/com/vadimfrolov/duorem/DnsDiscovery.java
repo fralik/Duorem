@@ -9,11 +9,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.vadimfrolov.duorem.Network.HardwareAddress;
 import com.vadimfrolov.duorem.Network.HostBean;
 import com.vadimfrolov.duorem.Network.NetInfo;
 import com.vadimfrolov.duorem.Network.NetBiosNodeStatus;
 import com.vadimfrolov.duorem.Network.NetworkAddress;
+import com.vadimfrolov.duorem.Network.RootNeighborLookup;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class DnsDiscovery implements AutoCloseable {
     private static final int WORKERS = 10;
@@ -35,11 +36,14 @@ public final class DnsDiscovery implements AutoCloseable {
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final DiscoveryListener listener;
     private final NetInfo network;
+    private final RootNeighborLookup rootLookup;
+    private final AtomicBoolean rootFailureReported = new AtomicBoolean();
     private volatile boolean cancelled;
 
-    public DnsDiscovery(DiscoveryListener listener, NetInfo network) {
+    public DnsDiscovery(DiscoveryListener listener, NetInfo network, boolean useRootLookup) {
         this.listener = listener;
         this.network = network;
+        rootLookup = useRootLookup ? new RootNeighborLookup() : null;
     }
 
     public void start() {
@@ -99,19 +103,25 @@ public final class DnsDiscovery implements AutoCloseable {
                 sockets.remove(socket);
             }
             if (!reachable || cancelled) return null;
-            String hardwareAddress = HardwareAddress.getHardwareAddress(ip);
-            if (NetInfo.NOMAC.equals(hardwareAddress)) {
-                DatagramSocket datagramSocket = new DatagramSocket(null);
-                datagramSockets.add(datagramSocket);
-                try (datagramSocket) {
-                    network.network.bindSocket(datagramSocket);
-                    datagramSocket.bind(new InetSocketAddress(0));
-                    hardwareAddress = NetBiosNodeStatus.query(datagramSocket, address,
-                            listener.getTimeout());
-                } catch (IOException e) {
-                    Log.d("DnsDiscovery", "NetBIOS lookup failed for " + ip);
-                } finally {
-                    datagramSockets.remove(datagramSocket);
+            String hardwareAddress = NetInfo.NOMAC;
+            DatagramSocket datagramSocket = new DatagramSocket(null);
+            datagramSockets.add(datagramSocket);
+            try (datagramSocket) {
+                network.network.bindSocket(datagramSocket);
+                datagramSocket.bind(new InetSocketAddress(0));
+                hardwareAddress = NetBiosNodeStatus.query(datagramSocket, address,
+                        listener.getTimeout());
+            } catch (IOException e) {
+                Log.d("DnsDiscovery", "NetBIOS lookup failed for " + ip);
+            } finally {
+                datagramSockets.remove(datagramSocket);
+            }
+            if (NetInfo.NOMAC.equals(hardwareAddress) && rootLookup != null && !cancelled) {
+                hardwareAddress = rootLookup.query(ip);
+                if (rootLookup.isUnavailable() && rootFailureReported.compareAndSet(false, true)) {
+                    handler.post(() -> {
+                        if (!cancelled) listener.onRootLookupUnavailable();
+                    });
                 }
             }
             if (cancelled) return null;
@@ -143,5 +153,6 @@ public final class DnsDiscovery implements AutoCloseable {
         sockets.clear();
         for (DatagramSocket socket : datagramSockets) socket.close();
         datagramSockets.clear();
+        if (rootLookup != null) rootLookup.close();
     }
 }

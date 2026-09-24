@@ -17,23 +17,24 @@ Before the first SSH command, verify the displayed SHA-256 host-key fingerprint 
 Android modernization
 ---------------------
 
-The app supports **Android 8.0 (API 26) and newer** and compiles/targets **Android 17 (API 37)**. This is an incremental Java/XML migration, not a UI rewrite. The application ID is unchanged; an update signed with the original signing key retains installed settings.
+The app supports **Android 10 (API 29) and newer** and compiles/targets **Android 17 (API 37)**. This is an incremental Java/XML migration, not a UI rewrite. The application ID is unchanged; an update signed with the original signing key retains installed settings.
 
 | Area | Previous implementation | Updated implementation |
 | --- | --- | --- |
 | Build | AGP 3.5, Gradle 5.4, JCenter, target API 25 | AGP 9.4.1, Gradle 9.6, Google Maven/Maven Central, target API 37 |
-| UI/platform | Android support libraries | AndroidX/Material, system-bar/keyboard insets, explicit exported activities |
+| UI/platform | Android support libraries | AndroidX/Material, system light/dark theme, system-bar/keyboard insets, explicit exported activities |
 | Networking | Connectivity broadcasts, Wi-Fi DHCP APIs, shell commands | Network callbacks and LinkProperties; sockets bound to the selected network |
 | Background work | AsyncTask, unbounded socket waits, polling socket on the UI thread | Cancellable executors, connection/command deadlines, foreground-only polling |
-| Discovery | Required reverse DNS and readable ARP entries | Reachability/SSH probes; hosts without DNS names or MAC information are still listed |
+| Discovery | Required reverse DNS and readable ARP entries | Reachability/SSH probes, NetBIOS MAC lookup, and optional root-assisted neighbor lookup |
 | Storage/SSH | Plaintext preferences and unchecked host keys | Keystore-backed encryption with legacy migration; explicit host-key verification |
 
 ### Behavior and platform limits
 
 - Wake-on-LAN works independently of SSH: only a MAC address and WOL destination/port are needed. An unset broadcast address uses the current IPv4 network's broadcast address; an explicitly configured address is preserved.
+- The interface follows the system light or dark theme, including menus, dialogs, forms, and system bars.
 - On Android 17+, use **Allow local network access** to grant permission. Denial leaves manual configuration available; discovery, polling, WOL and SSH do not run until permission is granted. After permanent denial, the same action opens the app's system settings.
 - Discovery uses the connected IPv4 subnet, preferring Wi-Fi/Ethernet even without Internet access. It probes SSH port 22 and ICMP, skips the phone and gateway, and uses ten workers rather than queuing the entire subnet. Large subnets take longer; leaving the discovery screen cancels the scan. Firewalls or nonstandard SSH ports can make a host undiscoverable; use manual configuration.
-- Android 10+ blocks access to `/proc/net/arp`. Automatic remote MAC lookup therefore cannot be preserved on those versions. Existing saved MAC addresses remain usable; enter the computer's wired MAC address from its settings/router for newly configured WOL devices. Android 8/9 retain best-effort ARP lookup.
+- Android 10+ blocks ordinary apps from reading `/proc/net/arp`. Duorem first tries a NetBIOS node-status query, which works only for devices that support it. On a rooted phone, **Use root for MAC lookup** can be enabled from the discovery menu; it is disabled by default and invokes `su` only after NetBIOS fails. If root is unavailable, denied, or times out, the option disables itself. Otherwise, enter the computer's wired MAC address from its settings or router.
 - The status indicator checks the configured SSH port every five seconds while the main screen is visible. A closed SSH port is not proof that a computer is powered off. Restart is available for a configured SSH endpoint even if the latest probe failed.
 - Leaving the main screen cancels local network work. A command already delivered to the remote computer may still execute. SSH success requires a zero exit status; a disconnect without an exit status is reported as an unknown outcome, not success. A sent WOL datagram does not prove the computer woke up.
 - Phone, landscape/tablet layouts and TV launcher support are retained. Existing translations are retained and new messages are provided in the same languages.
@@ -63,7 +64,7 @@ On macOS/Linux use `./gradlew` instead. The debug APK is `app/build/outputs/apk/
 
 ### Verification
 
-JVM tests cover unsigned IPv4/subnet boundaries, input validation, legacy settings compatibility, exact 102-byte magic-packet contents, and a real loopback UDP send with no SSH configuration. Instrumented tests cover Keystore migration, deletion/corruption handling, and the main-screen controls.
+JVM tests cover unsigned IPv4/subnet boundaries, NetBIOS and root-neighbor response parsing, input validation, legacy settings compatibility, exact 102-byte magic-packet contents, and a real loopback UDP send with no SSH configuration. Instrumented tests cover Keystore migration, deletion/corruption handling, and the main-screen controls.
 
 With a dedicated emulator or test device connected:
 
@@ -71,7 +72,7 @@ With a dedicated emulator or test device connected:
 .\gradlew.bat :app:connectedDebugAndroidTest
 ```
 
-Before distributing, exercise API 26 and API 37, permission grant/denial/revocation, editing across rotation/process recreation, phone/tablet/TV navigation, a LAN without Internet, and Wi-Fi reconnects. Verify discovery, WOL, SSH host-key confirmation/change rejection, shutdown and reboot against a computer you control. An emulator alone cannot prove that a physical computer supports Wake-on-LAN.
+Before distributing, exercise API 29 and API 37, permission grant/denial/revocation, editing across rotation/process recreation, phone/tablet/TV navigation, a LAN without Internet, and Wi-Fi reconnects. Verify NetBIOS discovery, optional root lookup on a dedicated rooted device, WOL, SSH host-key confirmation/change rejection, shutdown and reboot against a computer you control. An emulator alone cannot prove that a physical computer supports Wake-on-LAN.
 
 Acknowledgment
 --------------
@@ -84,7 +85,6 @@ Todo
 ----
 
 - Add RecyclerView list item selection. This might be useful on tablets, when user can see the list and configuration dialog at the same time.
-- Theme change via setting or day/night theme activation.
 - Widget support. Might be even easier to have two buttons as a widget. However, I constantly poll the target, so it is a potential battery drain.
 
 GPLv3 License

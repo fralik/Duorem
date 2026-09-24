@@ -64,8 +64,12 @@
     <string name="close">Close</string>
     <string name="allow_network">Allow local network access</string>
     <string name="network_permission_required">Duorem needs local network access to find, wake and control your computer. Choose Allow local network access to grant permission.</string>
-    <string name="discovery_help">Connect to your home Wi-Fi or Ethernet network to discover reachable devices. Duorem can detect MAC addresses from devices that support NetBIOS. For other devices, enter the MAC address from the computer or router.</string>
+    <string name="discovery_help">Connect to your home Wi-Fi or Ethernet network to discover reachable devices. Duorem first detects MAC addresses with NetBIOS. On rooted devices, optional root lookup can be enabled from the menu. Otherwise, enter the MAC address from the computer or router.</string>
     <string name="mac_required">Enter a MAC address for Wake-on-LAN</string>
+    <string name="root_lookup">Use root for MAC lookup</string>
+    <string name="root_lookup_enabled">Root MAC lookup enabled. Approve the superuser request if prompted.</string>
+    <string name="root_lookup_disabled">Root MAC lookup disabled.</string>
+    <string name="root_lookup_unavailable">Root access was unavailable or denied. Root MAC lookup was disabled.</string>
     <string name="discovery_failed">Discovery was blocked. Check local network permission and your connection.</string>
     <string name="settings_load_failed">Could not read the saved device. Its settings have not been overwritten. Try again, or delete the device and configure it again.</string>
     <string name="settings_save_failed">Could not save device settings. Please try again.</string>

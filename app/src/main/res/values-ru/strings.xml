@@ -64,8 +64,12 @@
     <string name="unknown_mac">00:00:00:00:00:00</string>
     <string name="allow_network">Разрешить доступ к локальной сети</string>
     <string name="network_permission_required">Для поиска, включения и управления компьютером нужен доступ к локальной сети. Выберите «Разрешить доступ к локальной сети».</string>
-    <string name="discovery_help">Подключитесь к домашней сети Wi-Fi или Ethernet для поиска доступных устройств. Duorem может определить MAC-адрес устройств с поддержкой NetBIOS. Для остальных устройств введите MAC-адрес, указанный на компьютере или роутере.</string>
+    <string name="discovery_help">Подключитесь к домашней сети Wi-Fi или Ethernet для поиска доступных устройств. Сначала Duorem определяет MAC-адрес через NetBIOS. На устройствах с root-доступом можно включить дополнительный поиск через меню. В остальных случаях введите MAC-адрес, указанный на компьютере или роутере.</string>
     <string name="mac_required">Введите MAC-адрес для Wake-on-LAN</string>
+    <string name="root_lookup">Использовать root для поиска MAC</string>
+    <string name="root_lookup_enabled">Поиск MAC с root-доступом включён. Подтвердите запрос суперпользователя, если он появится.</string>
+    <string name="root_lookup_disabled">Поиск MAC с root-доступом отключён.</string>
+    <string name="root_lookup_unavailable">Root-доступ недоступен или отклонён. Поиск MAC с root-доступом отключён.</string>
     <string name="discovery_failed">Поиск заблокирован. Проверьте разрешение на доступ к локальной сети и подключение.</string>
     <string name="settings_load_failed">Не удалось прочитать сохранённое устройство. Настройки не перезаписаны. Повторите попытку или удалите устройство и настройте его заново.</string>
     <string name="settings_save_failed">Не удалось сохранить настройки. Повторите попытку.</string>
