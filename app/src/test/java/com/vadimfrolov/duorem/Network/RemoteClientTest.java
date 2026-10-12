@@ -1,15 +1,36 @@
 package com.vadimfrolov.duorem.Network;
 
-import org.junit.Test;
+import android.net.Network;
 
+import org.junit.Test;
+import org.mockito.MockMakers;
+
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.CancellationException;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class RemoteClientTest {
+    @Test
+    public void sshConnectionsStillUseSelectedNetwork() throws Exception {
+        Network network = mock(Network.class, withSettings().mockMaker(MockMakers.SUBCLASS));
+        SocketException denied = new SocketException("Network binding denied");
+        doThrow(denied).when(network).bindSocket(any(Socket.class));
+        try (RemoteClient client = new RemoteClient(network)) {
+            HostBean host = new HostBean();
+            host.ipAddress = "127.0.0.1";
+            IOException failure = assertThrows(IOException.class, () -> client.isReachable(host));
+            assertSame(denied, failure);
+        }
+        verify(network).bindSocket(any(Socket.class));
+        verifyNoMoreInteractions(network);
+    }
+
     @Test
     public void pollingClosesItsSocketAndUsesConfiguredPort() throws Exception {
         try (ServerSocket server = new ServerSocket(0, 1, InetAddress.getByName("127.0.0.1"));

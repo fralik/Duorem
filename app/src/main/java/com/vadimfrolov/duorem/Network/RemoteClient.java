@@ -156,10 +156,11 @@ public final class RemoteClient implements AutoCloseable {
         byte[] bytes = WakeOnLan.packet(command.target.hardwareAddress);
         try (DatagramSocket socket = new DatagramSocket()) {
             activeDatagram = socket;
-            if (network != null) network.bindSocket(socket);
+            // Use system routing: VPN policy can reject explicitly selecting the LAN network.
             socket.setBroadcast(true);
             checkCancelled();
-            socket.send(new DatagramPacket(bytes, bytes.length, resolve(broadcast), command.wolPort()));
+            socket.send(new DatagramPacket(bytes, bytes.length,
+                    InetAddress.getByName(broadcast), command.wolPort()));
         } finally {
             activeDatagram = null;
         }
