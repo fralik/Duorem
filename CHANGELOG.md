@@ -3,6 +3,9 @@ All notable changes to Duorem will be documented in this file.
 
 ## [Current version]
 
+### Fixed
+ - Restore system routing for Wake-on-LAN instead of explicitly binding to the LAN network, avoiding binding failures when a VPN rejects that selection. VPN rules can still prevent delivery.
+
 ## [1.2.0] - 2026-09-24
 
 ### Added

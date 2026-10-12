@@ -23,7 +23,7 @@ The app supports **Android 10 (API 29) and newer** and compiles/targets **Androi
 | --- | --- | --- |
 | Build | AGP 3.5, Gradle 5.4, JCenter, target API 25 | AGP 9.4.1, Gradle 9.6, Google Maven/Maven Central, target API 37 |
 | UI/platform | Android support libraries | AndroidX/Material, system light/dark theme, system-bar/keyboard insets, explicit exported activities |
-| Networking | Connectivity broadcasts, Wi-Fi DHCP APIs, shell commands | Network callbacks and LinkProperties; sockets bound to the selected network |
+| Networking | Connectivity broadcasts, Wi-Fi DHCP APIs, shell commands | Network callbacks and LinkProperties; SSH/discovery sockets bound to the selected network, Wake-on-LAN uses system routing |
 | Background work | AsyncTask, unbounded socket waits, polling socket on the UI thread | Cancellable executors, connection/command deadlines, foreground-only polling |
 | Discovery | Required reverse DNS and readable ARP entries | Reachability/SSH probes, NetBIOS MAC lookup, and optional root-assisted neighbor lookup |
 | Storage/SSH | Plaintext preferences and unchecked host keys | Keystore-backed encryption with legacy migration; explicit host-key verification |
@@ -31,6 +31,7 @@ The app supports **Android 10 (API 29) and newer** and compiles/targets **Androi
 ### Behavior and platform limits
 
 - Wake-on-LAN works independently of SSH: only a MAC address and WOL destination/port are needed. An unset broadcast address uses the current IPv4 network's broadcast address; an explicitly configured address is preserved.
+- Wake-on-LAN lets Android route the packet rather than forcing the selected LAN network, for compatibility with VPNs that reject explicit network binding. VPN rules can still block LAN traffic, and system routing may not choose the intended LAN when several networks are connected. SSH, status checks, and discovery retain their selected-network behavior.
 - The interface follows the system light or dark theme, including menus, dialogs, forms, and system bars.
 - On Android 17+, use **Allow local network access** to grant permission. Denial leaves manual configuration available; discovery, polling, WOL and SSH do not run until permission is granted. After permanent denial, the same action opens the app's system settings.
 - Discovery uses the connected IPv4 subnet, preferring Wi-Fi/Ethernet even without Internet access. It probes SSH port 22 and ICMP, skips the phone and gateway, and uses ten workers rather than queuing the entire subnet. Large subnets take longer; leaving the discovery screen cancels the scan. Firewalls or nonstandard SSH ports can make a host undiscoverable; use manual configuration.
